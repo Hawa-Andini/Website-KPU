@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Pegawai</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="logo">
+        <span>LOGO</span>
+        <button class="btn-tutup">✕</button>
+    </div>
+
+    <nav class="menu">
+        <a href="#" class="menu-item aktif">Profil Data Pegawai</a>
+        <a href="#" class="menu-item">Tambah Data Pegawai Baru</a>
+        <a href="#" class="menu-item">Pengaturan Akun</a>
+        <a href="#" class="menu-item">Data Master</a>
+    </nav>
+</aside>
+
+<!-- KONTEN UTAMA -->
+<main class="konten">
+    <header class="header">
+        <h1>Data Pegawai</h1>
+        <button class="btn-logout">⮐ LOG OUT</button>
+    </header>
+
+    <!-- KONTROL TABEL -->
+    <section class="kontrol">
+        <div>
+            Tampilkan
+            <select id="jumlahData">
+                <option>10</option>
+                <option>25</option>
+                <option>50</option>
+            </select>
+            Entri
+        </div>
+
+        <div>
+            Cari
+            <input type="text" id="pencarian" placeholder="Cari data...">
+        </div>
+    </section>
+
+    <!-- TABEL -->
+    <table class="tabel">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>Golongan</th>
+                <th>NIP</th>
+                <th>Tipe Karyawan</th>
+                <th>Divisi/Unit</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="isiTabel">
+            <tr>
+                <td>1</td>
+                <td>Contoh Nama</td>
+                <td>Staff</td>
+                <td>III A</td>
+                <td>123456789</td>
+                <td>Tetap</td>
+                <td>IT</td>
+                <td class="aksi">
+                    👁 
+                     <a href="identitas-pegawai.html?id=1" title="Edit Data">✏️</a> 
+                    🖨
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

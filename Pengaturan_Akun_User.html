@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Pengaturan Akun</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="role-user">
+    
+<!-- TOMBOL KELUAR -->
+<button class="tombol-keluar">Log Out</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="logo">
+        <span>LOGO</span>
+        <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu">Profil</div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu" id="menuEditData">
+        Edit Data
+        <span class="panah-menu" id="panahEditData">▼</span>
+    </div>
+
+    <div class="submenu" id="submenuEditData">
+        <a href="Edit_Identitas_User.html" class="item-submenu">Identitas</a>
+        <a href="Edit_Riwayat_Golongan_User.html" class="item-submenu">Riwayat Golongan</a>
+        <a href="Edit_Riwayat_Jabatan_User.html" class="item-submenu">Riwayat Jabatan</a>
+        <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>
+        <a href="Edit_Riwayat_Diklat_User.html" class="item-submenu">Riwayat Diklat</a>
+        <a href="Edit_Riwayat_Keluarga_User.html" class="item-submenu">Riwayat Keluarga</a>
+        <a href="Edit_Riwayat_Kehormatan_User.html" class="item-submenu">Riwayat Kehormatan</a>
+        <a href="Edit_Riwayat_SKP_User.html" class="item-submenu">Riwayat SKP</a>
+    </div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu aktif">Pengaturan Akun</div>
+
+    <hr class="garis-menu">
+</aside>
+
+<!-- KONTEN -->
+<main class="konten">
+    <h2>Pengaturan Akun</h2>
+
+    <!-- TAB -->
+    <div class="tab-container">
+        <div class="tab aktif" data-tab="data">Data Pribadi</div>
+        <div class="tab" data-tab="password">Kata Sandi</div>
+    </div>
+
+    <!-- DATA PRIBADI -->
+    <div class="tab-content aktif" id="data">
+        <div class="form form-vertikal">
+            <div class="baris-form"><label>Nama Lengkap</label><input></div>
+            <div class="baris-form"><label>Email</label><input type="email"></div>
+            <div class="baris-form"><label>Telepon</label><input></div>
+            <div class="aksi-form">
+                <button class="tombol-tambah">PERBARUI</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PASSWORD -->
+    <div class="tab-content" id="password">
+        <div class="form form-vertikal">
+            <div class="baris-form"><label>Password Lama</label><input type="password"></div>
+            <div class="baris-form"><label>Password Baru</label><input type="password"></div>
+            <div class="baris-form"><label>Konfirmasi Password</label><input type="password"></div>
+            <div class="aksi-form">
+                <button class="tombol-tambah">PERBARUI</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+<script src="script.js"></script>
+</body>
+</html>

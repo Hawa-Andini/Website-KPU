@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Data – Riwayat Golongan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="role-user">
+
+<!-- TOMBOL KELUAR -->
+<button class="tombol-keluar">Log Out</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="logo">
+        <span>LOGO</span>
+        <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu">Profil</div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu aktif" id="menuEditData">
+        Edit Data
+        <span class="panah-menu" id="panahEditData">▼</span>
+    </div>
+
+    <div class="submenu" id="submenuEditData">
+        <a href="Edit_Identitas_User.html" class="item-submenu">Identitas</a>
+        <a href="Edit_Riwayat_Golongan_User.html" class="item-submenu">Riwayat Golongan</a>
+        <a href="#" class="item-submenu aktif">Riwayat Jabatan</a>
+        <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>
+        <a href="Edit_Riwayat_Diklat_User.html" class="item-submenu">Riwayat Diklat</a>
+        <a href="Edit_Riwayat_Keluarga_User.html" class="item-submenu">Riwayat Keluarga</a>
+        <a href="Edit_Riwayat_Kehormatan_User.html" class="item-submenu">Riwayat Kehormatan</a>
+        <a href="Edit_Riwayat_SKP_User.html" class="item-submenu">Riwayat SKP</a>
+    </div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu">Pengaturan Akun</div>
+
+    <hr class="garis-menu">
+</aside>
+
+<!-- KONTEN -->
+<main class="konten">
+    <h2>Riwayat Jabatan</h2>
+
+    <div class="pembungkus-form">
+
+        <div class="form">
+
+            <!-- BARIS GOLONGAN -->
+            <div class="baris-form" style="grid-template-columns:240px 1fr 140px;">
+                <label>Nama Jabatan</label>
+                <select style="height:30px; border:1px solid #888;">
+                    <option>Pilih Jabatan</option>
+                    <option>III/a</option>
+                    <option>III/b</option>
+                    <option>IV/a</option>
+                </select>
+                <button class="tombol-tambah btn-kecil">TAMBAH</button>
+            </div>
+    
+            <!-- BARIS TMT -->
+            <div class="baris-form" style="grid-template-columns:240px 1fr 140px;">
+                <label>TMT</label>
+                <input type="date">
+                <div class="aksi-vertikal">
+                    <button class="tombol-ubah btn-kecil">UBAH</button>
+                    <button class="tombol-hapus btn-kecil">HAPUS</button>
+                </div>
+            </div>
+    
+            <!-- TABEL -->
+            <table class="tabel-riwayat">
+                <thead>
+                    <tr>
+                        <th>Nama Jabatan </th>
+                        <th>TMT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>III/a</td>
+                        <td>01-01-2020</td>
+                    </tr>
+                    <tr>
+                        <td>III/b</td>
+                        <td>01-01-2023</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

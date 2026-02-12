@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Data – Identitas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="role-user">
+    
+<!-- TOMBOL KELUAR -->
+<button class="tombol-keluar">Log Out</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="logo">
+        <span>LOGO</span>
+        <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu">Profil</div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu aktif" id="menuEditData">
+        Edit Data
+        <span class="panah-menu" id="panahEditData">▼</span>
+    </div>
+
+    <div class="submenu" id="submenuEditData">
+        <a href="#" class="item-submenu aktif">Identitas</a>
+        <a href="Edit_Riwayat_Golongan_User.html" class="item-submenu">Riwayat Golongan</a>
+        <a href="Edit_Riwayat_Jabatan_User.html" class="item-submenu">Riwayat Jabatan</a>
+        <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>
+        <a href="Edit_Riwayat_Diklat_User.html" class="item-submenu">Riwayat Diklat</a>
+        <a href="Edit_Riwayat_Keluarga_User.html" class="item-submenu">Riwayat Keluarga</a>
+        <a href="Edit_Riwayat_Kehormatan_User.html" class="item-submenu">Riwayat Kehormatan</a>
+        <a href="Edit_Riwayat_SKP_User.html" class="item-submenu">Riwayat SKP</a>
+    </div>
+
+    <hr class="garis-menu">
+
+    <a href="Pengaturan_Akun_User.html" class="item-menu">
+        Pengaturan Akun
+    </a>
+    
+    <hr class="garis-menu">
+    
+</aside>
+
+<!-- KONTEN -->
+<main class="konten">
+    <h2>Identitas</h2>
+
+    <div class="pembungkus-form">
+
+        <!-- FOTO -->
+        <div class="kotak-foto">
+            <div class="pratinjau-foto"></div>
+            <button class="tombol-unggah">UNGGAH FOTO</button>
+        </div>
+
+        <!-- FORM -->
+        <div class="form">
+            <div class="baris-form"><label>Nama</label><input></div>
+            <div class="baris-form"><label>NIP</label><input></div>
+            <div class="baris-form"><label>Pangkat/Gol. Ruang/TMT</label><input></div>
+            <div class="baris-form"><label>Jabatan Terakhir / TMT</label><input></div>
+            <div class="baris-form"><label>TMT CPNS</label><input type="date"></div>
+            <div class="baris-form"><label>TMT PNS</label><input type="date"></div>
+            <div class="baris-form"><label>Tempat & Tanggal Lahir</label><input></div>
+            <div class="baris-form"><label>Jenis Kelamin</label><input></div>
+            <div class="baris-form"><label>Agama</label><input></div>
+            <div class="baris-form"><label>Status Perkawinan</label><input></div>
+            <div class="baris-form"><label>Unit Kerja</label><input></div>
+            <div class="baris-form"><label>Instansi</label><input></div>
+            <div class="baris-form"><label>Alamat Rumah</label><input></div>
+
+            <div class="aksi-form">
+                <button class="tombol-ubah">UBAH</button>
+                <button class="tombol-hapus">HAPUS</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

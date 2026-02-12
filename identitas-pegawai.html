@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Identitas Pegawai</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      
+        
+      /* TAB MENU */ 
+  
+
+    .tab-menu { 
+    display: flex; 
+    width: calc(100% + 80px);  /* tambahkan 40 kiri + 40 kanan */
+    margin: 50px -40px 20px -40px; 
+    padding: 0; 
+    border-bottom:1px solid #000; 
+    border-top: 1px solid #000; 
+    background-color: #fff; 
+    overflow-x: auto; 
+}
+
+    /* .tab { padding: 15px 20px; border: none; background: #fff; border-right: 1px solid #000; cursor: pointer; } */ 
+      .tab-menu .tab { 
+        flex: 1; /* SEMUA TAB LEBARNYA SAMA */ 
+        padding: 20px 10px; 
+        border: none; 
+        border-right: 1px solid #000; 
+        background: #fff; 
+        cursor: pointer; 
+        font-weight: 600; 
+        white-space: nowrap; 
+    } 
+      .tab-menu .tab:last-child { 
+        border-right: none; } /* .tab.aktif { background: #7b0000; color: white; } */ 
+      .tab-menu .tab.aktif { 
+        background-color: #7b0000; 
+        color: #fff; 
+        border-bottom: 2px solid #7b0000; 
+    }
+
+      
+    </style>
+  </head>
+  <body class="role-admin">
+
+<button class="tombol-keluar">Log Out</button>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="logo">
+        <span>LOGO</span>
+        <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
+
+
+      <hr class="garis-menu" />
+
+      <div class="item-menu aktif">Profil Data Pegawai</div>
+
+      <hr class="garis-menu" />
+
+      <div class="item-menu">Tambah Data Pegawai Baru</div>
+
+      <hr class="garis-menu" />
+
+      <div class="item-menu">Pengaturan Akun</div>
+
+      <hr class="garis-menu" />
+
+      <div class="item-menu">Data Master</div>
+
+      <hr class="garis-menu" />
+    </aside>
+
+    
+
+    <main class="konten">
+
+      <!-- TAB MENU -->
+      <div class="tab-menu">
+        <button class="tab aktif">Identitas</button>
+        <button class="tab">Riwayat Golongan</button>
+        <button class="tab">Riwayat Jabatan</button>
+        <button class="tab">Riwayat Pendidikan</button>
+        <button class="tab">Riwayat Diklat</button>
+        <button class="tab">Riwayat Keluarga</button>
+        <button class="tab">Riwayat Tanda Jasa</button>
+        <button class="tab">Riwayat SKP</button>
+      </div>
+
+      <!-- FORM IDENTITAS -->
+      <section class="form-identitas">
+        <div class="kotak-foto">
+            <div class="pratinjau-foto"></div>
+            <button class="tombol-unggah">UNGGAH FOTO</button>
+        </div>
+
+      <div class="form">
+            <div class="baris-form"><label>Nama</label><input></div>
+            <div class="baris-form"><label>NIP</label><input></div>
+            <div class="baris-form"><label>Pangkat/Gol. Ruang/TMT</label><input></div>
+            <div class="baris-form"><label>Jabatan Terakhir / TMT</label><input></div>
+            <div class="baris-form"><label>TMT CPNS</label><input type="date"></div>
+            <div class="baris-form"><label>TMT PNS</label><input type="date"></div>
+            <div class="baris-form"><label>Tempat & Tanggal Lahir</label><input></div>
+            <div class="baris-form"><label>Jenis Kelamin</label><input></div>
+            <div class="baris-form"><label>Agama</label><input></div>
+            <div class="baris-form"><label>Status Perkawinan</label><input></div>
+            <div class="baris-form"><label>Unit Kerja</label><input></div>
+            <div class="baris-form"><label>Instansi</label><input></div>
+            <div class="baris-form"><label>Alamat Rumah</label><input></div>
+
+            <div class="aksi-form">
+                <button class="tombol-ubah">UBAH</button>
+                <button class="tombol-hapus">HAPUS</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil Pegawai</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="logo">
+        <span>LOGO</span>
+        <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu aktif">Profil</div>
+
+    <hr class="garis-menu">
+
+    <div class="item-menu" id="menuEditData">
+        Edit Data
+        <span class="panah-menu" id="panahEditData">▼</span>
+    </div>
+
+    <div class="submenu" id="submenuEditData">
+        <a href="Edit_Identitas_User.html" class="item-submenu">Identitas</a>
+        <a href="Edit_Riwayat_Golongan_User.html" class="item-submenu">Riwayat Golongan</a>
+        <a href="Edit_Riwayat_Jabatan_User.html" class="item-submenu">Riwayat Jabatan</a>
+        <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>
+        <a href="Edit_Riwayat_Diklat_User.html" class="item-submenu">Riwayat Diklat</a>
+        <a href="Edit_Riwayat_Keluarga_User.html" class="item-submenu">Riwayat Keluarga</a>
+        <a href="Edit_Riwayat_Kehormatan_User.html" class="item-submenu">Riwayat Kehormatan</a>
+        <a href="Edit_Riwayat_SKP_User.html" class="item-submenu">Riwayat SKP</a>
+    </div>
+
+    <hr class="garis-menu">
+
+    <a href="Pengaturan_Akun_User.html" class="item-menu">
+        Pengaturan Akun
+    </a>
+
+    <hr class="garis-menu">
+</aside>
+
+<!-- KONTEN -->
+<main class="konten halaman-profil">
+
+    <!-- HEADER PROFIL -->
+    <div class="header-profil">
+
+        <div class="kiri-profil">
+            <div class="foto-profil"></div>
+
+            <div class="deskripsi-profil">
+                <h2>Hawa Andini Hadi</h2>
+                <p>
+                    [Nama] adalah [status/jabatan saat ini] di [unit kerja/instansi]. 
+                    Memiliki riwayat jabatan sejak [tahun mulai] dengan pangkat/golongan terakhir [golongan terakhir].
+                    Pendidikan terakhir [jenjang] dari [institusi].
+                </p>
+            </div>
+        </div>
+
+        <div class="kanan-profil">
+            <button class="tombol-keluar">LOG OUT</button>
+
+            <div class="kotak-pdf">
+                <div class="ikon-pdf">PDF</div>
+                <span>Lihat PDF</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TAB MENU -->
+    <div class="tab-menu-profil">
+        <div class="tab aktif">Identitas</div>
+        <div class="tab">Riwayat Golongan</div>
+        <div class="tab">Riwayat Jabatan</div>
+        <div class="tab">Riwayat Pendidikan</div>
+        <div class="tab">Riwayat Diklat</div>
+        <div class="tab">Riwayat Keluarga</div>
+        <div class="tab">Riwayat Tanda Jasa/Kehormatan</div>
+        <div class="tab">Riwayat SKP</div>
+    </div>
+
+    <!-- FORM IDENTITAS -->
+    <div class="form-identitas-profil">
+        <div class="baris-form"><label>Nama</label><input></div>
+        <div class="baris-form"><label>NIP</label><input></div>
+        <div class="baris-form"><label>Pangkat/Gol. Ruang/TMT</label><input></div>
+        <div class="baris-form"><label>Jabatan Terakhir / TMT</label><input></div>
+        <div class="baris-form"><label>TMT CPNS</label><input></div>
+        <div class="baris-form"><label>TMT PNS</label><input></div>
+        <div class="baris-form"><label>Tempat & Tanggal Lahir</label><input></div>
+        <div class="baris-form"><label>Jenis Kelamin</label><input></div>
+        <div class="baris-form"><label>Agama</label><input></div>
+        <div class="baris-form"><label>Status Perkawinan</label><input></div>
+        <div class="baris-form"><label>Unit Kerja</label><input></div>
+        <div class="baris-form"><label>Instansi</label><input></div>
+        <div class="baris-form"><label>Alamat Rumah</label><input></div>
+    </div>
+
+</main>
+
+<script src="skrip.js"></script>
+</body>
+</html>

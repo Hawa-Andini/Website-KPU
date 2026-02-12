@@ -70,3 +70,28 @@ tombolKeluar.addEventListener("click", () => {
         window.location.href = "Login.html";
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Simulasi data dari database
+    const dataPegawai = {
+        nama: "Hawa Andini Hadi",
+        nip: "1987654321",
+        pangkat: "Pembina IV/a",
+        jabatan: "Kepala Sub Bagian",
+        unitKerja: "Dinas Pendidikan",
+        ringkasan: "Pegawai aktif dengan pengalaman lebih dari 10 tahun di bidang administrasi pemerintahan."
+    };
+
+    // Isi header
+    document.getElementById("namaPegawai").textContent = dataPegawai.nama;
+    document.getElementById("ringkasanPegawai").textContent = dataPegawai.ringkasan;
+
+    // Isi form otomatis
+    document.getElementById("fieldNama").value = dataPegawai.nama;
+    document.getElementById("fieldNip").value = dataPegawai.nip;
+    document.getElementById("fieldPangkat").value = dataPegawai.pangkat;
+    document.getElementById("fieldJabatan").value = dataPegawai.jabatan;
+    document.getElementById("fieldUnitKerja").value = dataPegawai.unitKerja;
+
+});

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<title>Identitas Pegawai</title>
+<link rel="stylesheet" href="style.css" />
+
+<style>
+.profil-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 10px 40px 40px 40px;
+  background: transparent;
+}
+
+.foto-wrapper {
+  width: 180px;
+  height: 220px;
+  border: 2px solid #999;
+  background: #ddd;
+  flex-shrink: 0;
+}
+
+.profil-info {
+  flex: 1;
+}
+
+.profil-info h2 {
+  margin: 0 0 15px 0;
+  font-size: 28px;
+}
+
+.profil-info p {
+  line-height: 1.6;
+}
+
+.pdf-box {
+  width: 120px;
+  height: 140px;
+  border: 2px solid #999;
+  border-radius: 12px;
+  text-decoration: none;
+  background: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdf-icon {
+  width: 60px;
+  height: 70px;
+  background: #d32f2f;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.tab-menu {
+  display: flex;
+  width: calc(100% + 80px);
+  margin: 10px -40px 20px -40px;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  background-color: #fff;
+  overflow-x: auto;
+}
+
+.tab-menu a {
+  text-decoration: none;
+  color: #000;
+  flex: 1;
+  padding: 20px 10px;
+  text-align: center;
+  border-right: 1px solid #000;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tab-menu a:last-child {
+  border-right: none;
+}
+
+.tab-menu a.aktif {
+  background-color: #7b0000;
+  color: #fff;
+}
+
+.judul-halaman {
+  margin: 0;
+}
+
+.tabel-riwayat {
+  width: 100%;
+  max-width: 800px; 
+  margin-left: 120px; 
+  border-collapse: collapse;
+}
+
+.tabel-riwayat th,
+.tabel-riwayat td {
+  border: 1px solid #999;
+  padding: 10px;
+  text-align: left;
+}
+</style>
+</head>
+
+<body class="role-admin">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    <span>LOGO</span>
+    <button class="tombol-menu" id="tombolMenu">✕</button>
+  </div>
+
+  <hr class="garis-menu">
+
+  <a href="Identitas_User.html" class="item-menu aktif">Profil</a>
+
+  <hr class="garis-menu">
+
+  <div class="item-menu">Edit Data</div>
+
+  <div class="submenu">
+    <a href="Edit_Identitas_User.html" class="item-submenu">Identitas</a>
+    <a href="Edit_Riwayat_Golongan_User.html" class="item-submenu">Riwayat Golongan</a>
+    <a href="Edit_Riwayat_Jabatan_User.html" class="item-submenu">Riwayat Jabatan</a>
+    <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>
+    <a href="Edit_Riwayat_Diklat_User.html" class="item-submenu">Riwayat Diklat</a>
+    <a href="Edit_Riwayat_Keluarga_User.html" class="item-submenu">Riwayat Keluarga</a>
+    <a href="Edit_Riwayat_Kehormatan_User.html" class="item-submenu">Riwayat Kehormatan</a>
+    <a href="Edit_Riwayat_SKP_User.html" class="item-submenu">Riwayat SKP</a>
+  </div>
+
+  <hr class="garis-menu">
+
+  <a href="Pengaturan_Akun_User.html" class="item-menu">Pengaturan Akun</a>
+
+  <hr class="garis-menu">
+</aside>
+
+<!-- MAIN -->
+<main class="konten">
+
+  <h2 class="judul-halaman">Profil</h2>
+
+  <div class="profil-header">
+
+    <div class="foto-wrapper"></div>
+
+    <div class="profil-info">
+      <h2>Hawa Andini Hadi</h2>
+      <p>
+        [Nama] adalah [status/jabatan saat ini] di [unit kerja/instansi].
+        Memiliki riwayat jabatan sejak [tahun mulai] dengan pangkat/golongan terakhir
+        [golongan terakhir]. Pendidikan terakhir [jenjang] dari [institusi].
+      </p>
+    </div>
+
+    <a href="file-cv.pdf" download class="pdf-box">
+      <div class="pdf-icon">PDF</div>
+      <span>Lihat PDF</span>
+    </a>
+
+  </div>
+
+  <div class="tab-menu">
+    <a href="identitas_User.html" class="tab">Identitas</a>
+    <a href="Riwayat_Golongan_User.html" class="tab">Riwayat Golongan</a>
+    <a href="Riwayat_Jabatan_User.html" class="tab aktif">Riwayat Jabatan</a>
+    <a href="Riwayat_Pendidikan_User.html" class="tab">Riwayat Pendidikan</a>
+    <a href="Riwayat_Diklat_User.html" class="tab">Riwayat Diklat</a>
+    <a href="Riwayat_Keluarga_User.html" class="tab">Riwayat Keluarga</a>
+    <a href="Riwayat_Kehormatan_User.html" class="tab">Riwayat Kehormatan</a>
+    <a href="Riwayat_SKP_User.html" class="tab">Riwayat SKP</a>
+  </div>
+
+  <table class="tabel-riwayat">
+    <thead>
+      <tr>
+        <th>Nama Jabatan</th>
+        <th>TMT</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

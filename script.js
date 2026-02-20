@@ -95,3 +95,34 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("fieldUnitKerja").value = dataPegawai.unitKerja;
 
 });
+
+document.querySelector(".tombol-tambah").addEventListener("click", function(e){
+    e.preventDefault();
+
+    // ambil nilai dari HTML yang sudah ada
+    let golongan = document.querySelector("select").value;
+    let tmt = document.querySelector('input[type="date"]').value;
+    let tbody = document.querySelector(".tabel-riwayat tbody");
+
+    if(golongan === "Pilih Golongan" || tmt === ""){
+        alert("Isi dulu golongan dan TMT!");
+        return;
+    }
+
+    // format tanggal dd-mm-yyyy
+    let tgl = new Date(tmt);
+    let hasilTanggal =
+        String(tgl.getDate()).padStart(2,'0') + "-" +
+        String(tgl.getMonth()+1).padStart(2,'0') + "-" +
+        tgl.getFullYear();
+
+    // tambah baris baru
+    let tr = document.createElement("tr");
+
+    tr.innerHTML = `
+        <td>${golongan}</td>
+        <td>${hasilTanggal}</td>
+    `;
+
+    tbody.appendChild(tr);
+});

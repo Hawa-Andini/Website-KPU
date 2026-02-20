@@ -6,6 +6,77 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="role-user">
+<style>
+.konten-akun{
+    flex:1;
+    position: relative;  
+    padding: 20px 40px 30px;
+}
+.konten-akun .form {
+    max-width: none !important;
+    width: 100% !important;
+}
+.konten-akun .tab-container {
+    width: 100%;
+}
+.kelompok-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.kelompok-form label {
+    margin-bottom: 6px;
+}
+
+.kelompok-form input {
+    height: 36px;
+    border: 1px solid #888;
+    padding: 6px 10px;
+    width: 100%;
+}
+.tab-container {
+    display: flex;
+    border-bottom: 2px solid #999;
+    margin-bottom: 40px;
+}
+
+.tab {
+    flex: 1; 
+    text-align: center;
+    padding: 12px 0;
+    cursor: pointer;
+    font-weight: 500;
+    position: relative;
+}
+
+.tab.aktif {
+    font-weight: bold;
+}
+
+.tab.aktif::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #8b0000;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.aktif {
+    display: block;
+}
+.konten-akun .aksi-form {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+</style>
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
@@ -16,8 +87,8 @@
 
     <hr class="garis-menu">
 
-    <div class="item-menu">Profil</div>
-
+    <a href="Identitas_User.html" class="item-menu">Profil</a>
+  
     <hr class="garis-menu">
 
     <div class="item-menu" id="menuEditData">
@@ -44,10 +115,8 @@
 </aside>
 
 <!-- KONTEN -->
-<main class="konten">
+<main class="konten-akun">
     <h2>Pengaturan Akun</h2>
-
-    <button class="tombol-keluar">Log Out</button>
 
     <!-- TAB -->
     <div class="tab-container">
@@ -58,9 +127,9 @@
     <!-- DATA PRIBADI -->
     <div class="tab-content aktif" id="data">
         <div class="form form-vertikal">
-            <div class="baris-form"><label>Nama Lengkap</label><input></div>
-            <div class="baris-form"><label>Email</label><input type="email"></div>
-            <div class="baris-form"><label>Telepon</label><input></div>
+            <div class="kelompok-form"><label>Nama Lengkap</label><input></div>
+            <div class="kelompok-form"><label>Email</label><input type="email"></div>
+            <div class="kelompok-form"><label>Telepon</label><input></div>
             <div class="aksi-form">
                 <button class="tombol-tambah">PERBARUI</button>
             </div>
@@ -70,9 +139,9 @@
     <!-- PASSWORD -->
     <div class="tab-content" id="password">
         <div class="form form-vertikal">
-            <div class="baris-form"><label>Password Lama</label><input type="password"></div>
-            <div class="baris-form"><label>Password Baru</label><input type="password"></div>
-            <div class="baris-form"><label>Konfirmasi Password</label><input type="password"></div>
+            <div class="kelompok-form"><label>Password Lama</label><input type="password"></div>
+            <div class="kelompok-form"><label>Password Baru</label><input type="password"></div>
+            <div class="kelompok-form"><label>Konfirmasi Password</label><input type="password"></div>
             <div class="aksi-form">
                 <button class="tombol-tambah">PERBARUI</button>
             </div>

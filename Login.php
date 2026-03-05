@@ -78,31 +78,49 @@ session_start();
 <div class="login-card">
     <h2>Log In</h2>
 
-    <form method="POST">
-
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" name="username" required>
+    <form action="proses_login.php" method="POST">
+            <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" required>
         </div>
 
         <div class="form-group">
-            <label>Password</label>
-            <input type="password" name="password" required>
+        <label>Password</label>
+
+        <div style="position: relative;">
+            <input type="password" name="password" id="password" required style="width:100%; padding-right:40px;">
+
+            <span onclick="togglePassword()" 
+            style="position:absolute; right:10px; top:10px; cursor:pointer;">
+                👁
+            </span>
+        </div>
         </div>
 
         <div class="form-group">
-            <label>Role</label>
-            <select name="role" required>
-                <option value="" disabled selected>Pilih Role</option>
-                <option value="Admin">Admin</option>
-                <option value="User">User</option>
-            </select>
+        <label>Role</label>
+        <select name="role" required>
+        <option value="" disabled selected>Pilih Role</option>
+        <option value="admin">Admin</option>
+        <option value="user">Pegawai</option>
+        </select>
         </div>
 
-        <button type="submit" class="btn-login">Log In</button>
+        <button type="submit" name="login" class="btn-login">Log In</button>
 
     </form>
 </div>
 
+<script>
+function togglePassword() {
+    var password = document.getElementById("password");
+
+    if (password.type === "password") {
+        password.type = "text";
+    } else {
+        password.type = "password";
+    }
+}
+</script>
 </body>
 </html>

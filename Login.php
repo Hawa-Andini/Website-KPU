@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -18,14 +22,6 @@
             justify-content: center;
         }
 
-        .login-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .login-card {
             background: #ffffff;
             width: 360px;
@@ -38,7 +34,6 @@
         .login-card h2 {
             text-align: center;
             margin-bottom: 25px;
-            font-weight: bold;
         }
 
         .form-group {
@@ -58,29 +53,7 @@
             padding: 10px;
             border-radius: 5px;
             border: 1.5px solid #b07a7a;
-            outline: none;
             font-size: 14px;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #7a0000;
-        }
-
-        .form-group select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a0000' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-        }
-
-        .forgot {
-            display: block;
-            text-align: center;
-            font-size: 12px;
-            color: #7a0000;
-            text-decoration: underline;
-            margin: 10px 0 20px;
         }
 
         .btn-login {
@@ -102,32 +75,33 @@
 </head>
 <body>
 
-<div class="login-container">
-    <div class="login-card">
-        <h2>Log In</h2>
+<div class="login-card">
+    <h2>Log In</h2>
+
+    <form method="POST">
 
         <div class="form-group">
             <label>Username</label>
-            <input type="text">
+            <input type="text" name="username" required>
         </div>
 
         <div class="form-group">
             <label>Password</label>
-            <input type="password">
+            <input type="password" name="password" required>
         </div>
 
         <div class="form-group">
             <label>Role</label>
-            <select>
-                <option value="" disabled selected></option>
-                <option>Admin</option>
-                <option>User</option>
+            <select name="role" required>
+                <option value="" disabled selected>Pilih Role</option>
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
             </select>
         </div>
 
+        <button type="submit" class="btn-login">Log In</button>
 
-        <button class="btn-login">Log In</button>
-    </div>
+    </form>
 </div>
 
 </body>

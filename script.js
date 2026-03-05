@@ -1,18 +1,22 @@
-// SIDEBAR BUKA / TUTUP
-const sidebar = document.getElementById("sidebar");
+document.addEventListener("DOMContentLoaded", function () {
+
+// SIDEBAR BUKA / TUTUP 
 const tombolMenu = document.getElementById("tombolMenu");
 
-tombolMenu.addEventListener("click", () => {
-    sidebar.classList.toggle("tertutup");
+// Cari sidebar yang ada di halaman ini
+const sidebar =
+    document.getElementById("sidebar") ||
+    document.querySelector(".sidebar-edit");
 
-    if (sidebar.classList.contains("tertutup")) {
-        tombolMenu.textContent = "<";
-    } else {
-        tombolMenu.textContent = "✕";
-    }
-});
+if (tombolMenu && sidebar) {
+    tombolMenu.addEventListener("click", () => {
+        sidebar.classList.toggle("tertutup");
 
-
+        tombolMenu.textContent = sidebar.classList.contains("tertutup")
+            ? "<"
+            : "✕";
+    });
+}
 // SUBMENU EDIT DATA 
 const menuEditData = document.getElementById("menuEditData");
 const submenuEditData = document.getElementById("submenuEditData");
@@ -62,67 +66,65 @@ tabs.forEach(tab => {
     });
 });
 
-// TOMBOL LOG OUT 
-const tombolKeluar = document.querySelector(".tombol-keluar");
+const tombolTambah = document.querySelector(".tombol-tambah");
 
-tombolKeluar.addEventListener("click", () => {
-    if (confirm("Apakah Anda yakin ingin keluar?")) {
-        window.location.href = "Login.html";
+if (tombolTambah) {
+    tombolTambah.addEventListener("click", function(e){
+        e.preventDefault();
+
+        const select = document.querySelector("select");
+        const inputDate = document.querySelector('input[type="date"]');
+        const tbody = document.querySelector(".tabel-riwayat tbody");
+
+        // STOP kalau elemen tidak lengkap
+        if (!select || !inputDate || !tbody) {
+            console.warn("Elemen form riwayat tidak lengkap.");
+            return;
+        }
+
+        let golongan = select.value;
+        let tmt = inputDate.value;
+
+        if(golongan === "Pilih Golongan" || tmt === ""){
+            alert("Isi dulu golongan dan TMT!");
+            return;
+        }
+
+        let tgl = new Date(tmt);
+        let hasilTanggal =
+            String(tgl.getDate()).padStart(2,'0') + "-" +
+            String(tgl.getMonth()+1).padStart(2,'0') + "-" +
+            tgl.getFullYear();
+
+        let tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${golongan}</td>
+            <td>${hasilTanggal}</td>
+        `;
+
+        tbody.appendChild(tr);
+
+        inputDate.value = "";
+        select.selectedIndex = 0;
+    });
+}
+
+   // DROPDOWN USER PROFILE
+    // ===============================
+    const userProfile = document.getElementById("userProfile");
+
+    if (userProfile) {
+
+        userProfile.addEventListener("click", function (e) {
+            e.stopPropagation(); // supaya tidak langsung tertutup
+            userProfile.classList.toggle("active");
+        });
+
+        document.addEventListener("click", function (e) {
+            if (!userProfile.contains(e.target)) {
+                userProfile.classList.remove("active");
+            }
+        });
     }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // Simulasi data dari database
-    const dataPegawai = {
-        nama: "Hawa Andini Hadi",
-        nip: "1987654321",
-        pangkat: "Pembina IV/a",
-        jabatan: "Kepala Sub Bagian",
-        unitKerja: "Dinas Pendidikan",
-        ringkasan: "Pegawai aktif dengan pengalaman lebih dari 10 tahun di bidang administrasi pemerintahan."
-    };
-
-    // Isi header
-    document.getElementById("namaPegawai").textContent = dataPegawai.nama;
-    document.getElementById("ringkasanPegawai").textContent = dataPegawai.ringkasan;
-
-    // Isi form otomatis
-    document.getElementById("fieldNama").value = dataPegawai.nama;
-    document.getElementById("fieldNip").value = dataPegawai.nip;
-    document.getElementById("fieldPangkat").value = dataPegawai.pangkat;
-    document.getElementById("fieldJabatan").value = dataPegawai.jabatan;
-    document.getElementById("fieldUnitKerja").value = dataPegawai.unitKerja;
-
-});
-
-document.querySelector(".tombol-tambah").addEventListener("click", function(e){
-    e.preventDefault();
-
-    // ambil nilai dari HTML yang sudah ada
-    let golongan = document.querySelector("select").value;
-    let tmt = document.querySelector('input[type="date"]').value;
-    let tbody = document.querySelector(".tabel-riwayat tbody");
-
-    if(golongan === "Pilih Golongan" || tmt === ""){
-        alert("Isi dulu golongan dan TMT!");
-        return;
-    }
-
-    // format tanggal dd-mm-yyyy
-    let tgl = new Date(tmt);
-    let hasilTanggal =
-        String(tgl.getDate()).padStart(2,'0') + "-" +
-        String(tgl.getMonth()+1).padStart(2,'0') + "-" +
-        tgl.getFullYear();
-
-    // tambah baris baru
-    let tr = document.createElement("tr");
-
-    tr.innerHTML = `
-        <td>${golongan}</td>
-        <td>${hasilTanggal}</td>
-    `;
-
-    tbody.appendChild(tr);
 });

@@ -1,26 +1,4 @@
-<?php
-include("koneksi.php");
-session_start();
-$nip = $_SESSION['nip'];
 
-$nip = $_GET['nip'] ?? '';
-
-if(isset($_POST['tambah'])){
-
-    $id_gol = $_POST['id_gol'];
-    $tmt    = $_POST['tmt'];
-
-    $query = mysqli_query($conn,"INSERT INTO riwayat_golongan(nip,id_gol,tmt)
-    VALUES('$nip','$id_gol','$tmt')");
-
-    if(!$query){
-        echo "ERROR : ".mysqli_error($conn);
-    } else {
-        echo "DATA BERHASIL DISIMPAN";
-    }
-
-}
-?>
 
 <!DOCTYPE html>
 <html lang="id">

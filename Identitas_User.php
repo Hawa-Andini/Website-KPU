@@ -212,7 +212,7 @@ $conn->close();
   </div>
 
   <div class="submenu" id="submenuEditData">
-      <a href="Edit_Identitas_User.html" class="item-submenu">Identitas</a>
+      <a href="Edit_Identitas_User.php" class="item-submenu">Identitas</a>
       <a href="Edit_Riwayat_Golongan_User.html" class="item-submenu">Riwayat Golongan</a>
       <a href="Edit_Riwayat_Jabatan_User.html" class="item-submenu">Riwayat Jabatan</a>
       <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>

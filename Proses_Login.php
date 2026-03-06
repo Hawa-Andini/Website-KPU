@@ -2,32 +2,27 @@
 session_start();
 include "koneksi.php";
 
-if(isset($_POST['login'])){
+$username = $_POST['username'];
+$password = $_POST['password'];
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+$query = mysqli_query($conn,"SELECT * FROM user 
+WHERE username='$username' AND password='$password'");
 
-    $query = "SELECT * FROM user 
-              WHERE username='$username' 
-              AND password='$password'";
+$data = mysqli_fetch_assoc($query);
 
-    $result = mysqli_query($conn,$query);
+if($data){
 
-    if(mysqli_num_rows($result) > 0){
+    $_SESSION['username'] = $data['username'];
+    $_SESSION['nip'] = $data['nip'];  
+    $_SESSION['role'] = $data['role'];
 
-        $data = mysqli_fetch_assoc($result);
-
-        $_SESSION['username'] = $data['username'];
-        $_SESSION['role'] = $data['role'];
-
-        if($data['role'] == "Admin"){
-            header("Location: dashboard.php");
-        }else{
-            header("Location: Identitas_User.php");
-        }
-
+    if($data['role'] == "Admin"){
+        header("location:dashboard_admin.php");
     }else{
-        echo "Login gagal";
+        header("location:Identitas_User.php");
     }
+
+}else{
+    echo "Login gagal";
 }
 ?>

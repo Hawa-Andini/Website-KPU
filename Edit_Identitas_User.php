@@ -7,28 +7,31 @@ if(!isset($_SESSION['nip'])){
     exit;
 }
 
+$username = $_SESSION['username'] ?? '';
 $nip = $_SESSION['nip'];
 
 $query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
 $data = mysqli_fetch_assoc($query);
 
 $riwayat_gol = mysqli_query($conn,"
-SELECT * FROM riwayat_golongan
+SELECT *
+FROM riwayat_golongan
 WHERE nip='$nip'
-ORDER BY tmt DESC
+ORDER BY id_riwayat_gol DESC
 LIMIT 1
 ");
 
-$data_gol = mysqli_fetch_assoc($riwayat_gol);
+$data_gol = mysqli_fetch_assoc($riwayat_gol) ?? [];
 
 $riwayat_jabatan = mysqli_query($conn,"
-SELECT * FROM riwayat_jabatan 
+SELECT *
+FROM riwayat_jabatan
 WHERE nip='$nip'
-ORDER BY tmt DESC
+ORDER BY id_riwayat_jabatan DESC
 LIMIT 1
 ");
 
-$data_jabatan = mysqli_fetch_assoc($riwayat_jabatan);
+$data_jabatan = mysqli_fetch_assoc($riwayat_jabatan) ?? [];
 
 $golongan = mysqli_query($conn,"SELECT * FROM master_golongan");
 $jabatan  = mysqli_query($conn,"SELECT * FROM master_jabatan");
@@ -87,7 +90,7 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
     margin-top: 20px;
     display: flex;
     gap: 15px;
-    justify-content: flex-end; /* INI KUNCINYA */
+    justify-content: flex-end; 
 }
 
 /* Paksa menu jadi biru */
@@ -98,7 +101,7 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
     text-align: center;
     cursor: pointer;
 
-    color: #fff !important;   /* pakai ini kalau masih ketimpa */
+    color: #fff !important;   
     text-decoration: none;
 }
 /* Wrapper foto + form */
@@ -106,7 +109,7 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
     display: flex;
     align-items: flex-start;
     gap: 60px;
-    margin-top: 60px; /* supaya turun dari judul */
+    margin-top: 20px; 
 }
 
 /* Kotak foto */
@@ -117,7 +120,7 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
 
 .pratinjau-foto {
     width: 150px;
-    height: 200px;   /* rasio 3:4 */
+    height: 200px;   
     background: #ccc;
     border: 2px solid #999;
 }
@@ -144,6 +147,7 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
 .input-gabung input[type="date"]{
     flex:1;
 }
+
 </style>
 </head>
 
@@ -156,7 +160,7 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
     </div>
       <hr class="garis-menu" />
 
-      <a href="Identitas_User.html" class="item-menu">Profil</a>
+      <a href="Identitas_User.php" class="item-menu">Profil</a>
 
       <hr class="garis-menu" />
 
@@ -169,16 +173,16 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
         <a href="Edit_Identitas_User.php" class="item-submenu aktif">Identitas</a>
         <a href="Edit_Riwayat_Golongan_User.php" class="item-submenu">Riwayat Golongan</a>
         <a href="Edit_Riwayat_Jabatan_User.php" class="item-submenu">Riwayat Jabatan</a>
-        <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>
-        <a href="Edit_Riwayat_Diklat_User.html" class="item-submenu">Riwayat Diklat</a>
-        <a href="Edit_Riwayat_Keluarga_User.html" class="item-submenu">Riwayat Keluarga</a>
-        <a href="Edit_Riwayat_Kehormatan_User.html" class="item-submenu">Riwayat Kehormatan</a>
-        <a href="Edit_Riwayat_SKP_User.html" class="item-submenu">Riwayat SKP</a>
+        <a href="Edit_Riwayat_Pendidikan_User.php" class="item-submenu">Riwayat Pendidikan</a>
+        <a href="Edit_Riwayat_Diklat_User.php" class="item-submenu">Riwayat Diklat</a>
+        <a href="Edit_Riwayat_Keluarga_User.php" class="item-submenu">Riwayat Keluarga</a>
+        <a href="Edit_Riwayat_Kehormatan_User.php" class="item-submenu">Riwayat Kehormatan</a>
+        <a href="Edit_Riwayat_SKP_User.php" class="item-submenu">Riwayat SKP</a>
     </div>
 
     <hr class="garis-menu" />
 
-    <a href="Pengaturan_Akun_User.html" class="item-menu">Pengaturan Akun</a>
+    <a href="Pengaturan_Akun_User.php" class="item-menu">Pengaturan Akun</a>
 
       <hr class="garis-menu" />
     </aside>
@@ -190,18 +194,21 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
      <!-- <button class="tombol-keluar">Log Out</button> -->
      <div class="user-profile" id="userProfile">
         <div class="user-info">
-          <div class="user-icon">👤</div>
-          <div class="user-text">
-            <div class="user-name">TU SEKRETARIS KPU</div>
-            <!-- <div class="user-role">Tata Usaha</div> -->
-          </div>
+            <div class="user-icon">👤</div>
+
+            <div class="user-text">
+                <div class="user-name">
+                    <?= ucfirst($username) ?>
+                </div>
+            </div>
         </div>
 
         <div class="dropdown-menu" id="dropdownMenu">
-          <a href="#">Beranda</a>
-          <a href="#">Keluar</a>
+            <a href="#">Beranda</a>
+            <a href="logout.php">Keluar</a>
         </div>
-      </div>
+
+        </div>
 
       <form method="POST" action="Simpan_Identitas.php" enctype="multipart/form-data">
 
@@ -235,9 +242,13 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
         <?php while($g = mysqli_fetch_assoc($golongan)){ ?>
 
         <option value="<?= $g['id_gol'] ?>"
-        <?php if($data['id_gol']==$g['id_gol']) echo "selected"; ?>>
+        <?php 
+        if(isset($data_gol['id_gol']) && $data_gol['id_gol'] == $g['id_gol']){
+            echo "selected";
+        }
+        ?>>
 
-        <?= $g['nama_pangkat'] ?> / <?= $g['kode_gol'] ?>
+        <?= $g['nama_pangkat'] ?> - <?= $g['kode_gol'] ?>
 
         </option>
 
@@ -245,7 +256,7 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
 
         </select>
 
-        <input type="date" name="tmt_golongan" value="<?= $data_gol['tmt'] ?>">
+        <input type="date" name="tmt_golongan" value="<?= $data_gol['tmt_golongan'] ?? '' ?>">
 
         </div>
         </div>
@@ -261,9 +272,9 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
         <?php while($g = mysqli_fetch_assoc($jabatan)){ ?>
 
         <option value="<?= $g['id_jabatan'] ?>"
-        <?php if($data['id_jabatan']==$g['id_jabatan']) echo "selected"; ?>>
+        <?php if($data_jabatan['id_jabatan']==$g['id_jabatan']) echo "selected"; ?>>
 
-        <?= $g['nama_jabatan'] ?> / <?= $g['jenis_jabatan'] ?>
+        <?= $g['nama_jabatan'] ?> - <?= $g['jenis_jabatan'] ?>
 
         </option>
 
@@ -271,7 +282,7 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
 
         </select>
 
-        <input type="date" name="tmt_jabatan" value="<?= $data_jabatan['tmt'] ?>">
+        <input type="date" name="tmt_jabatan" value="<?= $data_jabatan['tmt_jabatan'] ?>">
         </div>
         </div>
 
@@ -324,8 +335,11 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
 
         <?php while($a = mysqli_fetch_assoc($agama)){ ?>
 
-        <option value="<?= $a['id_agama'] ?>">
+        <option value="<?= $a['id_agama'] ?>"
+        <?= ($data['id_agama'] == $a['id_agama']) ? 'selected' : '' ?>>
+
         <?= $a['agama'] ?>
+
         </option>
 
         <?php } ?>
@@ -342,8 +356,11 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
 
         <?php while($s = mysqli_fetch_assoc($status)){ ?>
 
-        <option value="<?= $s['id_status_perkawinan'] ?>">
+        <option value="<?= $s['id_status_perkawinan'] ?>"
+        <?= ($data['id_status_perkawinan'] == $s['id_status_perkawinan']) ? 'selected' : '' ?>>
+
         <?= $s['status_perkawinan'] ?>
+
         </option>
 
         <?php } ?>
@@ -360,8 +377,11 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
 
         <?php while($u = mysqli_fetch_assoc($unit)){ ?>
 
-        <option value="<?= $u['id_unit_kerja'] ?>">
+        <option value="<?= $u['id_unit_kerja'] ?>"
+        <?= ($data['id_unit_kerja'] == $u['id_unit_kerja']) ? 'selected' : '' ?>>
+
         <?= $u['unit_kerja'] ?>
+
         </option>
 
         <?php } ?>
@@ -369,7 +389,12 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
         </select>
 
         </div>
-
+        
+        <div class="baris-edit">
+        <label>Instansi</label>
+        <input type="text" value="KPU Kota Surabaya" readonly>
+        <input type="hidden" name="instansi" value="KPU Kota Surabaya">
+        </div>
 
         <div class="baris-edit">
         <label>No Telepon</label>
@@ -384,8 +409,8 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
 
 
         <div class="aksi-edit">
-        <button type="submit" class="tombol-ubah">UBAH</button>
-        <button type="reset" class="tombol-hapus">HAPUS</button>
+        <button type="submit" name="ubah" class="tombol-ubah">UBAH</button>
+        <button type="submit" name="hapus" class="tombol-hapus">HAPUS</button>
         </div>
 
         </div>

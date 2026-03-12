@@ -66,49 +66,6 @@ tabs.forEach(tab => {
     });
 });
 
-const tombolTambah = document.querySelector(".tombol-tambah");
-
-if (tombolTambah) {
-    tombolTambah.addEventListener("click", function(e){
-        e.preventDefault();
-
-        const select = document.querySelector("select");
-        const inputDate = document.querySelector('input[type="date"]');
-        const tbody = document.querySelector(".tabel-riwayat tbody");
-
-        // STOP kalau elemen tidak lengkap
-        if (!select || !inputDate || !tbody) {
-            console.warn("Elemen form riwayat tidak lengkap.");
-            return;
-        }
-
-        let golongan = select.value;
-        let tmt = inputDate.value;
-
-        if(golongan === "Pilih Golongan" || tmt === ""){
-            alert("Isi dulu golongan dan TMT!");
-            return;
-        }
-
-        let tgl = new Date(tmt);
-        let hasilTanggal =
-            String(tgl.getDate()).padStart(2,'0') + "-" +
-            String(tgl.getMonth()+1).padStart(2,'0') + "-" +
-            tgl.getFullYear();
-
-        let tr = document.createElement("tr");
-
-        tr.innerHTML = `
-            <td>${golongan}</td>
-            <td>${hasilTanggal}</td>
-        `;
-
-        tbody.appendChild(tr);
-
-        inputDate.value = "";
-        select.selectedIndex = 0;
-    });
-}
 
    // DROPDOWN USER PROFILE
     // ===============================

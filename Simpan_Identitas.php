@@ -1,12 +1,11 @@
 <?php
 include "koneksi.php";
 
-/* ========================= */
 /* AMBIL DATA FORM */
-/* ========================= */
-
 $nip  = $_POST['nip'];
 $nama = $_POST['nama_pegawai'];
+
+$instansi = "KPU Kota Surabaya";
 
 $tempat_lahir  = ucwords($_POST['tempat_lahir']);
 $tanggal_lahir = $_POST['tanggal_lahir'];
@@ -29,10 +28,7 @@ $jabatan = $_POST['id_jabatan'];
 $tmt_jab = $_POST['tmt_jabatan'];
 
 
-/* ========================= */
 /* UPLOAD FOTO (OPSIONAL) */
-/* ========================= */
-
 $foto = $_FILES['foto']['name'];
 
 if(!empty($foto)){
@@ -62,13 +58,10 @@ if(!empty($foto)){
 
 }
 
-
-/* ========================= */
 /* UPDATE DATA PEGAWAI */
-/* ========================= */
-
 mysqli_query($conn,"UPDATE pegawai SET
 nama_pegawai='$nama',
+instansi='$instansi',
 tempat_lahir='$tempat_lahir',
 tanggal_lahir='$tanggal_lahir',
 alamat='$alamat',
@@ -79,21 +72,19 @@ id_jenis_kelamin='$jk',
 id_agama='$agama',
 id_status_perkawinan='$status',
 id_gol='$golongan',
+id_jabatan='$jabatan',
 id_unit_kerja='$unit'
 $updateFoto
 WHERE nip='$nip'
 ");
 
-
-/* ========================= */
 /* SIMPAN RIWAYAT GOLONGAN */
-/* ========================= */
 if(!empty($golongan) && !empty($tmt_gol)){
     mysqli_query($conn,"INSERT INTO riwayat_golongan
     (
     nip,
     id_gol,
-    tmt
+    tmt_golongan
     )
     VALUES
     (
@@ -103,30 +94,38 @@ if(!empty($golongan) && !empty($tmt_gol)){
     )");
 }
 
+/* HAPUS DATA PEGAWAI */
+if(isset($_POST['hapus'])){
 
-/* ========================= */
+    $nip = $_POST['nip'];
+
+    mysqli_query($conn,"DELETE FROM pegawai WHERE nip='$nip'");
+
+    exit;
+}
+
 /* SIMPAN RIWAYAT JABATAN */
-/* ========================= */
-
 if(!empty($jabatan) && !empty($tmt_jab)){
+
+    $id_unit_kerja = $_POST['id_unit_kerja'];
+    
     mysqli_query($conn,"INSERT INTO riwayat_jabatan
     (
     nip,
     id_jabatan,
-    tmt
+    id_unit_kerja,
+    tmt_jabatan
     )
     VALUES
     (
     '$nip',
     '$jabatan',
+    '$id_unit_kerja',
     '$tmt_jab'
     )");
-    }
 
-/* ========================= */
-/* KEMBALI KE HALAMAN PROFIL */
-/* ========================= */
+}
 
-header("location:Identitas_User.php");
+header("location:Edit_Identitas_User.php");
 
 ?>

@@ -12,88 +12,87 @@ $nip = $_SESSION['nip'];
 $query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
 $data = mysqli_fetch_assoc($query);
 
+/* TAMBAH RIWAYAT SKP */
+if(isset($_POST['tambah'])){
 
-/* =========================
-   TAMBAH RIWAYAT GOLONGAN
-   ========================= */
+    $tahun            = $_POST['tahun'];
+    $rerata_nilai     = $_POST['rerata_nilai'];
+    $id_predikat_skp  = $_POST['id_predikat_skp'];
 
-   if(isset($_POST['tambah'])){
-
-    $id_gol = $_POST['id_gol'];
-    $tmt    = $_POST['tmt'];
-
-    if(!empty($id_gol) && !empty($tmt)){
+    if(!empty($tahun) && !empty($rerata_nilai) && !empty($id_predikat_skp)){
 
         $cek = mysqli_query($conn,"
-        SELECT * FROM riwayat_golongan 
+        SELECT * FROM riwayat_skp
         WHERE nip='$nip'
-        AND id_gol='$id_gol'
-        AND tmt='$tmt'
+        AND tahun='$tahun'
         ");
 
         if(mysqli_num_rows($cek)==0){
 
             mysqli_query($conn,"
-            INSERT INTO riwayat_golongan
+            INSERT INTO riwayat_skp
             (
             nip,
-            id_gol,
-            tmt
+            tahun,
+            rerata_nilai,
+            id_predikat_skp
             )
             VALUES
             (
             '$nip',
-            '$id_gol',
-            '$tmt'
+            '$tahun',
+            '$rerata_nilai',
+            '$id_predikat_skp'
             )
             ");
 
-            header("Location: Edit_Riwayat_Golongan_User.php");
+            header("Location: Edit_Riwayat_SKP_User.php");
             exit;
         }
     }
 }
-/* =========================
-   UBAH RIWAYAT GOLONGAN
-   ========================= */
 
-   if(isset($_POST['ubah'])){
+/* UBAH RIWAYAT SKP */
+if(isset($_POST['ubah'])){
 
-    $id     = $_POST['id_riwayat_gol'];
-    $id_gol = $_POST['id_gol'];
-    $tmt    = $_POST['tmt'];
+    $id               = $_POST['id_riwayat_skp'];
+    $tahun            = $_POST['tahun'];
+    $rerata_nilai     = $_POST['rerata_nilai'];
+    $id_predikat_skp  = $_POST['id_predikat_skp'];
 
-    if(!empty($id) && !empty($id_gol) && !empty($tmt)){
+    if(!empty($id) && !empty($tahun) && !empty($rerata_nilai) && !empty($id_predikat_skp)){
 
         mysqli_query($conn,"
-        UPDATE riwayat_golongan
+        UPDATE riwayat_skp
         SET
-        id_gol='$id_gol',
-        tmt='$tmt'
-        WHERE id_riwayat_gol='$id'
+        tahun='$tahun',
+        rerata_nilai='$rerata_nilai',
+        id_predikat_skp='$id_predikat_skp'
+        WHERE id_riwayat_skp='$id'
         ");
 
-        header("Location: Edit_Riwayat_Golongan_User.php");
+        header("Location: Edit_Riwayat_SKP_User.php");
         exit;
     }
 }
+
+/* HAPUS */
 if(isset($_POST['hapus'])){
 
-  $id = $_POST['id_riwayat_gol'];
-  
-  mysqli_query($conn,"
-  DELETE FROM riwayat_golongan
-  WHERE id_riwayat_gol='$id'
-  ");
-  
-  }
+    $id = $_POST['id_riwayat_skp'];
+
+    mysqli_query($conn,"
+    DELETE FROM riwayat_skp
+    WHERE id_riwayat_skp='$id'
+    ");
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Edit Data – Riwayat Golongan</title>
+<title>Edit Data – Riwayat SKP</title>
 <link rel="stylesheet" href="style.css" />
 <style>
 .sidebar-edit {
@@ -160,7 +159,7 @@ margin-top:30px;
 .bagian-identitas{
 display:flex;
 justify-content:center;
-margin-top: 20px;
+margin-top: 60px;
 }
 </style>
 </head>
@@ -186,13 +185,13 @@ margin-top: 20px;
 
     <div class="submenu" id="submenuEditData">
         <a href="Edit_Identitas_User.php" class="item-submenu">Identitas</a>
-        <a href="Edit_Riwayat_Golongan_User.php" class="item-submenu aktif">Riwayat Golongan</a>
+        <a href="Edit_Riwayat_Golongan_User.php" class="item-submenu">Riwayat Golongan</a>
         <a href="Edit_Riwayat_Jabatan_User.php" class="item-submenu">Riwayat Jabatan</a>
         <a href="Edit_Riwayat_Pendidikan_User.php" class="item-submenu">Riwayat Pendidikan</a>
         <a href="Edit_Riwayat_Diklat_User.php" class="item-submenu">Riwayat Diklat</a>
         <a href="Edit_Riwayat_Keluarga_User.php" class="item-submenu">Riwayat Keluarga</a>
         <a href="Edit_Riwayat_Kehormatan_User.php" class="item-submenu">Riwayat Kehormatan</a>
-        <a href="Edit_Riwayat_SKP_User.php" class="item-submenu">Riwayat SKP</a>
+        <a href="Edit_Riwayat_SKP_User.php" class="item-submenu aktif">Riwayat SKP</a>
     </div>
 
     <hr class="garis-menu" />
@@ -205,7 +204,7 @@ margin-top: 20px;
 
 <!-- KONTEN -->
 <main class="konten">
-    <h2>Riwayat Golongan</h2>
+    <h2>Riwayat SKP</h2>
      <!-- <button class="tombol-keluar">Log Out</button> -->
      <div class="user-profile" id="userProfile">
         <div class="user-info">
@@ -222,29 +221,15 @@ margin-top: 20px;
         </div>
       </div>
       <div class="bagian-identitas">
-      <div class="form-edit">
+        <!-- FORM -->
         <form method="POST">
-        <input type="hidden" name="id_riwayat_gol" id="id_riwayat_gol">
-        <div class="baris-form" style="grid-template-columns:120px 500px 120px">
-        <label>Golongan Pangkat</label>
+        <input type="hidden" name="id_riwayat_skp" id="id_riwayat_skp">
 
-        <select name="id_gol" style="height:30px; border:1px solid #888;">
+        <!-- BARIS TAHUN -->
+        <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+        <label>Tahun</label>
 
-        <option value="">Pilih Golongan</option>
-
-        <?php
-
-        $qGol = mysqli_query($conn,"SELECT * FROM master_golongan ORDER BY kode_gol");
-
-        while($g = mysqli_fetch_assoc($qGol)){
-
-        echo "<option value='$g[id_gol]'>$g[kode_gol] - $g[nama_pangkat]</option>";
-
-        }
-
-        ?>
-
-        </select>
+        <input type="number" name="tahun">
 
         <button type="submit" name="tambah" class="tombol-tambah btn-kecil">
         TAMBAH
@@ -252,70 +237,101 @@ margin-top: 20px;
         </div>
 
 
-        <div class="baris-form" style="grid-template-columns:120px 500px 120px">
+        <!-- BARIS RATA RATA -->
+        <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+        <label>Rata-Rata</label>
 
-        <label>TMT</label>
+        <input type="number" name="rerata_nilai" step="0.01">
 
-        <input type="date" name="tmt">
-
-        <div class="aksi-vertikal">
         <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
         UBAH
         </button>
+        </div>
+
+
+        <!-- BARIS PREDIKAT -->
+        <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+        <label>Predikat</label>
+
+        <select name="id_predikat_skp" style="height:30px; border:1px solid #888;">
+
+        <option value="">Pilih Predikat</option>
+
+        <?php
+        $qPredikat = mysqli_query($conn,"SELECT * FROM master_predikat_skp");
+
+        while($p = mysqli_fetch_assoc($qPredikat)){
+        echo "<option value='".$p['id_predikat_skp']."'>".$p['predikat_skp']."</option>";
+        }
+        ?>
+        </select>
+
+        <div class="aksi-vertikal">
+
         <button type="submit" name="hapus" class="tombol-hapus btn-kecil">
-          HAPUS
-          </button>
-        </div>
+        HAPUS
+        </button>
 
         </div>
 
-        </form>
+        </div>
 
 
-        <table class="tabel-riwayat" border="1" cellpadding="5">
+        <!-- TABEL -->
+        <table class="tabel-riwayat">
 
         <thead>
         <tr>
-        <th>Golongan Pangkat</th>
-        <th>TMT</th>
+        <th>Tahun</th>
+        <th>Rata-Rata</th>
+        <th>Predikat</th>
         </tr>
         </thead>
 
         <tbody>
+
         <?php
-          $data = mysqli_query($conn,"
-          SELECT rg.*, mg.kode_gol, mg.nama_pangkat
-          FROM riwayat_golongan rg
-          JOIN master_golongan mg ON rg.id_gol = mg.id_gol
-          WHERE rg.nip='$nip'
-          ORDER BY rg.tmt DESC
-          ");
+        $data = mysqli_query($conn,"
+        SELECT rs.*, mp.predikat_skp
+        FROM riwayat_skp rs
+        JOIN master_predikat_skp mp
+        ON rs.id_predikat_skp = mp.id_predikat_skp
+        WHERE rs.nip='$nip'
+        ORDER BY rs.tahun DESC
+        ");
 
-          while($row = mysqli_fetch_assoc($data)){
+        while($row = mysqli_fetch_assoc($data)){
 
-            echo "<tr onclick=\"pilihData('".$row['id_riwayat_gol']."','".$row['id_gol']."','".$row['tmt']."')\">
-            <td>".$row['kode_gol']." - ".$row['nama_pangkat']."</td>
-            <td>".date('d-m-Y', strtotime($row['tmt']))."</td>
-            </tr>";
-            
-            }
+        echo "<tr onclick=\"pilihData('".$row['id_riwayat_skp']."','".$row['tahun']."','".$row['rerata_nilai']."','".$row['id_predikat_skp']."')\">
 
+        <td>".$row['tahun']."</td>
+        <td>".$row['rerata_nilai']."</td>
+        <td>".$row['predikat_skp']."</td>
+
+        </tr>";
+
+        }
         ?>
+
         </tbody>
         </table>
 
+        </form>
         </div>
+
+    
+        </div>
+    </div>
 
 </main>
 <script src="script.js"></script>
-
 <script>
-function pilihData(id,id_gol,tmt){
+function pilihData(id,tahun,rerata,id_predikat){
 
-document.getElementById("id_riwayat_gol").value = id;
-document.querySelector("select[name='id_gol']").value = id_gol;
-document.querySelector("input[name='tmt']").value = tmt;
-
+document.getElementById("id_riwayat_skp").value = id;
+document.querySelector("input[name='tahun']").value = tahun;
+document.querySelector("input[name='rerata_nilai']").value = rerata;
+document.querySelector("select[name='id_predikat_skp']").value = id_predikat;
 }
 </script>
 

@@ -225,6 +225,7 @@ body {
     width: 100%;
 }
 
+
 /* new */
 .form-vertikal .baris-form {
     display: flex;
@@ -374,5 +375,7 @@ body {
       .user-profile.active .dropdown-menu {
         display: block;
       }
+
+
 
 

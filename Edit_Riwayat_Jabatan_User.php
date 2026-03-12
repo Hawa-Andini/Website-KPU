@@ -16,15 +16,15 @@ $data = mysqli_fetch_assoc($query);
    if(isset($_POST['tambah'])){
 
     $id_jabatan = $_POST['id_jabatan'];
-    $tmt        = $_POST['tmt'];
+    $tmt_jabatan       = $_POST['tmt_jabatan  '];
     
-    if(!empty($id_jabatan) && !empty($tmt)){
+    if(!empty($id_jabatan) && !empty($tmt_jabatan  )){
 
         $cek = mysqli_query($conn,"
         SELECT * FROM riwayat_jabatan
         WHERE nip='$nip'
         AND id_jabatan='$id_jabatan'
-        AND tmt='$tmt'
+        AND tmt_jabatan  ='$tmt_jabatan  '
         ");
 
         if(mysqli_num_rows($cek)==0){
@@ -35,14 +35,14 @@ $data = mysqli_fetch_assoc($query);
             nip,
             id_jabatan,
             id_unit_kerja,
-            tmt
+            tmt_jabatan  
             )
             VALUES
             (
             '$nip',
             '$id_jabatan',
             '1',
-            '$tmt'
+            '$tmt_jabatan  '
             )
             ");
 
@@ -55,15 +55,15 @@ $data = mysqli_fetch_assoc($query);
    if(isset($_POST['ubah'])){
     $id         = $_POST['id_riwayat_jabatan'];
     $id_jabatan = $_POST['id_jabatan'];
-    $tmt        = $_POST['tmt'];
+    $tmt_jabatan = $_POST['tmt_jabatan  '];
     
-    if(!empty($id) && !empty($id_jabatan) && !empty($tmt)){
+    if(!empty($id) && !empty($id_jabatan) && !empty($tmt_jabatan  )){
     
     mysqli_query($conn,"
     UPDATE riwayat_jabatan
     SET
     id_jabatan='$id_jabatan',
-    tmt='$tmt'
+    tmt_jabatan  ='$tmt_jabatan  '
     WHERE id_riwayat_jabatan='$id'
     ");
 
@@ -242,7 +242,7 @@ margin-top: 20px;
             <!-- BARIS TMT -->
             <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
                 <label>TMT</label>
-                <input type="date" name="tmt">
+                <input type="date" name="tmt_jabatan">
 
                 <div class="aksi-vertikal">
                     <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
@@ -273,14 +273,14 @@ margin-top: 20px;
             FROM riwayat_jabatan rg
             JOIN master_jabatan mg ON rg.id_jabatan = mg.id_jabatan
             WHERE rg.nip='$nip'
-            ORDER BY rg.tmt DESC
+            ORDER BY rg.tmt_jabatan   DESC
             ");
 
             while($row = mysqli_fetch_assoc($data)){
 
-                echo "<tr onclick=\"pilihData('".$row['id_riwayat_jabatan']."','".$row['id_jabatan']."','".$row['tmt']."')\">
+                echo "<tr onclick=\"pilihData('".$row['id_riwayat_jabatan']."','".$row['id_jabatan']."','".$row['tmt_jabatan']."')\">
                 <td>".$row['jenis_jabatan']." - ".$row['nama_jabatan']."</td>
-                <td>".date('d-m-Y', strtotime($row['tmt']))."</td>
+                <td>".date('d-m-Y', strtotime($row['tmt_jabatan']))."</td>
                 </tr>";
                 
                 }
@@ -297,11 +297,11 @@ margin-top: 20px;
 </main>
 <script src="script.js"></script>
 <script>
-function pilihData(id,id_jabatan,tmt){
+function pilihData(id,id_jabatan,tmt_jabatan){
 
 document.getElementById("id_riwayat_jabatan").value = id;
 document.querySelector("select[name='id_jabatan']").value = id_jabatan;
-document.querySelector("input[name='tmt']").value = tmt;
+document.querySelector("input[name='tmt_jabatan']").value = tmt_jabatan  ;
 
 }
 </script>

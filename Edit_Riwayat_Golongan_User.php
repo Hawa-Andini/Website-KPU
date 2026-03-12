@@ -20,15 +20,15 @@ $data = mysqli_fetch_assoc($query);
    if(isset($_POST['tambah'])){
 
     $id_gol = $_POST['id_gol'];
-    $tmt    = $_POST['tmt'];
+    $tmt_golongan    = $_POST['tmt_golongan'];
 
-    if(!empty($id_gol) && !empty($tmt)){
+    if(!empty($id_gol) && !empty($tmt_golongan)){
 
         $cek = mysqli_query($conn,"
         SELECT * FROM riwayat_golongan 
         WHERE nip='$nip'
         AND id_gol='$id_gol'
-        AND tmt='$tmt'
+        AND tmt_golongan='$tmt_golongan'
         ");
 
         if(mysqli_num_rows($cek)==0){
@@ -38,13 +38,13 @@ $data = mysqli_fetch_assoc($query);
             (
             nip,
             id_gol,
-            tmt
+            tmt_golongan
             )
             VALUES
             (
             '$nip',
             '$id_gol',
-            '$tmt'
+            '$tmt_golongan'
             )
             ");
 
@@ -61,15 +61,15 @@ $data = mysqli_fetch_assoc($query);
 
     $id     = $_POST['id_riwayat_gol'];
     $id_gol = $_POST['id_gol'];
-    $tmt    = $_POST['tmt'];
+    $tmt_golongan    = $_POST['tmt_golongan'];
 
-    if(!empty($id) && !empty($id_gol) && !empty($tmt)){
+    if(!empty($id) && !empty($id_gol) && !empty($tmt_golongan)){
 
         mysqli_query($conn,"
         UPDATE riwayat_golongan
         SET
         id_gol='$id_gol',
-        tmt='$tmt'
+        tmt_golongan='$tmt_golongan'
         WHERE id_riwayat_gol='$id'
         ");
 
@@ -256,7 +256,7 @@ margin-top: 20px;
 
         <label>TMT</label>
 
-        <input type="date" name="tmt">
+        <input type="date" name="tmt_golongan">
 
         <div class="aksi-vertikal">
         <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
@@ -288,14 +288,14 @@ margin-top: 20px;
           FROM riwayat_golongan rg
           JOIN master_golongan mg ON rg.id_gol = mg.id_gol
           WHERE rg.nip='$nip'
-          ORDER BY rg.tmt DESC
+          ORDER BY rg.tmt_golongan DESC
           ");
 
           while($row = mysqli_fetch_assoc($data)){
 
-            echo "<tr onclick=\"pilihData('".$row['id_riwayat_gol']."','".$row['id_gol']."','".$row['tmt']."')\">
+            echo "<tr onclick=\"pilihData('".$row['id_riwayat_gol']."','".$row['id_gol']."','".$row['tmt_golongan']."')\">
             <td>".$row['kode_gol']." - ".$row['nama_pangkat']."</td>
-            <td>".date('d-m-Y', strtotime($row['tmt']))."</td>
+            <td>".date('d-m-Y', strtotime($row['tmt_golongan']))."</td>
             </tr>";
             
             }
@@ -310,11 +310,11 @@ margin-top: 20px;
 <script src="script.js"></script>
 
 <script>
-function pilihData(id,id_gol,tmt){
+function pilihData(id,id_gol,tmt_golongan){
 
 document.getElementById("id_riwayat_gol").value = id;
 document.querySelector("select[name='id_gol']").value = id_gol;
-document.querySelector("input[name='tmt']").value = tmt;
+document.querySelector("input[name='tmt_golongan']").value = tmt_golongan;
 
 }
 </script>

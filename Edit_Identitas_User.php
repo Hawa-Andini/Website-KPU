@@ -197,9 +197,9 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
             <div class="user-icon">👤</div>
 
             <div class="user-text">
-                <div class="user-name">
-                    <?= ucfirst($username) ?>
-                </div>
+            <div class="user-name">
+            <?= $data['nama_pegawai'] ?>
+            </div>
             </div>
         </div>
 

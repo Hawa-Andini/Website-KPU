@@ -39,6 +39,7 @@ $jk       = mysqli_query($conn,"SELECT * FROM master_jenis_kelamin");
 $agama    = mysqli_query($conn,"SELECT * FROM master_agama");
 $status   = mysqli_query($conn,"SELECT * FROM master_status_perkawinan");
 $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
+$kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_kabupaten ASC");
 ?>
 
 <!DOCTYPE html>
@@ -195,7 +196,6 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
      <div class="user-profile" id="userProfile">
         <div class="user-info">
             <div class="user-icon">👤</div>
-
             <div class="user-text">
             <div class="user-name">
             <?= $data['nama_pegawai'] ?>
@@ -204,12 +204,12 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
         </div>
 
         <div class="dropdown-menu" id="dropdownMenu">
-            <a href="#">Beranda</a>
-            <a href="logout.php">Keluar</a>
+            <a href="Identitas_User.php">Beranda</a>
+            <a href="Logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+            Keluar
+            </a>
         </div>
-
-        </div>
-
+    </div>
       <form method="POST" action="Simpan_Identitas.php" enctype="multipart/form-data">
 
         <div class="bagian-identitas">
@@ -302,10 +302,26 @@ $unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
         <label>Tempat & Tanggal Lahir</label>
 
         <div class="input-gabung">
-        <input type="text" name="tempat_lahir" value="<?= $data['tempat_lahir'] ?>">
-        <input type="date" name="tanggal_lahir" value="<?= $data['tanggal_lahir'] ?>">
-        </div>
 
+        <select name="tempat_lahir">
+        <option value="">-- Pilih Kabupaten --</option>
+
+        <?php while($row = mysqli_fetch_assoc($kabupaten)) { ?>
+
+        <option value="<?= $row['nama_kabupaten']; ?>"
+        <?= ($row['nama_kabupaten'] == $data['tempat_lahir']) ? 'selected' : ''; ?>>
+
+        <?= $row['nama_kabupaten']; ?>
+
+        </option>
+
+        <?php } ?>
+
+        </select>
+
+        <input type="date" name="tanggal_lahir" value="<?= $data['tanggal_lahir'] ?>">
+
+        </div>
         </div>
 
         <div class="baris-edit">

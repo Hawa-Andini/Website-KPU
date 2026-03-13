@@ -85,3 +85,10 @@ tabs.forEach(tab => {
         });
     }
 });
+function logoutConfirm(){
+
+    if(confirm("Apakah Anda yakin ingin keluar?")){
+        window.location.href = "Logout.php";
+    }
+    
+}

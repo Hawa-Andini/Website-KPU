@@ -1,27 +1,45 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "profil_kepegawaian";
+session_start();   
+include "koneksi.php";
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
+if(!isset($_SESSION['nip'])){
+    header("location:Login.php");
+    exit;
 }
 
-// Ganti pakai NIP karena itu primary key
-$nip = "123456789012345678"; // isi sesuai data di database
+$username = $_SESSION['username'] ?? '';
+$nip = $_SESSION['nip'];
 
-$query = "SELECT * FROM pegawai WHERE nip = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("s", $nip);
-$stmt->execute();
-$result = $stmt->get_result();
-$data = $result->fetch_assoc();
+$query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
+$data = mysqli_fetch_assoc($query);
 
-$stmt->close();
-$conn->close();
+$riwayat_gol = mysqli_query($conn,"
+SELECT *
+FROM riwayat_golongan
+WHERE nip='$nip'
+ORDER BY id_riwayat_gol DESC
+LIMIT 1
+");
+
+$data_gol = mysqli_fetch_assoc($riwayat_gol) ?? [];
+
+$riwayat_jabatan = mysqli_query($conn,"
+SELECT *
+FROM riwayat_jabatan
+WHERE nip='$nip'
+ORDER BY id_riwayat_jabatan DESC
+LIMIT 1
+");
+
+$data_jabatan = mysqli_fetch_assoc($riwayat_jabatan) ?? [];
+
+$golongan = mysqli_query($conn,"SELECT * FROM master_golongan");
+$jabatan  = mysqli_query($conn,"SELECT * FROM master_jabatan");
+$jk       = mysqli_query($conn,"SELECT * FROM master_jenis_kelamin");
+$agama    = mysqli_query($conn,"SELECT * FROM master_agama");
+$status   = mysqli_query($conn,"SELECT * FROM master_status_perkawinan");
+$unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
+$kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_kabupaten ASC");
 ?>
 
 <!DOCTYPE html>
@@ -208,23 +226,23 @@ $conn->close();
 
     <div class="item-menu" id="menuEditData">
       Edit Data
-      <span class="panah-menu" id="panahEditData">▼</span>
+    <span class="panah-menu" id="panahEditData">▼</span>
   </div>
 
   <div class="submenu" id="submenuEditData">
       <a href="Edit_Identitas_User.php" class="item-submenu">Identitas</a>
-      <a href="Edit_Riwayat_Golongan_User.html" class="item-submenu">Riwayat Golongan</a>
-      <a href="Edit_Riwayat_Jabatan_User.html" class="item-submenu">Riwayat Jabatan</a>
-      <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>
-      <a href="Edit_Riwayat_Diklat_User.html" class="item-submenu">Riwayat Diklat</a>
-      <a href="Edit_Riwayat_Keluarga_User.html" class="item-submenu">Riwayat Keluarga</a>
-      <a href="Edit_Riwayat_Kehormatan_User.html" class="item-submenu">Riwayat Kehormatan</a>
-      <a href="Edit_Riwayat_SKP_User.html" class="item-submenu">Riwayat SKP</a>
+      <a href="Edit_Riwayat_Golongan_User.php" class="item-submenu">Riwayat Golongan</a>
+      <a href="Edit_Riwayat_Jabatan_User.php" class="item-submenu">Riwayat Jabatan</a>
+      <a href="Edit_Riwayat_Pendidikan_User.php" class="item-submenu">Riwayat Pendidikan</a>
+      <a href="Edit_Riwayat_Diklat_User.php" class="item-submenu">Riwayat Diklat</a>
+      <a href="Edit_Riwayat_Keluarga_User.php" class="item-submenu">Riwayat Keluarga</a>
+      <a href="Edit_Riwayat_Kehormatan_User.php" class="item-submenu">Riwayat Kehormatan</a>
+      <a href="Edit_Riwayat_SKP_User.php" class="item-submenu">Riwayat SKP</a>
   </div>
 
   <hr class="garis-menu" />
 
-  <a href="Pengaturan_Akun_User.html" class="item-menu">Pengaturan Akun</a>
+  <a href="Pengaturan_Akun_User.php" class="item-menu">Pengaturan Akun</a>
 
     <hr class="garis-menu" />
   </aside>
@@ -239,14 +257,15 @@ $conn->close();
               <div class="user-profile" id="userProfile">
                 <div class="user-info">
                   <div class="user-icon">👤</div>
-                  <div class="user-text">
-                    <div class="user-name">TU SEKRETARIS KPU</div>
+                  <div class="user-name">
+                  <?= $data['nama_pegawai'] ?>
                   </div>
                 </div>
 
-                <div class="dropdown-menu">
-                  <a href="#">Beranda</a>
-                  <a href="#">Keluar</a>
+                <div class="dropdown-menu" id="dropdownMenu">
+                  <a href="Logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+                  Keluar
+                  </a>
                 </div>
               </div>
 
@@ -278,14 +297,14 @@ $conn->close();
         </div>
 
         <div class="tab-menu">
-    <a href="Identitas_User.html" class="tab aktif">Identitas</a>
-    <a href="Riwayat_Golongan_User.html" class="tab">Riwayat Golongan</a>
-    <a href="Riwayat_Jabatan_User.html" class="tab">Riwayat Jabatan</a>
-    <a href="Riwayat_Pendidikan_User.html" class="tab">Riwayat Pendidikan</a>
-    <a href="Riwayat_Diklat_User.html" class="tab">Riwayat Diklat</a>
-    <a href="Riwayat_Keluarga_User.html" class="tab">Riwayat Keluarga</a>
-    <a href="Riwayat_Kehormatan_User.html" class="tab">Riwayat Kehormatan</a>
-    <a href="Riwayat_SKP_User.html" class="tab">Riwayat SKP</a>
+    <a href="Identitas_User.php" class="tab aktif">Identitas</a>
+    <a href="Riwayat_Golongan_User.php" class="tab">Riwayat Golongan</a>
+    <a href="Riwayat_Jabatan_User.php" class="tab">Riwayat Jabatan</a>
+    <a href="Riwayat_Pendidikan_User.php" class="tab">Riwayat Pendidikan</a>
+    <a href="Riwayat_Diklat_User.php" class="tab">Riwayat Diklat</a>
+    <a href="Riwayat_Keluarga_User.php" class="tab">Riwayat Keluarga</a>
+    <a href="Riwayat_Kehormatan_User.php" class="tab">Riwayat Kehormatan</a>
+    <a href="Riwayat_SKP_User.php" class="tab">Riwayat SKP</a>
   </div>
 
   <section class="form-identitas">

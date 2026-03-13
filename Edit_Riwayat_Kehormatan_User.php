@@ -203,18 +203,22 @@ margin-top: 60px;
      <!-- <button class="tombol-keluar">Log Out</button> -->
      <div class="user-profile" id="userProfile">
         <div class="user-info">
-          <div class="user-icon">👤</div>
-          <div class="user-text">
-            <div class="user-name">TU SEKRETARIS KPU</div>
-            <!-- <div class="user-role">Tata Usaha</div> -->
-          </div>
+            <div class="user-icon">👤</div>
+            <div class="user-text">
+            <div class="user-name">
+            <?= $data['nama_pegawai'] ?>
+            </div>
+            </div>
         </div>
 
         <div class="dropdown-menu" id="dropdownMenu">
-          <a href="#">Beranda</a>
-          <a href="#">Keluar</a>
+            <a href="Identitas_User.php">Beranda</a>
+            <a href="Logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+            Keluar
+            </a>
         </div>
-      </div>
+
+        </div>
       <div class="bagian-identitas">
         <!-- FORM -->
         <form method="POST">

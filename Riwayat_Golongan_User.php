@@ -9,7 +9,54 @@ if(!isset($_SESSION['nip'])){
 
 $nip = $_SESSION['nip'];
 
-$query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
+$query = mysqli_query($conn,"
+SELECT 
+p.*,
+jk.jenis_kelamin,
+a.agama,
+s.status_perkawinan,
+u.unit_kerja
+FROM pegawai p
+LEFT JOIN master_jenis_kelamin jk ON p.id_jenis_kelamin = jk.id_jenis_kelamin
+LEFT JOIN master_agama a ON p.id_agama = a.id_agama
+LEFT JOIN master_status_perkawinan s ON p.id_status_perkawinan = s.id_status_perkawinan
+LEFT JOIN master_divisi u ON p.id_unit_kerja = u.id_unit_kerja
+WHERE p.nip='$nip'
+");
+
+$data = mysqli_fetch_assoc($query);
+
+$riwayat_gol = mysqli_query($conn,"
+SELECT g.nama_pangkat, g.kode_gol, r.tmt_golongan
+FROM riwayat_golongan r
+JOIN master_golongan g ON r.id_gol = g.id_gol
+WHERE r.nip='$nip'
+ORDER BY r.id_riwayat_gol DESC
+LIMIT 1
+");
+$data_gol = mysqli_fetch_assoc($riwayat_gol);
+
+$riwayat_jabatan = mysqli_query($conn,"
+SELECT j.nama_jabatan, j.jenis_jabatan, r.tmt_jabatan
+FROM riwayat_jabatan r
+JOIN master_jabatan j ON r.id_jabatan = j.id_jabatan
+WHERE r.nip='$nip'
+ORDER BY r.id_riwayat_jabatan DESC
+LIMIT 1
+");
+
+$data_jabatan = mysqli_fetch_assoc($riwayat_jabatan);
+
+$riwayat_pendidikan = mysqli_query($conn,"
+SELECT jp.jenjang_pend, r.institusi, r.tahun_lulus
+FROM riwayat_pendidikan r
+JOIN master_jenjang_pend jp ON r.id_jenjang_pend = jp.id_jenjang_pend
+WHERE r.nip='$nip'
+ORDER BY r.id_riwayat_pend DESC
+LIMIT 1
+");
+
+$data_pendidikan = mysqli_fetch_assoc($riwayat_pendidikan);
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +66,7 @@ $query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
     <title>Edit Data – Riwayat Golongan</title>
     <link rel="stylesheet" href="style.css">
     <style>
-              /* HEADER PROFIL */
+
 .header-profil {
   position: relative;
   margin-bottom: 30px;
@@ -200,19 +247,19 @@ $query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
   </div>
 
   <div class="submenu" id="submenuEditData">
-      <a href="Edit_Identitas_User.html" class="item-submenu">Identitas</a>
-      <a href="Edit_Riwayat_Golongan_User.html" class="item-submenu">Riwayat Golongan</a>
-      <a href="Edit_Riwayat_Jabatan_User.html" class="item-submenu">Riwayat Jabatan</a>
-      <a href="Edit_Riwayat_Pendidikan_User.html" class="item-submenu">Riwayat Pendidikan</a>
-      <a href="Edit_Riwayat_Diklat_User.html" class="item-submenu">Riwayat Diklat</a>
-      <a href="Edit_Riwayat_Keluarga_User.html" class="item-submenu">Riwayat Keluarga</a>
-      <a href="Edit_Riwayat_Kehormatan_User.html" class="item-submenu">Riwayat Kehormatan</a>
-      <a href="Edit_Riwayat_SKP_User.html" class="item-submenu">Riwayat SKP</a>
+      <a href="Edit_Identitas_User.php" class="item-submenu">Identitas</a>
+      <a href="Edit_Riwayat_Golongan_User.php" class="item-submenu">Riwayat Golongan</a>
+      <a href="Edit_Riwayat_Jabatan_User.php" class="item-submenu">Riwayat Jabatan</a>
+      <a href="Edit_Riwayat_Pendidikan_User.php" class="item-submenu">Riwayat Pendidikan</a>
+      <a href="Edit_Riwayat_Diklat_User.php" class="item-submenu">Riwayat Diklat</a>
+      <a href="Edit_Riwayat_Keluarga_User.php" class="item-submenu">Riwayat Keluarga</a>
+      <a href="Edit_Riwayat_Kehormatan_User.php" class="item-submenu">Riwayat Kehormatan</a>
+      <a href="Edit_Riwayat_SKP_User.php" class="item-submenu">Riwayat SKP</a>
   </div>
 
   <hr class="garis-menu" />
 
-  <a href="Pengaturan_Akun_User.html" class="item-menu">Pengaturan Akun</a>
+  <a href="Pengaturan_Akun_User.php" class="item-menu">Pengaturan Akun</a>
 
     <hr class="garis-menu" />
   </aside>
@@ -227,8 +274,8 @@ $query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
               <div class="user-profile" id="userProfile">
                 <div class="user-info">
                   <div class="user-icon">👤</div>
-                  <div class="user-text">
-                    <div class="user-name">TU SEKRETARIS KPU</div>
+                  <div class="user-name">
+                  <?= $data['nama_pegawai'] ?>
                   </div>
                 </div>
 
@@ -247,13 +294,21 @@ $query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
               <div class="kotak-foto-profil"></div>
           
             <!-- INFO -->
-              <div class="info-profil">
-               <h2>Hawa Andini Hadi</h2>
-                <p>
-                  [Nama] adalah [status/jabatan saat ini] di [unit kerja/instansi].
-                  Memiliki riwayat jabatan sejak [tahun mulai] dengan pangkat/
-                  golongan terakhir [golongan terakhir].
-                  Pendidikan terakhir [jenjang] dari [institusi].
+            <div class="info-profil">
+               <h2><?= $data['nama_pegawai'] ?></h2>
+               <p>
+                <?= $data['nama_pegawai'] ?> adalah 
+                <?= $data_jabatan['nama_jabatan'] ?? '-' ?> di 
+                <?= $data['unit_kerja'] ?>.
+
+                Memiliki riwayat jabatan sejak 
+                <?= isset($data_jabatan['tmt_jabatan']) ? date('Y', strtotime($data_jabatan['tmt_jabatan'])) : '-' ?> 
+                dengan pangkat/golongan terakhir 
+                <?= $data_gol['nama_pangkat'] ?? '-' ?> (<?= $data_gol['kode_gol'] ?? '-' ?>).
+
+                Pendidikan terakhir 
+                <?= $data_pendidikan['jenjang_pend'] ?? '-' ?> dari 
+                <?= $data_pendidikan['institusi'] ?? '-' ?> (<?= $data_pendidikan['tahun_lulus'] ?? '-' ?>).
                 </p>
                 </div>
           
@@ -266,39 +321,50 @@ $query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
         </div>
 
         <div class="tab-menu">
-    <a href="Identitas_User.html" class="tab">Identitas</a>
-    <a href="Riwayat_Golongan_User.html" class="tab aktif">Riwayat Golongan</a>
-    <a href="Riwayat_Jabatan_User.html" class="tab">Riwayat Jabatan</a>
-    <a href="Riwayat_Pendidikan_User.html" class="tab">Riwayat Pendidikan</a>
-    <a href="Riwayat_Diklat_User.html" class="tab">Riwayat Diklat</a>
-    <a href="Riwayat_Keluarga_User.html" class="tab">Riwayat Keluarga</a>
-    <a href="Riwayat_Kehormatan_User.html" class="tab">Riwayat Kehormatan</a>
-    <a href="Riwayat_SKP_User.html" class="tab">Riwayat SKP</a>
+    <a href="Identitas_User.php" class="tab">Identitas</a>
+    <a href="Riwayat_Golongan_User.php" class="tab aktif">Riwayat Golongan</a>
+    <a href="Riwayat_Jabatan_User.php" class="tab">Riwayat Jabatan</a>
+    <a href="Riwayat_Pendidikan_User.php" class="tab">Riwayat Pendidikan</a>
+    <a href="Riwayat_Diklat_User.php" class="tab">Riwayat Diklat</a>
+    <a href="Riwayat_Keluarga_User.php" class="tab">Riwayat Keluarga</a>
+    <a href="Riwayat_Kehormatan_User.php" class="tab">Riwayat Kehormatan</a>
+    <a href="Riwayat_SKP_User.php" class="tab">Riwayat SKP</a>
   </div>
 
     <div class="pembungkus-form">
         <div class="form">
             <!-- TABEL -->
-            <table class="tabel-riwayat">
-                <thead>
-                    <tr>
-                        <th>Golongan Pangkat</th>
-                        <th>TMT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>III/a</td>
-                        <td>01-01-2020</td>
-                    </tr>
-                    <tr>
-                        <td>III/b</td>
-                        <td>01-01-2023</td>
-                    </tr>
-                </tbody>
-            </table>
+            <table class="tabel-riwayat" border="1" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Golongan Pangkat</th>
+                    <th>TMT</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <?php
+                $stmt = $conn->prepare("
+                SELECT rg.*, mg.kode_gol, mg.nama_pangkat
+                FROM riwayat_golongan rg
+                JOIN master_golongan mg ON rg.id_gol = mg.id_gol
+                WHERE rg.nip=?
+                ORDER BY rg.tmt_golongan DESC
+            ");
+            $stmt->bind_param("s", $nip);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            while($row = $result->fetch_assoc()){
+                echo "<tr>
+                    <td>".$row['kode_gol']." - ".$row['nama_pangkat']."</td>
+                    <td>".date('d-m-Y', strtotime($row['tmt_golongan']))."</td>
+                </tr>";
+            }
+            ?>
+            </tbody>
+          </table>
         </div>
-    </div>
     </div>
 </main>
 

@@ -1,5 +1,5 @@
 <?php
-session_start();   
+session_start();
 include "koneksi.php";
 
 if(!isset($_SESSION['nip'])){
@@ -7,39 +7,56 @@ if(!isset($_SESSION['nip'])){
     exit;
 }
 
-$username = $_SESSION['username'] ?? '';
 $nip = $_SESSION['nip'];
 
-$query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
+$query = mysqli_query($conn,"
+SELECT 
+p.*,
+jk.jenis_kelamin,
+a.agama,
+s.status_perkawinan,
+u.unit_kerja
+FROM pegawai p
+LEFT JOIN master_jenis_kelamin jk ON p.id_jenis_kelamin = jk.id_jenis_kelamin
+LEFT JOIN master_agama a ON p.id_agama = a.id_agama
+LEFT JOIN master_status_perkawinan s ON p.id_status_perkawinan = s.id_status_perkawinan
+LEFT JOIN master_divisi u ON p.id_unit_kerja = u.id_unit_kerja
+WHERE p.nip='$nip'
+");
+
 $data = mysqli_fetch_assoc($query);
 
 $riwayat_gol = mysqli_query($conn,"
-SELECT *
-FROM riwayat_golongan
-WHERE nip='$nip'
-ORDER BY id_riwayat_gol DESC
+SELECT g.nama_pangkat, g.kode_gol, r.tmt_golongan
+FROM riwayat_golongan r
+JOIN master_golongan g ON r.id_gol = g.id_gol
+WHERE r.nip='$nip'
+ORDER BY r.id_riwayat_gol DESC
 LIMIT 1
 ");
-
-$data_gol = mysqli_fetch_assoc($riwayat_gol) ?? [];
+$data_gol = mysqli_fetch_assoc($riwayat_gol);
 
 $riwayat_jabatan = mysqli_query($conn,"
-SELECT *
-FROM riwayat_jabatan
-WHERE nip='$nip'
-ORDER BY id_riwayat_jabatan DESC
+SELECT j.nama_jabatan, j.jenis_jabatan, r.tmt_jabatan
+FROM riwayat_jabatan r
+JOIN master_jabatan j ON r.id_jabatan = j.id_jabatan
+WHERE r.nip='$nip'
+ORDER BY r.id_riwayat_jabatan DESC
 LIMIT 1
 ");
 
-$data_jabatan = mysqli_fetch_assoc($riwayat_jabatan) ?? [];
+$data_jabatan = mysqli_fetch_assoc($riwayat_jabatan);
 
-$golongan = mysqli_query($conn,"SELECT * FROM master_golongan");
-$jabatan  = mysqli_query($conn,"SELECT * FROM master_jabatan");
-$jk       = mysqli_query($conn,"SELECT * FROM master_jenis_kelamin");
-$agama    = mysqli_query($conn,"SELECT * FROM master_agama");
-$status   = mysqli_query($conn,"SELECT * FROM master_status_perkawinan");
-$unit     = mysqli_query($conn,"SELECT * FROM master_divisi");
-$kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_kabupaten ASC");
+$riwayat_pendidikan = mysqli_query($conn,"
+SELECT jp.jenjang_pend, r.institusi, r.tahun_lulus
+FROM riwayat_pendidikan r
+JOIN master_jenjang_pend jp ON r.id_jenjang_pend = jp.id_jenjang_pend
+WHERE r.nip='$nip'
+ORDER BY r.id_riwayat_pend DESC
+LIMIT 1
+");
+
+$data_pendidikan = mysqli_fetch_assoc($riwayat_pendidikan);
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +66,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
     <title>Edit Data – Riwayat Golongan</title>
     <link rel="stylesheet" href="style.css">
     <style>
-              /* HEADER PROFIL */
+
 .header-profil {
   position: relative;
   margin-bottom: 30px;
@@ -207,6 +224,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
           align-items: center;
       }
       
+      
     </style>
 </head>
 <body class="role-user">
@@ -263,9 +281,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
                 </div>
 
                 <div class="dropdown-menu" id="dropdownMenu">
-                  <a href="Logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
-                  Keluar
-                  </a>
+                <a href="#" onclick="openLogoutModal()">Keluar</a>
                 </div>
               </div>
 
@@ -279,12 +295,20 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
           
             <!-- INFO -->
               <div class="info-profil">
-               <h2>Hawa Andini Hadi</h2>
-                <p>
-                  [Nama] adalah [status/jabatan saat ini] di [unit kerja/instansi].
-                  Memiliki riwayat jabatan sejak [tahun mulai] dengan pangkat/
-                  golongan terakhir [golongan terakhir].
-                  Pendidikan terakhir [jenjang] dari [institusi].
+               <h2><?= $data['nama_pegawai'] ?></h2>
+               <p>
+                <?= $data['nama_pegawai'] ?> adalah 
+                <?= $data_jabatan['nama_jabatan'] ?? '-' ?> di 
+                <?= $data['unit_kerja'] ?>.
+
+                Memiliki riwayat jabatan sejak 
+                <?= isset($data_jabatan['tmt_jabatan']) ? date('Y', strtotime($data_jabatan['tmt_jabatan'])) : '-' ?> 
+                dengan pangkat/golongan terakhir 
+                <?= $data_gol['nama_pangkat'] ?? '-' ?> (<?= $data_gol['kode_gol'] ?? '-' ?>).
+
+                Pendidikan terakhir 
+                <?= $data_pendidikan['jenjang_pend'] ?? '-' ?> dari 
+                <?= $data_pendidikan['institusi'] ?? '-' ?> (<?= $data_pendidikan['tahun_lulus'] ?? '-' ?>).
                 </p>
                 </div>
           
@@ -296,7 +320,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
           </div>
         </div>
 
-        <div class="tab-menu">
+    <div class="tab-menu">
     <a href="Identitas_User.php" class="tab aktif">Identitas</a>
     <a href="Riwayat_Golongan_User.php" class="tab">Riwayat Golongan</a>
     <a href="Riwayat_Jabatan_User.php" class="tab">Riwayat Jabatan</a>
@@ -311,75 +335,89 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
     <div class="form">
     <div class="baris-form">
     <label>Nama</label>
-    <input type="text" value="<?= htmlspecialchars($data['nama_pegawai'] ?? '') ?>" readonly>
+    <input value="<?= $data['nama_pegawai'] ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>NIP</label>
-    <input type="text" value="<?= htmlspecialchars($data['nip'] ?? '') ?>" readonly>
+    <input value="<?= $data['nip'] ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>Pangkat/Gol. Ruang/TMT</label>
-    <input type="text" value="<?= htmlspecialchars($data['id_gol'] ?? '') ?>" readonly>
+    <input value="<?= $data_gol['nama_pangkat'] ?? '-' ?> (<?= $data_gol['kode_gol'] ?? '-' ?>) / <?= isset($data_gol['tmt_golongan']) ? date('d-m-Y', strtotime($data_gol['tmt_golongan'])) : '-' ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>Jabatan Terakhir / TMT</label>
-    <input type="text" value="" readonly>
+    <input value="<?= $data_jabatan['nama_jabatan'] ?? '-' ?> - <?= $data_jabatan['jenis_jabatan'] ?? '-' ?> / <?= isset($data_jabatan['tmt_jabatan']) ? date('d-m-Y', strtotime($data_jabatan['tmt_jabatan'])) : '-' ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>TMT CPNS</label>
-    <input type="date" value="<?= $data['tmt_cpns'] ?? '' ?>" readonly>
+    <input type="date" value="<?= $data['tmt_cpns'] ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>TMT PNS</label>
-    <input type="date" value="<?= $data['tmt_pns'] ?? '' ?>" readonly>
+    <input type="date" value="<?= $data['tmt_pns'] ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>Tempat & Tanggal Lahir</label>
-    <input type="text" 
-    value="<?= htmlspecialchars(($data['tempat_lahir'] ?? '') . ', ' . ($data['tanggal_lahir'] ?? '')) ?>" 
-    readonly>
+    <input value="<?= $data['tempat_lahir'] ?>, <?= date('d-m-Y', strtotime($data['tanggal_lahir'])) ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>Jenis Kelamin</label>
-    <input type="text" value="<?= htmlspecialchars($data['id_jenis_kelamin'] ?? '') ?>" readonly>
+    <input value="<?= $data['jenis_kelamin'] ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>Agama</label>
-    <input type="text" value="<?= htmlspecialchars($data['id_agama'] ?? '') ?>" readonly>
+    <input value="<?= $data['agama'] ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>Status Perkawinan</label>
-    <input type="text" value="<?= htmlspecialchars($data['id_status_perkawinan'] ?? '') ?>" readonly>
+    <input value="<?= $data['status_perkawinan'] ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>Unit Kerja</label>
-    <input type="text" value="<?= htmlspecialchars($data['id_unit_kerja'] ?? '') ?>" readonly>
+    <input value="<?= $data['unit_kerja'] ?>" readonly>
     </div>
 
     <div class="baris-form">
     <label>No Telepon</label>
-    <input type="text" value="<?= htmlspecialchars($data['no_telp'] ?? '') ?>" readonly>
+    <input value="<?= $data['no_telp'] ?>" readonly>
     </div>
 
     <div class="baris-form">
-    <label>Alamat Rumah</label>
-    <textarea readonly><?= htmlspecialchars($data['alamat'] ?? '') ?></textarea>
+    <label>Alamat</label>
+    <textarea readonly><?= $data['alamat'] ?></textarea>
     </div>
 
     </div>
 </section>
 </main>
+<div id="modalLogout" class="modal">
+    <div class="modal-content">
 
+        <h3>Konfirmasi Keluar</h3>
+        <p>Apakah Anda yakin ingin keluar?</p>
+
+         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+            <button onclick="closeLogoutModal()" class="tombol-tambah">
+                Batal
+            </button>
+
+            <a href="Logout.php" class="tombol-hapus">
+                Keluar
+            </a>
+        </div>
+    </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>

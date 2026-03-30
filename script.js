@@ -85,10 +85,10 @@ tabs.forEach(tab => {
         });
     }
 });
-function logoutConfirm(){
+function openLogoutModal() {
+    document.getElementById("modalLogout").style.display = "flex";
+}
 
-    if(confirm("Apakah Anda yakin ingin keluar?")){
-        window.location.href = "Logout.php";
-    }
-    
+function closeLogoutModal() {
+    document.getElementById("modalLogout").style.display = "none";
 }

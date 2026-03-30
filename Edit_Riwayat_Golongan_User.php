@@ -13,9 +13,7 @@ $query = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
 $data = mysqli_fetch_assoc($query);
 
 
-/* =========================
-   TAMBAH RIWAYAT GOLONGAN
-   ========================= */
+/* TAMBAH RIWAYAT GOLONGAN */
 
    if(isset($_POST['tambah'])){
 
@@ -53,9 +51,7 @@ $data = mysqli_fetch_assoc($query);
         }
     }
 }
-/* =========================
-   UBAH RIWAYAT GOLONGAN
-   ========================= */
+/* UBAH RIWAYAT GOLONGAN */
 
    if(isset($_POST['ubah'])){
 

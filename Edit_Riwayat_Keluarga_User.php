@@ -276,7 +276,7 @@ margin-top: 20px;
 
 
         <!-- TABEL -->
-        <table class="tabel-riwayat">
+        <table class="tabel-riwayat" border="1" cellpadding="5">
         <thead>
         <tr>
         <th>Nama</th>

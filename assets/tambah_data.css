@@ -1,0 +1,19 @@
+.pratinjau-foto {
+  width: 160px;
+  height: 200px;
+  border: 2px solid #999;
+  overflow: hidden;
+}
+
+.foto-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.kotak-foto {
+  width: 180px;
+  display: flex;              /* WAJIB */
+  flex-direction: column;     /* susun ke bawah */
+  align-items: center;        /* center horizontal */
+}

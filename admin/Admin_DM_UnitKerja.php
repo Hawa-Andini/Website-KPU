@@ -7,6 +7,25 @@ if(!isset($_SESSION['nip'])){
     exit;
 }
 
+// =========================
+// AMBIL DATA ADMIN LOGIN
+// =========================
+$nip_session = $_SESSION['nip'];
+
+$stmtAdmin = $conn->prepare("
+    SELECT u.username, u.role, p.nama_pegawai
+    FROM user u
+    JOIN pegawai p ON u.nip = p.nip
+    WHERE u.nip = ?
+");
+$stmtAdmin->bind_param("s", $nip_session);
+$stmtAdmin->execute();
+$resultAdmin = $stmtAdmin->get_result();
+$admin = $resultAdmin->fetch_assoc() ?? [
+    'username' => 'Administrator',
+    'nama_pegawai' => 'Administrator'
+];
+
 /* =====================
    TAMBAH DATA
 ===================== */
@@ -135,8 +154,6 @@ if (isset($_POST['id_delete'])) {
 </head>
 <body class="role-admin" data-jenis="divisi">
 
-<!-- TOMBOL KELUAR -->
-<button class="tombol-keluar">Log Out</button>
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
@@ -191,18 +208,36 @@ if (isset($_POST['id_delete'])) {
         <a href="Admin_DM_KabupatenKota.php" class="item-submenu">Kabupaten/Kota</a>
     </div>
 
-    <!-- MENU LAIN -->
-    <div class="item-menu">
-        Manajemen Akun
-    </div>
+    <a href="Admin_Manajemen_Akun.php" class="item-menu">
+      Manajemen Akun
+    </a>
 
+    <hr class="garis-menu">
 </aside>
 
 <!-- KONTEN -->
 <main class="konten">
 
 <h2>Data Master</h2>
+<div class="user-profile" id="userProfile">
+    <div class="user-info">
+        <div class="user-icon">👤</div>
+        <div class="user-text">
+            <div class="user-name">
+                <?= htmlspecialchars($admin['nama_pegawai']); ?>
+            </div>
+            <!-- Opsional: tampilkan username -->
+            <!-- <div class="user-role">
+                <?= htmlspecialchars($admin['username']); ?>
+            </div> -->
+        </div>
+    </div>
 
+    <div class="dropdown-menu" id="dropdownMenu">
+        <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
+        <a href="#" onclick="openLogoutModal()">Keluar</a>
+    </div>
+</div>
 <!-- BARIS ATAS -->
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
 
@@ -337,7 +372,7 @@ $end = min($offset + $limit, $totalData);
 
 
 </main>
-
+<?php include '../pegawai/Notifikasi_Logout.php'; ?>
 <!-- MODAL TAMBAH -->
 <div id="modalTambah" class="modal">
     <div class="modal-content">

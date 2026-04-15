@@ -134,7 +134,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
             <label class="btn-upload">
                 Pilih Gambar
                 <input type="file" name="foto" accept="image/jpeg" 
-                    onchange="previewImage(event); autoSubmit()" hidden>
+                    onchange="previewImage(event)" hidden>
             </label>
         </div>
         <div class="form-edit-identitas">
@@ -183,7 +183,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
             <?php } ?>
             </select>
 
-            <input type="date" value="<?= $data_jabatan['tmt_jabatan'] ?>" style="pointer-events:none;">
+            <input type="date" value="<?= $data_jabatan['tmt_jabatan'] ?? '' ?>" style="pointer-events:none;">
         </div>
         </div>
 
@@ -342,6 +342,17 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
 
         </form>
 </main>
+<div id="modalError" class="modal">
+  <div class="modal-content">
+    <h3>Peringatan</h3>
+    <p id="errorText"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button onclick="closeErrorModal()" class="tombol-batal">OK</button>
+    </div>
+  </div>
+</div>
+
 <?php include 'Notifikasi_Logout.php'; ?>
 
 <script src="../assets/script_pg.js"></script>

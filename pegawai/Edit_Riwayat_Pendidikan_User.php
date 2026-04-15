@@ -146,14 +146,14 @@ if(isset($_POST['hapus'])){
 <!-- KONTEN -->
 <main class="konten">
     <h2>Riwayat Pendidikan</h2>
-     <!-- <button class="tombol-keluar">Log Out</button> -->
-     <div class="user-profile" id="userProfile">
+    <div class="user-profile" id="userProfile">
         <div class="user-info">
-          <div class="user-icon">👤</div>
-          <div class="user-text">
-            <div class="user-name">TU SEKRETARIS KPU</div>
-            <!-- <div class="user-role">Tata Usaha</div> -->
-          </div>
+            <div class="user-icon">👤</div>
+            <div class="user-text">
+            <div class="user-name">
+            <?= $data['nama_pegawai'] ?>
+            </div>
+            </div>
         </div>
 
         <div class="dropdown-menu" id="dropdownMenu">

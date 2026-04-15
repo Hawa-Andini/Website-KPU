@@ -2,78 +2,119 @@
 session_start();
 include '../config/koneksi.php';
 
-if(!isset($_SESSION['nip'])){
+if (!isset($_SESSION['nip'])) {
     header("location: ../auth/Login.php");
     exit;
 }
 
-if(isset($_POST['tambah'])) {
+// =========================
+// AMBIL DATA ADMIN LOGIN
+// =========================
+$nip_session = $_SESSION['nip'];
 
-    // =========================
-    // AMBIL DATA
-    // =========================
-    $nama = $_POST['nama'] ?? '';
-$nip = $_POST['nip'] ?? '';
+$stmtAdmin = $conn->prepare("
+    SELECT u.username, u.role, p.nama_pegawai
+    FROM user u
+    LEFT JOIN pegawai p ON u.nip = p.nip
+    WHERE u.nip = ?
+");
+$stmtAdmin->bind_param("s", $nip_session);
+$stmtAdmin->execute();
+$resultAdmin = $stmtAdmin->get_result();
+$data = $resultAdmin->fetch_assoc();
 
-if(empty($nama) || empty($nip)){
-    echo "<script>alert('Nama dan NIP wajib diisi');</script>";
-    exit;
+// Fallback jika data tidak ditemukan
+if (!$data) {
+    $data = [
+        'username' => 'Administrator',
+        'nama_pegawai' => 'Administrator'
+    ];
 }
-    $alamat = $_POST['alamat'];
-    $no_telp = $_POST['no_telp'];
-    $tmt_cpns = $_POST['tmt_cpns'];
-    $tmt_pns = $_POST['tmt_pns'];
-    $id_agama = $_POST['id_agama'];
-    $id_unit_kerja = $_POST['id_unit_kerja'];
-    $id_gol = $_POST['id_gol'];
-    $id_jenis_kelamin = $_POST['id_jenis_kelamin'];
-    $id_status_perkawinan = $_POST['id_status_perkawinan'];
-    $tempat_lahir = $_POST['tempat_lahir'];
-    $tanggal_lahir = $_POST['tanggal_lahir'];
-    $tipe_karyawan = $_POST['tipe_karyawan'];
+
+if (isset($_POST['tambah'])) {
+
+    // =========================
+    // AMBIL DATA DARI FORM
+    // =========================
+    $nip_baru = $_POST['nip'] ?? '';
+    $nama = $_POST['nama_pegawai'];
+    $tempat_lahir = $_POST['tempat_lahir'] ?? '';
+    $tanggal_lahir = $_POST['tanggal_lahir'] ?? '';
+    $alamat = $_POST['alamat'] ?? '';
+    $no_telp = $_POST['no_telp'] ?? '';
+    $tmt_cpns = $_POST['tmt_cpns'] ?? null;
+    $tmt_pns = $_POST['tmt_pns'] ?? null;
+    $tipe_karyawan = $_POST['tipe_karyawan'] ?? '';
     $instansi = "KPU Kota Surabaya";
 
-    $tahun_skp = $_POST['tahun_skp'];
-    $rerata_nilai = $_POST['rerata_nilai'];
-    $id_predikat_skp = $_POST['id_predikat_skp'];
+    $id_agama = !empty($_POST['id_agama']) ? (int)$_POST['id_agama'] : null;
+    $id_unit_kerja = !empty($_POST['id_unit_kerja']) ? (int)$_POST['id_unit_kerja'] : null;
+    $id_gol = !empty($_POST['id_gol']) ? (int)$_POST['id_gol'] : null;
+    $id_jenis_kelamin = !empty($_POST['id_jenis_kelamin']) ? (int)$_POST['id_jenis_kelamin'] : null;
+    $id_status_perkawinan = !empty($_POST['id_status_perkawinan']) ? (int)$_POST['id_status_perkawinan'] : null;
 
-    $tahun_diklat = $_POST['tahun_diklat']; 
-    $id_jenis_diklat = $_POST['id_jenis_diklat'];
-    $nama_diklat = $_POST['nama_diklat'];
-
-    $nama_penghargaan = $_POST['nama_penghargaan'];
-    $tahun_penghargaan = $_POST['tahun_penghargaan'];
-
-    $id_jenjang_pend = $_POST['id_jenjang_pend'];
-    $institusi = $_POST['institusi'];
-    $tahun_lulus = $_POST['tahun_lulus'];
-
-    $nama_keluarga = $_POST['nama_keluarga'];
-    $id_hub_kel = $_POST['id_hub_kel'];
-    $no_telp_keluarga = $_POST['no_telp_keluarga'];
-    $alamat_keluarga = $_POST['alamat_keluarga'];
-
-    $id_jabatan = $_POST['id_jabatan'];
-    $tmt_jabatan = $_POST['tmt_jabatan'];
+    // Riwayat
+    $tmt_golongan = $_POST['tmt_golongan'] ?? null;
+    $id_jabatan = $_POST['id_jabatan'] ?? null;
+    $tmt_jabatan = $_POST['tmt_jabatan'] ?? null;
     $tmt_akhir = $_POST['tmt_akhir'] ?? null;
 
-    $tmt_golongan = $_POST['tmt_golongan'];
+    $id_jenjang_pend = $_POST['id_jenjang_pend'] ?? null;
+    $institusi = $_POST['institusi'] ?? '';
+    $tahun_lulus = $_POST['tahun_lulus'] ?? null;
+
+    $id_jenis_diklat = $_POST['id_jenis_diklat'] ?? null;
+    $nama_diklat = $_POST['nama_diklat'] ?? '';
+    $tahun_diklat = $_POST['tahun_diklat'] ?? null;
+
+    $nama_penghargaan = $_POST['nama_penghargaan'] ?? '';
+    $tahun_penghargaan = $_POST['tahun_penghargaan'] ?? null;
+
+    $nama_keluarga = $_POST['nama_keluarga'] ?? '';
+    $id_hub_kel = $_POST['id_hub_kel'] ?? null;
+    $no_telp_keluarga = $_POST['no_telp_keluarga'] ?? '';
+    $alamat_keluarga = $_POST['alamat_keluarga'] ?? '';
+
+    $tahun_skp = $_POST['tahun_skp'] ?? null;
+    $rerata_nilai = $_POST['rerata_nilai'] ?? null;
+    $id_predikat_skp = $_POST['id_predikat_skp'] ?? null;
 
     // =========================
-    // VALIDASI NIP
+    // VALIDASI DATA WAJIB
     // =========================
-    $cek = mysqli_query($conn,"SELECT * FROM pegawai WHERE nip='$nip'");
-    if(mysqli_num_rows($cek)>0){
+    if (empty($nip_baru) || empty($nama)) {
+        echo "<script>alert('Nama dan NIP wajib diisi');</script>";
+        exit;
+    }
+
+    // =========================
+    // CEK DUPLIKASI NIP
+    // =========================
+    $stmtCek = $conn->prepare("SELECT nip FROM pegawai WHERE nip = ?");
+    $stmtCek->bind_param("s", $nip_baru);
+    $stmtCek->execute();
+    $stmtCek->store_result();
+
+    if ($stmtCek->num_rows > 0) {
         echo "<script>alert('NIP sudah terdaftar');</script>";
         exit;
     }
 
+    // =====================================================
 // =========================
 // UPLOAD FOTO
 // =========================
 $fotoPath = "uploads/default.png";
 
 if (!empty($_FILES['foto']['name'])) {
+
+    if ($_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
+        echo "<script>
+            alert('Terjadi kesalahan saat upload file.');
+            window.history.back();
+        </script>";
+        exit;
+    }
 
     $foto = $_FILES['foto']['name'];
     $tmp  = $_FILES['foto']['tmp_name'];
@@ -82,20 +123,20 @@ if (!empty($_FILES['foto']['name'])) {
     $ext = strtolower(pathinfo($foto, PATHINFO_EXTENSION));
 
     // VALIDASI EXT
-    if ($ext != "jpg" && $ext != "jpeg") {
+    if (!in_array($ext, ['jpg', 'jpeg'])) {
         echo "<script>
-        alert('Foto harus JPG/JPEG');
-        window.history.back();
+            alert('Foto harus JPG/JPEG');
+            window.history.back();
         </script>";
         exit;
     }
 
     // VALIDASI MIME
     $mime = mime_content_type($tmp);
-    if(!in_array($mime, ['image/jpeg'])){
+    if (!in_array($mime, ['image/jpeg', 'image/pjpeg', 'image/jpg'])) {
         echo "<script>
-        alert('File harus JPG');
-        window.history.back();
+            alert('File harus JPG/JPEG');
+            window.history.back();
         </script>";
         exit;
     }
@@ -103,664 +144,735 @@ if (!empty($_FILES['foto']['name'])) {
     // VALIDASI SIZE
     if ($size > 2000000) {
         echo "<script>
-        alert('Maksimal 2MB');
-        window.history.back();
+            alert('Ukuran maksimal 2MB');
+            window.history.back();
         </script>";
         exit;
     }
 
-    $namaBaru = uniqid() . "." . $ext;
-    $path = __DIR__ . "/uploads/" . $namaBaru;
+    // Pastikan folder uploads ada
+    $uploadDir = __DIR__ . "/../uploads/";
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
 
-    if(move_uploaded_file($tmp, $path)){
+    $namaBaru = uniqid('foto_', true) . "." . $ext;
+    $path = $uploadDir . $namaBaru;
+
+    if (move_uploaded_file($tmp, $path)) {
         $fotoPath = "uploads/" . $namaBaru;
     } else {
         echo "<script>
-        alert('Upload gagal');
-        window.history.back();
+            alert('Upload gagal. Periksa permission folder.');
+            window.history.back();
         </script>";
         exit;
     }
 }
+    // =====================================================
 
     // =========================
-    // INSERT PEGAWAI
+    // MULAI TRANSAKSI
     // =========================
-    mysqli_query($conn,"INSERT INTO pegawai
-    (nip,nama_pegawai,tempat_lahir,tanggal_lahir,alamat,no_telp,tmt_cpns,tmt_pns,tipe_karyawan,instansi,id_agama,id_unit_kerja,id_gol,id_jenis_kelamin,id_status_perkawinan,foto)
-    VALUES
-    ('$nip','$nama','$tempat_lahir','$tanggal_lahir','$alamat','$no_telp','$tmt_cpns','$tmt_pns','$tipe_karyawan','$instansi','$id_agama','$id_unit_kerja','$id_gol','$id_jenis_kelamin','$id_status_perkawinan','$fotoPath')");
+    mysqli_begin_transaction($conn);
 
-    // =========================
-    // RIWAYAT SKP
-    // =========================
-    if(!empty($tahun_skp) && !empty($rerata_nilai)){
-        mysqli_query($conn,"INSERT INTO riwayat_skp
-        (nip,id_predikat_skp,rerata_nilai,tahun)
-        VALUES
-        ('$nip','$id_predikat_skp','$rerata_nilai','$tahun_skp')");
+    try {
+        // =========================
+        // INSERT KE TABEL PEGAWAI
+        // =========================
+        $stmtPegawai = $conn->prepare("
+            INSERT INTO pegawai (
+                nip, nama_pegawai, tempat_lahir, tanggal_lahir,
+                alamat, no_telp, tmt_cpns, tmt_pns,
+                tipe_karyawan, instansi,
+                id_agama, id_unit_kerja, id_gol,
+                id_jenis_kelamin, id_status_perkawinan, foto
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $stmtPegawai->bind_param(
+            "ssssssssssssssss",
+            $nip_baru, $nama, $tempat_lahir, $tanggal_lahir,
+            $alamat, $no_telp, $tmt_cpns, $tmt_pns,
+            $tipe_karyawan, $instansi,
+            $id_agama, $id_unit_kerja, $id_gol,
+            $id_jenis_kelamin, $id_status_perkawinan, $fotoPath
+        );
+        $stmtPegawai->execute();
+
+        // =========================
+        // RIWAYAT GOLONGAN
+        // =========================
+        if (!empty($id_gol) && !empty($tmt_golongan)) {
+            $stmt = $conn->prepare("
+                INSERT INTO riwayat_golongan (nip, id_gol, tmt_golongan)
+                VALUES (?, ?, ?)
+            ");
+            $stmt->bind_param("sis", $nip_baru, $id_gol, $tmt_golongan);
+            $stmt->execute();
+        }
+
+        // =========================
+        // RIWAYAT JABATAN
+        // =========================
+        if (!empty($id_jabatan) && !empty($tmt_jabatan)) {
+            $stmt = $conn->prepare("
+                INSERT INTO riwayat_jabatan
+                (nip, id_jabatan, id_unit_kerja, tmt_jabatan, tmt_akhir)
+                VALUES (?, ?, ?, ?, ?)
+            ");
+            $stmt->bind_param("siiss",
+                $nip_baru, $id_jabatan, $id_unit_kerja,
+                $tmt_jabatan, $tmt_akhir
+            );
+            $stmt->execute();
+        }
+
+        // =========================
+        // RIWAYAT PENDIDIKAN
+        // =========================
+        if (!empty($id_jenjang_pend)) {
+            $stmt = $conn->prepare("
+                INSERT INTO riwayat_pendidikan
+                (nip, id_jenjang_pend, institusi, tahun_lulus)
+                VALUES (?, ?, ?, ?)
+            ");
+            $stmt->bind_param("sisi",
+                $nip_baru, $id_jenjang_pend,
+                $institusi, $tahun_lulus
+            );
+            $stmt->execute();
+        }
+
+        // =========================
+        // RIWAYAT DIKLAT
+        // =========================
+        if (!empty($id_jenis_diklat)) {
+            $stmt = $conn->prepare("
+                INSERT INTO riwayat_diklat
+                (nip, id_jenis_diklat, nama_diklat, tahun)
+                VALUES (?, ?, ?, ?)
+            ");
+            $stmt->bind_param("sisi",
+                $nip_baru, $id_jenis_diklat,
+                $nama_diklat, $tahun_diklat
+            );
+            $stmt->execute();
+        }
+
+        // =========================
+        // RIWAYAT KEHORMATAN
+        // =========================
+        if (!empty($nama_penghargaan)) {
+            $stmt = $conn->prepare("
+                INSERT INTO riwayat_kehormatan
+                (nip, nama_penghargaan, tahun)
+                VALUES (?, ?, ?)
+            ");
+            $stmt->bind_param("ssi",
+                $nip_baru, $nama_penghargaan,
+                $tahun_penghargaan
+            );
+            $stmt->execute();
+        }
+
+        // =========================
+        // RIWAYAT KELUARGA
+        // =========================
+        if (!empty($nama_keluarga)) {
+            $stmt = $conn->prepare("
+                INSERT INTO riwayat_keluarga
+                (nip, nama, id_hub_kel, no_telp, alamat)
+                VALUES (?, ?, ?, ?, ?)
+            ");
+            $stmt->bind_param("ssiss",
+                $nip_baru, $nama_keluarga,
+                $id_hub_kel, $no_telp_keluarga,
+                $alamat_keluarga
+            );
+            $stmt->execute();
+        }
+
+        // =========================
+        // RIWAYAT SKP
+        // =========================
+        if (!empty($tahun_skp) && !empty($rerata_nilai)) {
+            $stmt = $conn->prepare("
+                INSERT INTO riwayat_skp
+                (nip, id_predikat_skp, rerata_nilai, tahun)
+                VALUES (?, ?, ?, ?)
+            ");
+            $stmt->bind_param("sidi",
+                $nip_baru, $id_predikat_skp,
+                $rerata_nilai, $tahun_skp
+            );
+            $stmt->execute();
+        }
+
+        // =========================
+        // COMMIT TRANSAKSI
+        // =========================
+        mysqli_commit($conn);
+
+        echo "<script>
+            alert('Data berhasil ditambahkan');
+            window.location='Admin_Profil_Data_Pegawai.php';
+        </script>";
+
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        echo "Terjadi kesalahan: " . $e->getMessage();
     }
-
-    // =========================
-    // RIWAYAT PENDIDIKAN
-    // =========================
-    if(!empty($id_jenjang_pend)){
-        mysqli_query($conn,"INSERT INTO riwayat_pendidikan
-        (nip,id_jenjang_pend,institusi,tahun_lulus)
-        VALUES
-        ('$nip','$id_jenjang_pend','$institusi','$tahun_lulus')");
-    }
-
-    // =========================
-    // RIWAYAT DIKLAT
-    // =========================
-    if(!empty($id_jenis_diklat)){
-        mysqli_query($conn,"INSERT INTO riwayat_diklat
-        (nip,id_jenis_diklat,nama_diklat,tahun)
-        VALUES
-        ('$nip','$id_jenis_diklat','$nama_diklat','$tahun_diklat')");
-    }
-
-    // =========================
-    // RIWAYAT KEHORMATAN
-    // =========================
-    if(!empty($nama_penghargaan)){
-        mysqli_query($conn,"INSERT INTO riwayat_kehormatan
-        (nip,nama_penghargaan,tahun)
-        VALUES
-        ('$nip','$nama_penghargaan','$tahun_penghargaan')");
-    }
-
-    // =========================
-    // RIWAYAT KELUARGA
-    // =========================
-    if(!empty($nama_keluarga)){
-        mysqli_query($conn,"INSERT INTO riwayat_keluarga
-        (nip,nama_keluarga,id_hub_kel,no_telp,alamat)
-        VALUES
-        ('$nip','$nama_keluarga','$id_hub_kel','$no_telp_keluarga','$alamat_keluarga')");
-    }
-
-    // =========================
-    // RIWAYAT JABATAN
-    // =========================
-    if(!empty($id_jabatan) && !empty($tmt_jabatan)){
-        mysqli_query($conn,"INSERT INTO riwayat_jabatan
-        (nip,id_jabatan,id_unit_kerja,tmt_jabatan,tmt_akhir)
-        VALUES
-        ('$nip','$id_jabatan','$id_unit_kerja','$tmt_jabatan','$tmt_akhir')");
-    }
-
-    // =========================
-    // RIWAYAT GOLONGAN
-    // =========================
-    if(!empty($id_gol) && !empty($tmt_golongan)){
-        mysqli_query($conn,"INSERT INTO riwayat_golongan
-        (nip,id_gol,tmt_golongan)
-        VALUES
-        ('$nip','$id_gol','$tmt_golongan')");
-    }
-
-    echo "<script>
-    alert('Data berhasil ditambahkan');
-    window.location='Admin_Profil_Data_Pegawai.php';
-    </script>";
 }
 
 // =========================
 // DATAMASTER (SAMAKAN DENGAN EDIT)
 // =========================
-$jk = mysqli_query($conn,"SELECT * FROM master_jenis_kelamin");
-$agama = mysqli_query($conn,"SELECT * FROM master_agama");
-$status = mysqli_query($conn,"SELECT * FROM master_status_perkawinan");
-$unit = mysqli_query($conn,"SELECT * FROM master_divisi");
-$golongan = mysqli_query($conn,"SELECT * FROM master_golongan");
-$jabatan = mysqli_query($conn,"SELECT * FROM master_jabatan");
-$kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_kabupaten ASC");
-$pend = mysqli_query($conn,"SELECT * FROM master_jenjang_pend");
-$diklat = mysqli_query($conn,"SELECT * FROM master_diklat");
-$hub = mysqli_query($conn,"SELECT * FROM master_hub_kel");
-$predikat = mysqli_query($conn,"SELECT * FROM master_predikat_skp");
+$jk = mysqli_query($conn, "SELECT * FROM master_jenis_kelamin");
+$agama = mysqli_query($conn, "SELECT * FROM master_agama");
+$status = mysqli_query($conn, "SELECT * FROM master_status_perkawinan");
+$unit = mysqli_query($conn, "SELECT * FROM master_divisi");
+$golongan = mysqli_query($conn, "SELECT * FROM master_golongan");
+$jabatan = mysqli_query($conn, "SELECT * FROM master_jabatan");
+$kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_kabupaten ASC");
+$pend = mysqli_query($conn, "SELECT * FROM master_jenjang_pend");
+$diklat = mysqli_query($conn, "SELECT * FROM master_diklat");
+$hub = mysqli_query($conn, "SELECT * FROM master_hub_kel");
+$predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Manage Jenis Kelamin</title>
     <link rel="stylesheet" href="../assets/style.css">
-    <link rel="stylesheet" href="../assets/tambah_data.css">
+    <link rel="stylesheet" href="../assets/fotoadmin.css">    
     <style>
-       
+
 
 
     </style>
 </head>
+
 <body class="role-admin">
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-      <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
-      </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <span>LOGO</span>
+            <button class="tombol-menu" id="tombolMenu">✕</button>
+        </div>
 
-      <hr class="garis-menu" />
+        <hr class="garis-menu" />
 
-      <a href="Admin_Profil_Data_Pegawai.php" class="item-menu">
-        Profil Data Pegawai
-      </a>
+        <a href="Admin_Profil_Data_Pegawai.php" class="item-menu">
+            Profil Data Pegawai
+        </a>
 
-      <hr class="garis-menu" />
+        <hr class="garis-menu" />
 
-      <a href="Admin_Tambah_Data.php" class="item-menu aktif">
-        Tambah Data Pegawai Baru
-      </a>
+        <a href="Admin_Tambah_Data.php" class="item-menu aktif">
+            Tambah Data Pegawai Baru
+        </a>
 
-      <hr class="garis-menu" />
+        <hr class="garis-menu" />
 
-      <a href="Admin_Pengaturan_Akun.php" class="item-menu">
-        Pengaturan Akun
-      </a>
+        <a href="Admin_Pengaturan_Akun.php" class="item-menu">
+            Pengaturan Akun
+        </a>
 
-      <hr class="garis-menu" />
+        <hr class="garis-menu" />
 
-      <div class="item-menu" id="menuDataMaster">
-        Data Master
-        <span class="panah-menu" id="panahDataMaster">▼</span>
-      </div>
+        <div class="item-menu" id="menuDataMaster">
+            Data Master
+            <span class="panah-menu" id="panahDataMaster">▼</span>
+        </div>
 
-      <div class="submenu" id="submenuDataMaster">
-        <a href="Admin_DM_Gender.php" class="item-submenu">Jenis Kelamin</a>
-        <a href="Admin_DM_Agama.php" class="item-submenu">Agama</a>
-        <a href="Admin_DM_StatusPerkawinan.php" class="item-submenu"
-          >Status Perkawinan</a
-        >
-        <a href="Admin_DM_JenjangPendidikan.php" class="item-submenu"
-          >Jenjang Pendidikan</a
-        >
-        <a href="Admin_DM_HubunganKeluarga.php" class="item-submenu"
-          >Hubungan Keluarga</a
-        >
-        <a href="Admin_DM_Golongan.php" class="item-submenu">Golongan</a>
-        <a href="Admin_DM_Jabatan.php" class="item-submenu">Jabatan</a>
-        <a href="Admin_DM_UnitKerja.php" class="item-submenu"
-          >Unit Kerja / Divisi</a
-        >
-        <a href="Admin_DM_JenisDiklat.php" class="item-submenu"
-          >Jenis Diklat</a
-        >
-        <a href="Admin_DM_PredikatSKP.php" class="item-submenu"
-          >Predikat SKP</a
-        >
-      </div>
+        <div class="submenu" id="submenuDataMaster">
+            <a href="Admin_DM_Gender.php" class="item-submenu">Jenis Kelamin</a>
+            <a href="Admin_DM_Agama.php" class="item-submenu">Agama</a>
+            <a href="Admin_DM_StatusPerkawinan.php" class="item-submenu">Status Perkawinan</a>
+            <a href="Admin_DM_JenjangPendidikan.php" class="item-submenu">Jenjang Pendidikan</a>
+            <a href="Admin_DM_HubunganKeluarga.php" class="item-submenu">Hubungan Keluarga</a>
+            <a href="Admin_DM_Golongan.php" class="item-submenu">Golongan</a>
+            <a href="Admin_DM_Jabatan.php" class="item-submenu">Jabatan</a>
+            <a href="Admin_DM_UnitKerja.php" class="item-submenu">Unit Kerja / Divisi</a>
+            <a href="Admin_DM_JenisDiklat.php" class="item-submenu">Jenis Diklat</a>
+            <a href="Admin_DM_PredikatSKP.php" class="item-submenu">Predikat SKP</a>
+        </div>
 
-      <hr class="garis-menu" />
-      <a href="Admin_Manajemen_Akun.php" class="item-menu">
-        Manajemen Akun
-    </a>
+        <hr class="garis-menu" />
+        <a href="Admin_Manajemen_Akun.php" class="item-menu">
+            Manajemen Akun
+        </a>
 
-    <hr class="garis-menu">
+        <hr class="garis-menu">
     </aside>
 
 
-<!-- KONTEN -->
-<main class="konten">
+    <!-- KONTEN -->
+    <main class="konten">
 
-    <h2>Tambah Data Pegawai</h2>
-    <p style="margin-top:-10px; margin-bottom:30px;">Identitas</p>
+        <h2>Tambah Data Pegawai</h2>
+        <p style="margin-top:-10px; margin-bottom:30px;">Identitas</p>
 
-    <!-- PROFIL USER -->
-    <div class="user-profile" id="userProfile">
-        <div class="user-info">
-            <div class="user-icon">👤</div>
-            <div class="user-text">
-                <div class="user-name">TU SEKRETARIS KPU</div>
+        <!-- PROFIL USER -->
+        <!-- dropdown-->
+        <div class="user-profile" id="userProfile">
+            <div class="user-info">
+                <div class="user-icon">👤</div>
+                <div class="user-text">
+                    <div class="user-name">
+                        <?= htmlspecialchars($data['nama_pegawai']); ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
+                <a href="#" onclick="openLogoutModal()">Keluar</a>
             </div>
         </div>
 
-        <div class="dropdown-menu">
-            <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-            <a href="#">Keluar</a>
-        </div>
-    </div>
+        <!-- FORM TAMBAH DATA -->
+        <form method="POST" enctype="multipart/form-data">
+            <div class="pembungkus-form">
 
-    <!-- FORM TAMBAH DATA -->
-     <form method="POST" enctype="multipart/form-data">
-<div class="pembungkus-form">
+                <!-- FOTO -->
+                <div class="kotak-foto">
 
-        <!-- FOTO -->
-        <div class="kotak-foto">
+                    <div class="pratinjau-foto">
+                        <img id="preview" class="foto-preview"
+                            src="<?= isset($pegawai['foto']) ? '../' . $pegawai['foto'] : '../uploads/default.png' ?>">
+                    </div>
 
-    <div class="pratinjau-foto">
-        <img id="preview" class="foto-preview">
-    </div>
+                    <label class="tombol-unggah">
+                        Unggah Foto
+                        <input type="file" name="foto" accept="image/jpeg"
+                            onchange="previewImage(event)" hidden>
+                    </label>
 
-    <label class="tombol-unggah">
-        Unggah Foto
-        <input type="file" name="foto" accept="image/jpeg"
-               onchange="previewImage(event)" hidden>
-    </label>
+                </div>
 
-</div>
+                <!-- FORM UTAMA -->
+                <div class="form">
 
-        <!-- FORM UTAMA -->
-        <div class="form">
+                    <div class="baris-form">
+                        <label>Nama</label>
+                        <input type="text" name="nama_pegawai">
+                    </div>
 
-            <div class="baris-form">
-                <label>Nama</label>
-                <input type="text" name="nama">
-            </div>
+                    <div class="baris-form">
+                        <label>NIP</label>
+                        <input type="text" name="nip">
+                    </div>
 
-            <div class="baris-form">
-                <label>NIP</label>
-                <input type="text" name="nip">
-            </div>
 
-            
 
-            <div class="baris-form">
-                <label>TMT CPNS</label>
-                <input type="date" name="tmt_cpns">
-            </div>
+                    <div class="baris-form">
+                        <label>TMT CPNS</label>
+                        <input type="date" name="tmt_cpns">
+                    </div>
 
-            <div class="baris-form">
-                <label>TMT PNS</label>
-                <input type="date" name="tmt_pns">
-            </div>
+                    <div class="baris-form">
+                        <label>TMT PNS</label>
+                        <input type="date" name="tmt_pns">
+                    </div>
 
-            <div class="baris-form">
-<label>Tempat & Tanggal Lahir</label>
+                    <div class="baris-form">
+                        <label>Tempat & Tanggal Lahir</label>
 
-<div style="display:flex; gap:10px;">
+                        <div style="display:flex; gap:10px;">
 
-<select name="tempat_lahir">
-<option value="">-- Pilih Kabupaten --</option>
+                            <select name="tempat_lahir">
+                                <option value="">-- Pilih Kabupaten --</option>
 
-<?php while($row = mysqli_fetch_assoc($kabupaten)) { ?>
-<option value="<?= $row['nama_kabupaten']; ?>">
-<?= $row['nama_kabupaten']; ?>
-</option>
-<?php } ?>
+                                <?php while ($row = mysqli_fetch_assoc($kabupaten)) { ?>
+                                    <option value="<?= $row['nama_kabupaten']; ?>">
+                                        <?= $row['nama_kabupaten']; ?>
+                                    </option>
+                                <?php } ?>
 
-</select>
+                            </select>
 
-<input type="date" name="tanggal_lahir" value="">
+                            <input type="date" name="tanggal_lahir" value="">
 
-</div>
-</div>
+                        </div>
+                    </div>
 
-            <div class="baris-form">
-                <label>Jenis Kelamin</label>
-                <!-- <select>
+                    <div class="baris-form">
+                        <label>Jenis Kelamin</label>
+                        <!-- <select>
                     <option>-- Pilih --</option>
                 </select> -->
-                <select name="id_jenis_kelamin">
+                        <select name="id_jenis_kelamin">
 
-<option value="">-- Pilih Jenis Kelamin --</option>
+                            <option value="">-- Pilih Jenis Kelamin --</option>
 
-<?php while($j = mysqli_fetch_assoc($jk)){ ?>
-<option value="<?= $j['id_jenis_kelamin']; ?>">
-<?= $j['jenis_kelamin']; ?>
-</option>
-<?php } ?>
+                            <?php while ($j = mysqli_fetch_assoc($jk)) { ?>
+                                <option value="<?= $j['id_jenis_kelamin']; ?>">
+                                    <?= $j['jenis_kelamin']; ?>
+                                </option>
+                            <?php } ?>
 
-</select>
-            </div>
+                        </select>
+                    </div>
 
-            <div class="baris-form">
-                <label>Agama</label>
-                <!-- <select>
+                    <div class="baris-form">
+                        <label>Agama</label>
+                        <!-- <select>
                     <option>-- Pilih --</option>
                 </select> -->
-                <select name="id_agama">
-  <option value="">-- Pilih Agama --</option>
+                        <select name="id_agama">
+                            <option value="">-- Pilih Agama --</option>
 
-  <?php while($a = mysqli_fetch_assoc($agama)){ ?>
-<option value="<?= $a['id_agama']; ?>">
-<?= $a['agama']; ?>
-</option>
-<?php } ?>
-</select>
-            </div>
+                            <?php while ($a = mysqli_fetch_assoc($agama)) { ?>
+                                <option value="<?= $a['id_agama']; ?>">
+                                    <?= $a['agama']; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
 
-            <div class="baris-form">
-                <label>Status Perkawinan</label>
-                <!-- <select>
+                    <div class="baris-form">
+                        <label>Status Perkawinan</label>
+                        <!-- <select>
                     <option>-- Pilih --</option>
                 </select> -->
-                <select name="id_status_perkawinan">
+                        <select name="id_status_perkawinan">
 
-<option value="">-- Pilih Status --</option>
+                            <option value="">-- Pilih Status --</option>
 
-<?php
-while($s = mysqli_fetch_assoc($status)){
-?>
+                            <?php
+                            while ($s = mysqli_fetch_assoc($status)) {
+                            ?>
 
-<option value="<?= $s['id_status_perkawinan']; ?>">
-<?= $s['status_perkawinan']; ?>
-</option>
+                                <option value="<?= $s['id_status_perkawinan']; ?>">
+                                    <?= $s['status_perkawinan']; ?>
+                                </option>
 
-<?php } ?>
+                            <?php } ?>
 
-</select>
+                        </select>
+                    </div>
+
+                    <div class="baris-form">
+                        <label>Unit Kerja</label>
+
+                        <select name="id_unit_kerja">
+                            <option value="">-- Pilih Unit --</option>
+
+                            <?php
+                            while ($u = mysqli_fetch_assoc($unit)) {
+                            ?>
+                                <option value="<?= $u['id_unit_kerja']; ?>">
+                                    <?= $u['unit_kerja']; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="baris-form">
+                        <label>Instansi</label>
+                        <input type="text" value="KPU Kota Surabaya" readonly>
+                        <input type="hidden" name="instansi" value="KPU Kota Surabaya">
+                    </div>
+
+                    <div class="baris-form">
+                        <label>Tipe Karyawan</label>
+                        <input type="text" name="tipe_karyawan" placeholder="Contoh: PNS, CPNS, PPP3, dll">
+                    </div>
+
+                    <div class="baris-form">
+                        <label>No Telepon</label>
+                        <input type="text" name="no_telp">
+                    </div>
+
+                    <div class="baris-form">
+                        <label>Alamat Rumah</label>
+                        <input type="text" name="alamat">
+                    </div>
+
+                </div>
             </div>
 
-            <div class="baris-form">
-                <label>Unit Kerja</label>
-                
-                <select name="id_unit_kerja">
-  <option value="">-- Pilih Unit --</option>
+            <!-- ============================= -->
+            <!-- RIWAYAT GOLONGAN -->
+            <!-- ============================= -->
 
-  <?php
-  while($u = mysqli_fetch_assoc($unit)) {
-  ?>
-    <option value="<?= $u['id_unit_kerja']; ?>">
-      <?= $u['unit_kerja']; ?>
-    </option>
-  <?php } ?>
-</select>
-            </div>
+            <h3 style="margin-top:60px;">Riwayat Golongan</h3>
 
-            <div class="baris-form">
-   <label>Instansi</label>
-        <input type="text" value="KPU Kota Surabaya" readonly>
-        <input type="hidden" name="instansi" value="KPU Kota Surabaya">
-</div>
-
-            <div class="baris-form">
-                <label>Tipe Karyawan</label>
-                <input type="text" name="tipe_karyawan" placeholder="Contoh: PNS, CPNS, PPP3, dll">
-            </div>
-
-            <div class="baris-form">
-                <label>No Telepon</label>
-                <input type="text" name="no_telp">
-            </div>
-
-            <div class="baris-form">
-                <label>Alamat Rumah</label>
-                <input type="text" name="alamat">
-            </div>
-
-        </div>
-    </div>
-
-    <!-- ============================= -->
-    <!-- RIWAYAT GOLONGAN -->
-    <!-- ============================= -->
-
-    <h3 style="margin-top:60px;">Riwayat Golongan</h3>
-
-    <div class="form">
-        <div class="baris-form">
-            <label>Golongan Pangkat</label>
-            <!-- <select>
+            <div class="form">
+                <div class="baris-form">
+                    <label>Golongan Pangkat</label>
+                    <!-- <select>
                 <option>-- Pilih --</option>
             </select> -->
-            <select name="id_gol">
-             <option value="">-- Pilih Golongan --</option>
+                    <select name="id_gol">
+                        <option value="">-- Pilih Golongan --</option>
 
-            <?php while($g = mysqli_fetch_assoc($golongan)){ ?>
-<option value="<?= $g['id_gol']; ?>">
-<?= $g['nama_pangkat']; ?> (<?= $g['kode_gol']; ?>)
-</option>
-<?php } ?>
+                        <?php while ($g = mysqli_fetch_assoc($golongan)) { ?>
+                            <option value="<?= $g['id_gol']; ?>">
+                                <?= $g['nama_pangkat']; ?> (<?= $g['kode_gol']; ?>)
+                            </option>
+                        <?php } ?>
 
-            </select>
-        </div>
+                    </select>
+                </div>
 
-        <div class="baris-form">
-            <label>TMT</label>
-            <input type="date" name="tmt_golongan">
-        </div>
-    </div>
+                <div class="baris-form">
+                    <label>TMT</label>
+                    <input type="date" name="tmt_golongan">
+                </div>
+            </div>
 
-    <!-- RIWAYAT JABATAN -->
+            <!-- RIWAYAT JABATAN -->
 
-    <h3 style="margin-top:40px;">Riwayat Jabatan</h3>
+            <h3 style="margin-top:40px;">Riwayat Jabatan</h3>
 
-<div class="form">
+            <div class="form">
 
-<div class="baris-form">
+                <div class="baris-form">
 
-<label>Jabatan</label>
+                    <label>Jabatan</label>
 
-<select name="id_jabatan">
+                    <select name="id_jabatan">
 
-<option value="">-- Pilih Jabatan --</option>
+                        <option value="">-- Pilih Jabatan --</option>
 
-<?php
-while($j = mysqli_fetch_assoc($jabatan)){
-?>
+                        <?php
+                        while ($j = mysqli_fetch_assoc($jabatan)) {
+                        ?>
 
-<option value="<?= $j['id_jabatan']; ?>">
-<?= $j['nama_jabatan']; ?>
-</option>
+                            <option value="<?= $j['id_jabatan']; ?>">
+                                <?= $j['nama_jabatan']; ?>
+                            </option>
 
-<?php } ?>
+                        <?php } ?>
 
-</select>
+                    </select>
 
-</div>
+                </div>
 
-<div class="baris-form">
+                <div class="baris-form">
 
-<label>TMT Awal</label>
+                    <label>TMT Awal</label>
 
-<input type="date" name="tmt_jabatan">
+                    <input type="date" name="tmt_jabatan">
 
-</div>
+                </div>
 
-<div class="baris-form">
+                <div class="baris-form">
 
-<label>TMT Akhir</label>
+                    <label>TMT Akhir</label>
 
-<input type="date" name="tmt_akhir">
+                    <input type="date" name="tmt_akhir">
 
-</div>
+                </div>
 
-</div>
+            </div>
 
-    <!-- RIWAYAT PENDIDIKAN -->
-    <h3 style="margin-top:40px;">Riwayat Pendidikan</h3>
+            <!-- RIWAYAT PENDIDIKAN -->
+            <h3 style="margin-top:40px;">Riwayat Pendidikan</h3>
 
-    <div class="form">
+            <div class="form">
 
-<div class="baris-form">
+                <div class="baris-form">
 
-<label>Jenjang Pendidikan</label>
+                    <label>Jenjang Pendidikan</label>
 
-<select name="id_jenjang_pend">
+                    <select name="id_jenjang_pend">
 
-<option value="">-- Pilih Jenjang --</option>
+                        <option value="">-- Pilih Jenjang --</option>
 
-<?php
-while($p = mysqli_fetch_assoc($pend)){
-?>
+                        <?php
+                        while ($p = mysqli_fetch_assoc($pend)) {
+                        ?>
 
-<option value="<?= $p['id_jenjang_pend']; ?>">
-<?= $p['jenjang_pend']; ?>
-</option>
+                            <option value="<?= $p['id_jenjang_pend']; ?>">
+                                <?= $p['jenjang_pend']; ?>
+                            </option>
 
-<?php } ?>
+                        <?php } ?>
 
-</select>
+                    </select>
 
-</div>
+                </div>
 
-<div class="baris-form">
-<label>Institusi</label>
-<input type="text" name="institusi">
-</div>
+                <div class="baris-form">
+                    <label>Institusi</label>
+                    <input type="text" name="institusi">
+                </div>
 
-<div class="baris-form">
+                <div class="baris-form">
 
-<label>TMT</label>
+                    <label>TMT</label>
 
-<input type="number" name="tahun_lulus">
+                    <input type="number" name="tahun_lulus">
 
-</div>
+                </div>
 
-</div>
+            </div>
 
-    <!-- RIWAYAT DIKLAT -->
-    <h3 style="margin-top:40px;">Riwayat Diklat</h3>
+            <!-- RIWAYAT DIKLAT -->
+            <h3 style="margin-top:40px;">Riwayat Diklat</h3>
 
-    <div class="form">
+            <div class="form">
 
-<div class="baris-form">
-<label>Jenis Diklat</label>
+                <div class="baris-form">
+                    <label>Jenis Diklat</label>
 
-<select name="id_jenis_diklat">
+                    <select name="id_jenis_diklat">
 
-<option value="">-- Pilih Diklat --</option>
+                        <option value="">-- Pilih Diklat --</option>
 
-<?php
-while($d = mysqli_fetch_assoc($diklat)){
-?>
+                        <?php
+                        while ($d = mysqli_fetch_assoc($diklat)) {
+                        ?>
 
-<option value="<?= $d['id_jenis_diklat']; ?>">
-<?= $d['jenis_diklat']; ?>
-</option>
+                            <option value="<?= $d['id_jenis_diklat']; ?>">
+                                <?= $d['jenis_diklat']; ?>
+                            </option>
 
-<?php } ?>
+                        <?php } ?>
 
-</select>
+                    </select>
 
-</div>
+                </div>
 
-<div class="baris-form">
-<label>Nama Diklat</label>
-<input type="text" name="nama_diklat">
-</div>
+                <div class="baris-form">
+                    <label>Nama Diklat</label>
+                    <input type="text" name="nama_diklat">
+                </div>
 
-<div class="baris-form">
-<label>Tahun</label>
-<input type="number" name="tahun_diklat">
-</div>
+                <div class="baris-form">
+                    <label>Tahun</label>
+                    <input type="number" name="tahun_diklat">
+                </div>
 
-</div>
+            </div>
 
-    <!-- RIWAYAT KELUARGA -->
-   <h3 style="margin-top:40px;">Riwayat Keterangan Keluarga</h3>
+            <!-- RIWAYAT KELUARGA -->
+            <h3 style="margin-top:40px;">Riwayat Keterangan Keluarga</h3>
 
-<div class="form">
+            <div class="form">
 
-<div class="baris-form">
-<label>Nama</label>
-<input type="text" name="nama_keluarga">
-</div>
+                <div class="baris-form">
+                    <label>Nama</label>
+                    <input type="text" name="nama_keluarga">
+                </div>
 
-<div class="baris-form">
-<label>Hubungan Keluarga</label>
+                <div class="baris-form">
+                    <label>Hubungan Keluarga</label>
 
-<select name="id_hub_kel">
+                    <select name="id_hub_kel">
 
-<option value="">-- Pilih Hubungan --</option>
+                        <option value="">-- Pilih Hubungan --</option>
 
-<?php
-while($h = mysqli_fetch_assoc($hub)){
-?>
+                        <?php
+                        while ($h = mysqli_fetch_assoc($hub)) {
+                        ?>
 
-<option value="<?= $h['id_hub_kel']; ?>">
-<?= $h['hub_kel']; ?>
-</option>
+                            <option value="<?= $h['id_hub_kel']; ?>">
+                                <?= $h['hub_kel']; ?>
+                            </option>
 
-<?php } ?>
+                        <?php } ?>
 
-</select>
+                    </select>
 
-</div>
+                </div>
 
-<div class="baris-form">
-<label>No. Telepon</label>
-<input type="text" name="no_telp_keluarga">
-</div>
+                <div class="baris-form">
+                    <label>No. Telepon</label>
+                    <input type="text" name="no_telp_keluarga">
+                </div>
 
-<div class="baris-form">
-<label>Alamat</label>
-<input type="text" name="alamat_keluarga">
-</div>
+                <div class="baris-form">
+                    <label>Alamat</label>
+                    <input type="text" name="alamat_keluarga">
+                </div>
 
-</div>
+            </div>
 
-    <!-- RIWAYAT TANDA JASA -->
-    <h3 style="margin-top:40px;">Riwayat Tanda Jasa/Kehormatan</h3>
+            <!-- RIWAYAT TANDA JASA -->
+            <h3 style="margin-top:40px;">Riwayat Tanda Jasa/Kehormatan</h3>
 
-   <div class="form">
+            <div class="form">
 
-<div class="baris-form">
-<label>Nama Penghargaan</label>
-<input type="text" name="nama_penghargaan" placeholder="Masukkan nama penghargaan">
-</div>
+                <div class="baris-form">
+                    <label>Nama Penghargaan</label>
+                    <input type="text" name="nama_penghargaan" placeholder="Masukkan nama penghargaan">
+                </div>
 
-<div class="baris-form">
-<label>Tahun</label>
-<input type="number" name="tahun_penghargaan" placeholder="Contoh: 2022">
-</div>
+                <div class="baris-form">
+                    <label>Tahun</label>
+                    <input type="number" name="tahun_penghargaan" placeholder="Contoh: 2022">
+                </div>
 
-</div>
+            </div>
 
-    <!-- RIWAYAT SKP -->
-    <h3 style="margin-top:40px;">Riwayat SKP</h3>
+            <!-- RIWAYAT SKP -->
+            <h3 style="margin-top:40px;">Riwayat SKP</h3>
 
-    <div class="form">
+            <div class="form">
 
-<div class="baris-form">
-<label>Tahun</label>
-<input type="number" name="tahun_skp">
-</div>
+                <div class="baris-form">
+                    <label>Tahun</label>
+                    <input type="number" name="tahun_skp">
+                </div>
 
-<div class="baris-form">
-<label>Rata-Rata</label>
-<input type="number" step="0.01" name="rerata_nilai">
-</div>
+                <div class="baris-form">
+                    <label>Rata-Rata</label>
+                    <input type="number" step="0.01" name="rerata_nilai">
+                </div>
 
-<div class="baris-form">
-<label>Predikat</label>
+                <div class="baris-form">
+                    <label>Predikat</label>
 
-<select name="id_predikat_skp">
+                    <select name="id_predikat_skp">
 
-<option value="">-- Pilih Predikat --</option>
+                        <option value="">-- Pilih Predikat --</option>
 
-<?php
-while($p = mysqli_fetch_assoc($predikat)){
-?>
+                        <?php
+                        while ($p = mysqli_fetch_assoc($predikat)) {
+                        ?>
 
-<option value="<?= $p['id_predikat_skp']; ?>">
-<?= $p['predikat_skp']; ?>
-</option>
+                            <option value="<?= $p['id_predikat_skp']; ?>">
+                                <?= $p['predikat_skp']; ?>
+                            </option>
 
-<?php } ?>
+                        <?php } ?>
 
-</select>
+                    </select>
 
-</div>
+                </div>
 
-</div>
+            </div>
 
-    <!-- TOMBOL TAMBAH -->
-    <div class="aksi-form" style="margin-top:50px;"> 
-        <button type="submit" name="tambah" class="tombol-tambah">TAMBAH</button>   </div>
-</form>
-</main>
+            <!-- TOMBOL TAMBAH -->
+            <div class="aksi-form" style="margin-top:50px;">
+                <button type="submit" name="tambah" class="tombol-tambah">TAMBAH</button>
+            </div>
+        </form>
+    </main>
+    <?php include '../pegawai/Notifikasi_Logout.php'; ?>
+    <!-- <script src="script.js"></script> -->
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('preview').src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+    <script src=" ../assets/core-ui.js"></script>
+    <script src=" ../assets/datamaster.js"></script>
+    <script src=" ../assets/admin-ui.js"></script>
 
-<!-- <script src="script.js"></script> -->
-  <script>
-    function previewImage(event) {
-    const reader = new FileReader();
-    reader.onload = function(){
-        document.getElementById('preview').src = reader.result;
-    }
-    reader.readAsDataURL(event.target.files[0]);
-}
-
-  </script>
- <script src=" ../assets/core-ui.js"></script>
-  <script src=" ../assets/datamaster.js"></script>
-  <script src=" ../assets/admin-ui.js"></script>
-
-  <!-- <script>
+    <!-- <script>
       // Dropdown User Profile
       const userProfile = document.getElementById("userProfile");
 
@@ -779,6 +891,7 @@ while($p = mysqli_fetch_assoc($predikat)){
     </script> -->
 
 
- 
+
 </body>
+
 </html>

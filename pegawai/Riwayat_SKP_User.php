@@ -90,7 +90,7 @@ include 'Data_Pegawai.php';
         </div>
             
         <!-- PDF -->
-        <a href="Cetak_PDF.php?nip=<?php echo $data['nip']; ?>" target="_blank" class="pdf-box">
+        <a href="../admin/pdf/generate_pdf.php?nip=<?php echo $data['nip']; ?>" target="_blank" class="pdf-box">
           <div class="pdf-icon">PDF</div>
             <span>Lihat PDF</span>
         </a>

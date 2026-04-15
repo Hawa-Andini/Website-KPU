@@ -13,41 +13,41 @@ document.getElementById("pencarian").addEventListener("keypress", function(e) {
     }
 });
 
-let page = 1;
+// Ambil parameter dari URL
+const urlParams = new URLSearchParams(window.location.search);
+let page = parseInt(urlParams.get("page")) || 1;
 
 function loadData() {
-    let limit = document.getElementById("jumlahData").value;
+    let limit = parseInt(document.getElementById("jumlahData").value);
     let search = document.getElementById("pencarian").value;
 
     fetch(`../admin/get_data_pegawai.php?limit=${limit}&page=${page}&search=${search}`)
-    .then(res => res.json())
-    .then(res => {
+        .then(res => res.json())
+        .then(res => {
+            let html = "";
+            let no = (page - 1) * limit + 1; // Nomor urut sesuai halaman
 
-        let html = "";
-        let no = 1;
+            res.data.forEach(item => {
+                html += `
+                <tr>
+                    <td>${no++}</td>
+                    <td>${item.nama_pegawai}</td>
+                    <td>${item.nama_jabatan ?? '-'}</td>
+                    <td>${item.nama_pangkat ?? '-'}</td>
+                    <td>${item.nip}</td>
+                    <td>${item.tipe_karyawan}</td>
+                    <td>${item.unit_kerja ?? '-'}</td>
+                    <td>
+                    <a href="../admin/pdf/generate_pdf.php?nip=${item.nip}" target="_blank" style="text-decoration: none;">👁</a>
+                    <a href="identitas-pegawai.php?nip=${item.nip}" style="text-decoration: none;">✏️</a>
+                    </td>
+                </tr>`;
+            });
 
-        res.data.forEach(item => {
-            html += `
-            <tr>
-                <td>${no++}</td>
-                <td>${item.nama_pegawai}</td>
-                <td>${item.nama_jabatan ?? '-'}</td>
-                <td>${item.nama_pangkat ?? '-'}</td>
-                <td>${item.nip}</td>
-                <td>${item.tipe_karyawan}</td>
-                <td>${item.unit_kerja ?? '-'}</td>
-                <td>👁 <a href="identitas-pegawai.php?nip=${item.nip}">✏️</a></td>
-            </tr>
-            `;
+            document.getElementById("dataTabel").innerHTML = html;
+            buatPagination(res.totalPage);
+            updateInfo(res.totalData);
         });
-
-        document.getElementById("dataTabel").innerHTML = html;
-
-        // BUAT PAGINATION
-        buatPagination(res.totalPage);
-
-        updateInfo(res.totalData)
-    });
 }
 // EVENT
 document.getElementById("jumlahData").addEventListener("change", () => {
@@ -109,10 +109,25 @@ function nextPage(totalPage) {
     }
 }
 
+// function updateInfo(totalData) {
+//     let limit = document.getElementById("jumlahData").value;
+//     let start = (page - 1) * limit + 1;
+//     let end = Math.min(page * limit, totalData);
+
+//     document.getElementById("infoData").innerHTML =
+//         `Showing ${start}–${end} of ${totalData} entries`;
+// }
+
 function updateInfo(totalData) {
-    let limit = document.getElementById("jumlahData").value;
+    let limit = parseInt(document.getElementById("jumlahData").value);
     let start = (page - 1) * limit + 1;
     let end = Math.min(page * limit, totalData);
+
+    // Jika tidak ada data
+    if (totalData === 0) {
+        start = 0;
+        end = 0;
+    }
 
     document.getElementById("infoData").innerHTML =
         `Showing ${start}–${end} of ${totalData} entries`;

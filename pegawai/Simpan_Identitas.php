@@ -24,30 +24,34 @@ $tmt_pns  = $_POST['tmt_pns'];
 
 
 //* UPLOAD FOTO  */
-$updateFoto = "";
-if (!empty($_FILES['foto']['name'])) {
+$pesan = "";
 
-    $foto = $_FILES['foto']['name'];
-    $tmp  = $_FILES['foto']['tmp_name'];
-    $size = $_FILES['foto']['size'];
+if (isset($_POST['ubah'])) {
 
-    $ext = strtolower(pathinfo($foto, PATHINFO_EXTENSION));
+    if (!empty($_FILES['foto']['name'])) {
 
-    if ($ext != "jpg" && $ext != "jpeg") {
-        echo "Foto harus format JPG / JPEG";
-        exit;
+        $foto = $_FILES['foto']['name'];
+        $tmp  = $_FILES['foto']['tmp_name'];
+        $size = $_FILES['foto']['size'];
+
+        $ext = strtolower(pathinfo($foto, PATHINFO_EXTENSION));
+
+        if ($ext != "jpg" && $ext != "jpeg") {
+            $pesan = "Format foto harus JPG / JPEG!";
+        } 
+        else if ($size > 2000000) {
+            $pesan = "Ukuran foto maksimal 2MB!";
+        } 
+        else {
+            $namaBaru = time() . "_" . $foto;
+
+            move_uploaded_file($tmp, "../uploads/" . $namaBaru);
+
+            mysqli_query($conn, "UPDATE pegawai SET foto='uploads/$namaBaru' WHERE nip='$nip'");
+
+            $pesan = "Foto berhasil diupload!";
+        }
     }
-
-    if ($size > 1000000) {
-        echo "Ukuran foto maksimal 1MB";
-        exit;
-    }
-
-    $namaBaru = time() . "_" . $foto;
-
-    move_uploaded_file($tmp, "../uploads/" . $namaBaru);
-    
-    mysqli_query($conn, "UPDATE pegawai SET foto='uploads/$namaBaru' WHERE nip='$nip'");
 }
 
 /* UPDATE DATA PEGAWAI */

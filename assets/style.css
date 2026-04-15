@@ -120,8 +120,8 @@ body {
 
 /*KONTEN*/
 .konten {
-  /* flex: 1;
-  padding: 20px 40px 30px; */
+  flex: 1;
+  padding: 20px 40px 30px;
   /* new */
   position: relative;
   /* end new */
@@ -151,7 +151,7 @@ body {
   border: 2px solid #999;
 } */
 
-.tombol-unggah {
+/* .tombol-unggah {
   background: #007bff;
   color: #fff;
   border: none;
@@ -161,10 +161,10 @@ body {
   cursor: pointer;
 } */
 
-.tombol-unggah {
+/* .tombol-unggah {
   width: 160px;
   text-align: center;
-} */
+} */ 
 
 /*FORM*/
 .form {
@@ -330,7 +330,7 @@ margin-top:30px;
   position: absolute;
   top: 20px;
   right: 40px;
-  cursor: pointer;
+  z-index: 9999;
 }
 
 .user-info {

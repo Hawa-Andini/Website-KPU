@@ -47,8 +47,7 @@ session_start();
             font-size: 14px;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group input {
             width: 100%;
             padding: 10px;
             border-radius: 5px;
@@ -71,11 +70,22 @@ session_start();
         .btn-login:hover {
             background: #5e0000;
         }
-        .error{
+
+        .error {
             color: red;
             font-size: 13px;
-            margin-top: 2px;
-            margin-bottom: 6px;
+            margin-top: 5px;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -84,34 +94,42 @@ session_start();
 <div class="login-card">
     <h2>Log In</h2>
 
+    <!-- ERROR GLOBAL -->
+    <?php if(isset($_GET['error']) && $_GET['error']=='kosong'): ?>
+        <div class="error">Username dan password wajib diisi</div>
+    <?php endif; ?>
+
     <form action="proses_login.php" method="POST">
+
+        <!-- USERNAME -->
         <div class="form-group">
             <label>Username</label>
-            <input type="text" name="username" required>
+            <input type="text" name="username" required autofocus>
 
             <?php if(isset($_GET['error_user']) && $_GET['error_user']==1): ?>
-                <div style="color:red;">Username salah</div>
+                <div class="error">Username tidak ditemukan</div>
             <?php endif; ?>
         </div>
 
-
+        <!-- PASSWORD -->
         <div class="form-group">
             <label>Password</label>
 
-                 <div style="position: relative;">
-                    <input type="password" name="password" id="password" required style="width:100%; padding-right:40px;">
-                    <span onclick="togglePassword()" 
-                    style="position:absolute; right:10px; top:10px; cursor:pointer;">
-                        👁
-                    </span>
-                </div>
-            <?php
-                if(isset($_GET['error_pass']) && $_GET['error_pass']==1){
-                    echo "<p class='error'>Password salah</p>";
-                }
-            ?>
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" required>
+                <span class="toggle-password" onclick="togglePassword()">👁</span>
+            </div>
+
+            <?php if(isset($_GET['error_pass']) && $_GET['error_pass']==1): ?>
+                <div class="error">Password salah</div>
+            <?php endif; ?>
+
+            <?php if(isset($_GET['error_nonaktif']) && $_GET['error_nonaktif']==1): ?>
+                <div class="error">Akun Anda sudah tidak aktif</div>
+            <?php endif; ?>
         </div>
 
+        <!-- BUTTON -->
         <button type="submit" name="login" class="btn-login">Log In</button>
 
     </form>
@@ -120,13 +138,17 @@ session_start();
 <script>
 function togglePassword() {
     var password = document.getElementById("password");
+    var icon = document.querySelector(".toggle-password");
 
     if (password.type === "password") {
         password.type = "text";
+        icon.textContent = "🙈";
     } else {
         password.type = "password";
+        icon.textContent = "👁";
     }
 }
 </script>
+
 </body>
 </html>

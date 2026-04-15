@@ -2,13 +2,14 @@
 session_start();
 include '../config/koneksi.php';
 
-if(!isset($_SESSION['nip'])){
+if (!isset($_SESSION['nip'])) {
     header("location: ../auth/Login.php");
     exit;
 }
 
 $nip = $_SESSION['nip'];
 
+// AMBIL DATA USER
 $stmt = $conn->prepare("
     SELECT u.*, p.nama_pegawai, p.no_telp
     FROM user u
@@ -20,54 +21,132 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
+// 🔥 PENTING
+$id_user = $user['id_user'];
+
+$pesan = "";
+
+// =======================
 // UPDATE DATA
-if(isset($_POST['update_data'])){
+// =======================
+if (isset($_POST['update_data'])) {
 
-    $username = $_POST['nama'];
-    $email    = $_POST['email'];
-    $telepon  = $_POST['telepon'];
+    // 🔥 NORMALISASI INPUT
+    $username = strtolower(trim($_POST['nama']));
+    $email    = strtolower(trim($_POST['email']));
+    $telepon  = trim($_POST['telepon']);
 
-    $stmt = $conn->prepare("
-        UPDATE user u
-        JOIN pegawai p ON u.nip = p.nip
-        SET 
-            u.username = ?, 
-            u.email = ?, 
-            p.no_telp = ?
-        WHERE u.nip = ?
+    // =======================
+    // CEK USERNAME
+    // =======================
+    $cekUser = $conn->prepare("
+        SELECT id_user FROM user 
+        WHERE username = ? AND id_user != ?
     ");
+    $cekUser->bind_param("si", $username, $id_user);
+    $cekUser->execute();
+    $resUser = $cekUser->get_result();
 
-    $stmt->bind_param("ssss", $username, $email, $telepon, $nip);
-    $stmt->execute();
+    // =======================
+    // CEK EMAIL
+    // =======================
+    $cekEmail = $conn->prepare("
+        SELECT id_user FROM user 
+        WHERE email = ? AND id_user != ?
+    ");
+    $cekEmail->bind_param("si", $email, $id_user);
+    $cekEmail->execute();
+    $resEmail = $cekEmail->get_result();
 
-    $pesan = "Data berhasil diperbarui";
+    if ($resUser->num_rows > 0) {
+
+        $pesan = "Username sudah digunakan!";
+
+    } elseif ($resEmail->num_rows > 0) {
+
+        $pesan = "Email sudah digunakan!";
+
+    } else {
+
+        // =======================
+        // UPDATE USER
+        // =======================
+        $stmt = $conn->prepare("
+            UPDATE user 
+            SET username = ?, email = ?
+            WHERE id_user = ?
+        ");
+        $stmt->bind_param("ssi", $username, $email, $id_user);
+        $stmt->execute();
+
+        // =======================
+        // UPDATE PEGAWAI
+        // =======================
+        $stmt2 = $conn->prepare("
+            UPDATE pegawai 
+            SET no_telp = ?
+            WHERE nip = ?
+        ");
+        $stmt2->bind_param("ss", $telepon, $nip);
+        $stmt2->execute();
+
+        $pesan = "Data berhasil diperbarui";
+
+        // refresh data biar langsung update di tampilan
+        $user['username'] = $username;
+        $user['email'] = $email;
+        $user['no_telp'] = $telepon;
+    }
 }
 
 // UPDATE PASSWORD
-$pesan = "";
+if(!isset($pesan)){
+    $pesan = "";
+}
 
 if(isset($_POST['update_password'])){
+
     $pass_lama = $_POST['pass_lama'];
     $pass_baru = $_POST['pass_baru'];
     $konfirmasi = $_POST['konfirmasi'];
 
-    if($pass_lama == $user['password']){
-        if($pass_baru == $konfirmasi){
+    // CEK PASSWORD LAMA (PAKAI VERIFY)
+    if(!password_verify($pass_lama, $user['password'])){
+        
+        $pesan = "Password lama yang kamu masukkan salah";
 
-            $stmt = $conn->prepare("
-                UPDATE user SET password=? WHERE nip=?
-            ");
-            $stmt->bind_param("ss", $pass_baru, $nip);
-            $stmt->execute();
+    } elseif($pass_baru != $konfirmasi){
 
-            $pesan = "Password berhasil diubah";
+        $pesan = "Konfirmasi password tidak sesuai dengan password baru";
 
-        } else {
-            $pesan = "Konfirmasi password tidak cocok";
-        }
+    } elseif(strlen($pass_baru) < 8 || 
+             !preg_match('/[A-Z]/', $pass_baru) || 
+             !preg_match('/[0-9]/', $pass_baru)){
+
+        $pesan = "Password baru harus minimal 8 karakter, mengandung huruf besar dan angka";
+
     } else {
-        $pesan = "Password lama salah";
+
+        // HASH PASSWORD BARU
+        $hash_baru = password_hash($pass_baru, PASSWORD_DEFAULT);
+
+        $stmt = $conn->prepare("
+            UPDATE user SET password=? WHERE nip=?
+        ");
+        $stmt->bind_param("ss", $hash_baru, $nip);
+        $stmt->execute();
+
+        $pesan = "Password berhasil diperbarui";
     }
+}
+$tab_aktif = 'data';
+
+if(isset($_POST['update_password'])){
+    $tab_aktif = 'password';
+}
+
+if(isset($_POST['update_data'])){
+    $tab_aktif = 'data';
 }
 ?>
 
@@ -135,12 +214,12 @@ if(isset($_POST['update_password'])){
           </div>
         <!-- TAB -->
         <div class="tab-container">
-            <div class="tab aktif" data-tab="data">Data Pribadi</div>
-            <div class="tab" data-tab="password">Kata Sandi</div>
+            <div class="tab <?= $tab_aktif == 'data' ? 'aktif' : '' ?>" data-tab="data">Data Pribadi</div>
+            <div class="tab <?= $tab_aktif == 'password' ? 'aktif' : '' ?>" data-tab="password">Kata Sandi</div>
         </div>
 
         <!-- DATA PRIBADI -->
-        <div class="tab-content aktif" id="data">
+        <div class="tab-content <?= $tab_aktif == 'data' ? 'aktif' : '' ?>" id="data">
         <form method="POST">
             <div class="kelompok-form">
                 <label>Username</label>
@@ -154,7 +233,7 @@ if(isset($_POST['update_password'])){
 
             <div class="kelompok-form">
                 <label>Telepon</label>
-                <input name="telepon" value="<?= $user['no_telp'] ?>">
+                <input type="number" name="telepon" value="<?= $user['no_telp'] ?>">
             </div>
 
             <div class="aksi-form">
@@ -164,7 +243,7 @@ if(isset($_POST['update_password'])){
         </div>
 
         <!-- PASSWORD -->
-        <div class="tab-content" id="password">
+        <div class="tab-content <?= $tab_aktif == 'password' ? 'aktif' : '' ?>" id="password">
         <form method="POST">
         <div class="kelompok-form password-wrapper">
             <label>Password Lama</label>
@@ -180,6 +259,11 @@ if(isset($_POST['update_password'])){
                 <input type="password" name="pass_baru" id="pass_baru">
                 <span onclick="togglePassword('pass_baru')">👁</span>
             </div>
+
+             <!-- KETERANGAN -->
+            <small id="infoPassword" style="color:gray;">
+                Minimal 8 karakter, harus ada huruf besar dan angka
+            </small>
         </div>
 
         <div class="kelompok-form password-wrapper">

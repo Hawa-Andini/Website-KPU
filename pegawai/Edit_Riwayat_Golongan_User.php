@@ -46,7 +46,7 @@ $data = mysqli_fetch_assoc($query);
             )
             ");
 
-            header("Location: Edit_Riwayat_Golongan_User.php");
+            header("Location: Edit_Riwayat_Golongan_User.php?status=berhasil_tambah");
             exit;
         }
     }
@@ -69,7 +69,7 @@ $data = mysqli_fetch_assoc($query);
         WHERE id_riwayat_gol='$id'
         ");
 
-        header("Location: Edit_Riwayat_Golongan_User.php");
+        header("Location: Edit_Riwayat_Golongan_User.php?status=berhasil_ubah");
         exit;
     }
 }
@@ -81,6 +81,9 @@ if(isset($_POST['hapus'])){
   DELETE FROM riwayat_golongan
   WHERE id_riwayat_gol='$id'
   ");
+
+  header("Location: Edit_Riwayat_Golongan_User.php?status=berhasil_hapus");
+  exit;
   
   }
 ?>
@@ -154,7 +157,8 @@ if(isset($_POST['hapus'])){
         </div>
       <div class="bagian-identitas">
       <div class="form-edit">
-        <form method="POST">
+        <form method="POST" id="formUpload">
+
         <input type="hidden" name="id_riwayat_gol" id="id_riwayat_gol">
         <div class="baris-form" style="grid-template-columns:120px 500px 120px">
         <label>Golongan Pangkat</label>
@@ -177,7 +181,7 @@ if(isset($_POST['hapus'])){
 
         </select>
 
-        <button type="submit" name="tambah" class="tombol-tambah btn-kecil">
+        <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
         TAMBAH
         </button>
         </div>
@@ -190,10 +194,10 @@ if(isset($_POST['hapus'])){
         <input type="date" name="tmt_golongan">
 
         <div class="aksi-vertikal">
-        <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
+        <button type="button" onclick="klikUbahBeda('id_riwayat_gol')" class="tombol-ubah btn-kecil">
         UBAH
         </button>
-        <button type="submit" name="hapus" class="tombol-hapus btn-kecil">
+        <button type="button" onclick="klikHapus('id_riwayat_gol')" class="tombol-hapus btn-kecil">
           HAPUS
           </button>
         </div>
@@ -238,26 +242,20 @@ if(isset($_POST['hapus'])){
         </div>
 
 </main>
-<div id="modalLogout" class="modal">
-    <div class="modal-content">
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
 
-        <h3>Konfirmasi Keluar</h3>
-        <p>Apakah Anda yakin ingin keluar?</p>
-
-         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-            <button onclick="closeLogoutModal()" class="tombol-batal">
-                Batal
-            </button>
-
-            <a href="Logout.php" class="tombol-keluar">
-                Keluar
-            </a>
-        </div>
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-hapus">OK</button>
     </div>
+  </div>
 </div>
+
 <?php include 'Notifikasi_Logout.php'; ?>
 
-<script src="../assets/script_pg.js"></script>
 <script>
 function pilihData(id,id_gol,tmt_golongan){
 
@@ -268,5 +266,27 @@ function pilihData(id,id_gol,tmt_golongan){
 }
 </script>
 
+<script src="../assets/script_pg.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status === 'berhasil_tambah') {
+        openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+    }
+
+    if (status === 'berhasil_ubah') {
+        openModalAksi("Berhasil", "Data berhasil diubah", "info");
+    }
+
+    if (status === 'berhasil_hapus') {
+        openModalAksi("Berhasil", "Data berhasil dihapus", "info");
+    }
+
+});
+</script>
 </body>
 </html>

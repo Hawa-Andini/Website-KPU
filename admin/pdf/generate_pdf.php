@@ -34,6 +34,23 @@ function safeDate($date){
         : '-';
 }
 
+// FUNCTION UNTUK TTL
+function formatTanggalIndo($date){
+    if (empty($date) || $date == '0000-00-00') return '-';
+
+    $bulan = [
+        1 => 'JANUARI', 'FEBRUARI', 'MARET', 'APRIL',
+        'MEI', 'JUNI', 'JULI', 'AGUSTUS',
+        'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+    ];
+
+    $pecah = explode('-', $date);
+
+    return str_pad($pecah[2], 2, '0', STR_PAD_LEFT) . ' ' 
+         . $bulan[(int)$pecah[1]] . ' ' 
+         . $pecah[0];
+}
+
 // ==========================
 // DATA PEGAWAI + JOIN MASTER
 // ==========================
@@ -189,21 +206,6 @@ ORDER BY rs.tahun DESC
 ");
 
 // ==========================
-// VALIDASI WAJIB
-// ==========================
-if(!$golongan || mysqli_num_rows($golongan) == 0){
-    die("Riwayat golongan belum diisi");
-}
-
-if(!$jabatan || mysqli_num_rows($jabatan) == 0){
-    die("Riwayat jabatan belum diisi");
-}
-
-if(!$pendidikan || mysqli_num_rows($pendidikan) == 0){
-    die("Riwayat pendidikan belum diisi");
-}
-
-// ==========================
 // HTML
 // ==========================
 $html = '
@@ -353,12 +355,11 @@ td, th {
 <table class="no-border">
 <tr><td class="label">NAMA</td><td>: '.strtoupper($data['nama_pegawai'] ?? '-').'</td></tr>
 <tr><td class="label">NIP</td><td>: '.strtoupper($data['nip'] ?? '-').'</td></tr>
-<tr><td class="label">PANGKAT / GOL</td><td>: '.strtoupper($data_gol['nama_pangkat'] ?? '-').' / ('.strtoupper($data_gol['kode_gol'] ?? '-').')</td></tr>
-<tr><td class="label">JABATAN</td><td>: '.strtoupper($data_jabatan['jenis_jabatan'] ?? '-').'</td></tr>
+<tr><td class="label">PANGKAT / GOL / TMT</td><td>: '.strtoupper($data_gol['nama_pangkat'] ?? '-').' / ('.strtoupper($data_gol['kode_gol'] ?? '-').') / '. formatTanggalIndo($data_gol['tmt_golongan']).'</td></tr>
+<tr><td class="label">JABATAN TERAKHIR / TMT</td><td>: '.strtoupper($data_jabatan['jenis_jabatan'] ?? '-').' / '. formatTanggalIndo($data_jabatan['tmt_jabatan']).'</td></tr>
 <tr><td class="label">TIPE KARYAWAN</td><td>: '.strtoupper($data['tipe_karyawan'] ?? '-').'</td></tr>
-<tr><td class="label">TMT CPNS</td><td>: '.safeDate($data['tmt_cpns']).'</td></tr>
-<tr><td class="label">TMT PNS</td><td>: '.safeDate($data['tmt_pns']).'</td></tr>
-<tr><td class="label">TTL</td><td>: '.strtoupper($data['tempat_lahir'] ?? '-').', '.safeDate($data['tanggal_lahir']).'</td></tr>
+<tr><td class="label">TMT CPNS / TMT PNS</td><td>: '. formatTanggalIndo($data['tmt_cpns']).' / '. formatTanggalIndo($data['tmt_pns']).'</td></tr>
+<tr><td class="label">TTL</td><td>: '.strtoupper($data['tempat_lahir'] ?? '-').', '. formatTanggalIndo($data['tanggal_lahir']).'</td></tr>
 <tr><td class="label">JENIS KELAMIN</td><td>: '.strtoupper($data['jenis_kelamin'] ?? '-').'</td></tr>
 <tr><td class="label">AGAMA</td><td>: '.strtoupper($data['agama'] ?? '-').'</td></tr>
 <tr><td class="label">STATUS PERKAWINAN</td><td>: '.strtoupper($data['status_perkawinan'] ?? '-').'</td></tr>
@@ -441,7 +442,7 @@ while($j = mysqli_fetch_assoc($jabatan)){
     <tr>
         <td>'.$j['nama_jabatan'].'</td>
         <td>'.$j['jenis_jabatan'].'</td>
-        <td>'.safeDate($j['tmt_jabatan']).'</td>
+        <td>'.safeDate($j['tmt_jabatan']).' '.(!empty($j['tmt_akhir']) ? ' s/d '.safeDate($j['tmt_akhir']) : '').'</td>
     </tr>';
 }
 

@@ -21,7 +21,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-// 🔥 PENTING
+// PENTING
 $id_user = $user['id_user'];
 
 $pesan = "";
@@ -31,10 +31,10 @@ $pesan = "";
 // =======================
 if (isset($_POST['update_data'])) {
 
-    // 🔥 NORMALISASI INPUT
+    // NORMALISASI INPUT
     $username = strtolower(trim($_POST['nama']));
     $email    = strtolower(trim($_POST['email']));
-    $telepon  = trim($_POST['telepon']);
+    $telepon  = trim($_POST['no_telp']);
 
     // =======================
     // CEK USERNAME
@@ -220,7 +220,7 @@ if(isset($_POST['update_data'])){
 
         <!-- DATA PRIBADI -->
         <div class="tab-content <?= $tab_aktif == 'data' ? 'aktif' : '' ?>" id="data">
-        <form method="POST">
+        <form method="POST" onsubmit="return validasiTelp()">
             <div class="kelompok-form">
                 <label>Username</label>
                 <input name="nama" value="<?= $user['username'] ?>">
@@ -233,7 +233,10 @@ if(isset($_POST['update_data'])){
 
             <div class="kelompok-form">
                 <label>Telepon</label>
-                <input type="number" name="telepon" value="<?= $user['no_telp'] ?>">
+                <input type="text" name="no_telp" 
+                value="<?= $user['no_telp'] ?>" 
+                placeholder="Contoh: 0812-3456-7890"
+                oninput="formatTelp(this)">
             </div>
 
             <div class="aksi-form">
@@ -249,7 +252,7 @@ if(isset($_POST['update_data'])){
             <label>Password Lama</label>
             <div class="input-password">
                 <input type="password" name="pass_lama" id="pass_lama">
-                <span onclick="togglePassword('pass_lama')">👁</span>
+                <span onclick="togglePassword('pass_lama', this)">👁</span>
             </div>
         </div>
 
@@ -257,7 +260,7 @@ if(isset($_POST['update_data'])){
             <label>Password Baru</label>
             <div class="input-password">
                 <input type="password" name="pass_baru" id="pass_baru">
-                <span onclick="togglePassword('pass_baru')">👁</span>
+                <span onclick="togglePassword('pass_baru', this)">👁</span>
             </div>
 
              <!-- KETERANGAN -->
@@ -270,7 +273,7 @@ if(isset($_POST['update_data'])){
             <label>Konfirmasi Password</label>
             <div class="input-password">
                 <input type="password" name="konfirmasi" id="konfirmasi">
-                <span onclick="togglePassword('konfirmasi')">👁</span>
+                <span onclick="togglePassword('konfirmasi', this)">👁</span>
             </div>
         </div>
         
@@ -289,14 +292,33 @@ if(isset($_POST['update_data'])){
     </div>
 
 </main>
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-tambah">OK</button>
+    </div>
+  </div>
+</div>
+
 <?php include 'Notifikasi_Logout.php'; ?>
 
 <script src="../assets/script_pg.js"></script>
 
 <script>
-function togglePassword(id){
+function togglePassword(id, el) {
     const input = document.getElementById(id);
-    input.type = input.type === "password" ? "text" : "password";
+
+    if (input.type === "password") {
+        input.type = "text";
+        el.style.color = "gray"; 
+    } else {
+        input.type = "password";
+        el.style.color = "black"; 
+    }
 }
 
 function closeNotif(){
@@ -309,6 +331,50 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById("notifModal").style.display = "flex";
 });
 <?php endif; ?>
+</script>
+
+<script>
+    function validasiTelp() {
+
+    let telp = document.querySelector("input[name='no_telp']").value.trim();
+    let telpAngka = telp.replace(/\D/g, '');
+
+    if (telpAngka.length === 0) {
+        openModalAksi("Peringatan", "Nomor telepon tidak boleh kosong!");
+        return false;
+    }
+
+    if (telpAngka.length < 10) {
+        openModalAksi("Peringatan", "Nomor telepon terlalu pendek!");
+        return false;
+    }
+
+    if (telpAngka.length > 13) {
+        openModalAksi("Peringatan", "Nomor telepon terlalu panjang!");
+        return false;
+    }
+
+    if (!telpAngka.startsWith("08")) {
+        openModalAksi("Peringatan", "Nomor telepon harus diawali 08!");
+        return false;
+    }
+
+    // bersihkan sebelum submit
+    document.querySelector("input[name='no_telp']").value = telpAngka;
+
+    return true;
+    }
+</script>
+<script>
+        function openModalAksi(judul, isi) {
+            document.getElementById("modalAksi").style.display = "flex";
+            document.getElementById("judulAksi").innerText = judul;
+            document.getElementById("isiAksi").innerText = isi;
+
+            document.getElementById("btnOKAksi").onclick = function () {
+                document.getElementById("modalAksi").style.display = "none";
+            };
+        }
 </script>
 </body>
 </html>

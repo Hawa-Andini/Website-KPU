@@ -47,7 +47,7 @@ if(isset($_POST['tambah'])){
             )
             ");
 
-            header("Location: Edit_Riwayat_Diklat_User.php");
+            header("Location: Edit_Riwayat_Diklat_User.php?status=berhasil_tambah");
             exit;
         }
     }
@@ -73,7 +73,7 @@ if(isset($_POST['ubah'])){
         WHERE id_riwayat_diklat='$id'
         ");
 
-        header("Location: Edit_Riwayat_Diklat_User.php");
+        header("Location: Edit_Riwayat_Diklat_User.php?status=berhasil_ubah");
         exit;
     }
 }
@@ -87,6 +87,9 @@ if(isset($_POST['hapus'])){
     DELETE FROM riwayat_diklat
     WHERE id_riwayat_diklat='$id'
     ");
+
+    header("Location: Edit_Riwayat_Diklat_User.php?status=berhasil_hapus");
+    exit;
 }
 ?>
 
@@ -159,7 +162,7 @@ if(isset($_POST['hapus'])){
       <div class="bagian-identitas">
         <!-- FORM -->
             <div class="form-edit">
-            <form method="POST">
+            <form method="POST" id="formUpload">
 
             <input type="hidden" name="id_riwayat_diklat" id="id_riwayat_diklat">
 
@@ -168,7 +171,7 @@ if(isset($_POST['hapus'])){
             <label>Jenis Diklat</label>
 
             <select name="id_jenis_diklat" style="height:30px; border:1px solid #888;">
-            <option value="">--Pilih Jenis Diklat--</option>
+            <option value="">-- Pilih Jenis Diklat --</option>
 
             <?php
             $qDiklat = mysqli_query($conn,"SELECT * FROM master_diklat ORDER BY id_jenis_diklat");
@@ -180,7 +183,7 @@ if(isset($_POST['hapus'])){
 
             </select>
 
-            <button type="submit" name="tambah" class="tombol-tambah btn-kecil">
+            <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
             TAMBAH
             </button>
 
@@ -193,7 +196,7 @@ if(isset($_POST['hapus'])){
 
             <input type="text" name="nama_diklat" placeholder="Nama Diklat">
 
-            <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
+            <button type="button" onclick="klikUbahBeda('id_riwayat_diklat')" class="tombol-ubah btn-kecil">
             UBAH
             </button>
 
@@ -206,7 +209,7 @@ if(isset($_POST['hapus'])){
                 <input type="number" name="tahun" placeholder="YYYY">
 
                 <div class="aksi-vertikal">
-                    <button type="submit" name="hapus" class="tombol-hapus btn-kecil">
+                    <button type="button" onclick="klikHapus('id_riwayat_diklat')" class="tombol-hapus btn-kecil">
                         HAPUS
                     </button>
                 </div>
@@ -257,9 +260,19 @@ if(isset($_POST['hapus'])){
     </div>
 
 </main>
-<?php include 'Notifikasi_Logout.php'; ?>
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
 
-<script src="../assets/script_pg.js"></script>
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-hapus">OK</button>
+    </div>
+  </div>
+</div>
+
+<?php include 'Notifikasi_Logout.php'; ?>
 
 <script>
 function pilihData(id,id_jenis,nama,tahun){
@@ -270,6 +283,29 @@ document.querySelector("input[name='nama_diklat']").value = nama;
 document.querySelector("input[name='tahun']").value = tahun;
 
 }
+</script>
+
+<script src="../assets/script_pg.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status === 'berhasil_tambah') {
+        openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+    }
+
+    if (status === 'berhasil_ubah') {
+        openModalAksi("Berhasil", "Data berhasil diubah", "info");
+    }
+
+    if (status === 'berhasil_hapus') {
+        openModalAksi("Berhasil", "Data berhasil dihapus", "info");
+    }
+
+});
 </script>
 </body>
 </html>

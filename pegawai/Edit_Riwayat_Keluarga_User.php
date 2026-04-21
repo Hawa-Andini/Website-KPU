@@ -50,7 +50,7 @@ if(isset($_POST['tambah'])){
             )
             ");
 
-            header("Location: Edit_Riwayat_Keluarga_User.php");
+            header("Location: Edit_Riwayat_Keluarga_User.php?status=berhasil_tambah");
             exit;
         }
     }
@@ -78,7 +78,7 @@ if(isset($_POST['ubah'])){
         WHERE id_riwayat_kel='$id'
         ");
 
-        header("Location: Edit_Riwayat_Keluarga_User.php");
+        header("Location: Edit_Riwayat_Keluarga_User.php?status=berhasil_ubah");
         exit;
     }
 }
@@ -93,6 +93,9 @@ if(isset($_POST['hapus'])){
     DELETE FROM riwayat_keluarga
     WHERE id_riwayat_kel='$id'
     ");
+
+    header("Location: Edit_Riwayat_Keluarga_User.php?status=berhasil_hapus");
+    exit;
 }
 ?>
 
@@ -170,21 +173,21 @@ if(isset($_POST['hapus'])){
     <div class="bagian-identitas">
 
         <div class="form-edit">
-        <form method="POST">
+        <form method="POST" id="formUpload">
         <input type="hidden" name="id_riwayat_kel" id="id_riwayat_kel">
 
         <!-- Nama -->
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>Nama</label>
             <input type="text" name="nama">
-            <button type="submit" name="tambah" class="tombol-tambah btn-kecil">TAMBAH</button>
+            <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">TAMBAH</button>
         </div>
 
         <!-- Keterangan -->
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>Keterangan</label>
             <select name="id_hub_kel" style="height:30px; border:1px solid #888;">
-                <option value="">--Pilih Keterangan--</option>
+                <option value="">-- Pilih Keterangan --</option>
                 <?php
                 $qHub = mysqli_query($conn,"SELECT * FROM master_hub_kel");
                 while($h = mysqli_fetch_assoc($qHub)){
@@ -192,14 +195,14 @@ if(isset($_POST['hapus'])){
                 }
                 ?>
             </select>
-            <button type="submit" name="ubah" class="tombol-ubah btn-kecil">UBAH</button>
+            <button type="button" onclick="klikUbahBeda('id_riwayat_kel')" class="tombol-ubah btn-kecil">UBAH</button>
         </div>
 
         <!-- No Telepon -->
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>No Telepon</label>
             <input type="text" name="no_telp">
-            <button type="submit" name="hapus" class="tombol-hapus btn-kecil">HAPUS</button>
+            <button type="button" onclick="klikHapus('id_riwayat_kel')" class="tombol-hapus btn-kecil">HAPUS</button>
         </div>
 
         <!-- Alamat -->
@@ -263,10 +266,19 @@ if(isset($_POST['hapus'])){
 </div>
 
 </main>
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-hapus">OK</button>
+    </div>
+  </div>
+</div>
 
 <?php include 'Notifikasi_Logout.php'; ?>
-
-<script src="../assets/script_pg.js"></script>
 
 <script>
 function pilihData(id,nama,no_telp,alamat,id_hub_kel){
@@ -278,6 +290,31 @@ function pilihData(id,nama,no_telp,alamat,id_hub_kel){
     document.querySelector("select[name='id_hub_kel']").value = id_hub_kel;
 
 }
+</script>
+
+<script src="../assets/script_pg.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status === 'berhasil_tambah') {
+        openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+    }
+
+    if (status === 'berhasil_ubah') {
+        openModalAksi("Berhasil", "Data berhasil diubah", "info");
+    }
+
+    if (status === 'berhasil_hapus') {
+        openModalAksi("Berhasil", "Data berhasil dihapus", "info");
+    }
+    if (status) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+}
+});
 </script>
 </body>
 </html>

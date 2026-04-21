@@ -581,7 +581,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                     <div class="baris-form">
                         <label>Tipe Karyawan</label>
-                        <input type="text" name="tipe_karyawan" placeholder="Contoh: PNS, CPNS, PPP3, dll">
+                        <input type="text" name="tipe_karyawan" placeholder="Contoh: PNS, CPNS, PPPK, dll">
                     </div>
 
                     <div class="baris-form">

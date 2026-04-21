@@ -142,10 +142,10 @@ function togglePassword() {
 
     if (password.type === "password") {
         password.type = "text";
-        icon.textContent = "🙈";
+        icon.style.color = "#e88c9a"; 
     } else {
         password.type = "password";
-        icon.textContent = "👁";
+        icon.style.color = "#7a0000"; 
     }
 }
 </script>

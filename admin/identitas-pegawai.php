@@ -180,7 +180,7 @@ if (isset($_POST['ubah'])) {
     // =========================
     // REDIRECT KE HALAMAN YANG SAMA
     // =========================
-    header("Location: identitas-pegawai.php?nip=" . urlencode($nip) . "&status=sukses");
+    header("Location: identitas-pegawai.php?nip=" . urlencode($nip) . "&status=berhasil_ubah");
     exit;
 }
 
@@ -237,11 +237,7 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
 </head>
 
 <body class="role-admin">
-    <?php if (isset($_GET['status']) && $_GET['status'] == 'sukses'): ?>
-    <script>
-        alert('Data berhasil diubah');
-    </script>
-<?php endif; ?>
+ 
     <!-- SIDEBAR MINIMAL -->
 
 
@@ -333,7 +329,7 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
             <a href="Admin_Edit_Riwayat_SKP.php?nip=<?= $nip ?>" class="tab">Riwayat SKP</a>
         </div>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" id="formUpload">
             <!-- FORM IDENTITAS -->
             <section class="form-identitas">
 
@@ -504,7 +500,10 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
 
                     <div class="baris-form">
                         <label>No. Telepon</label>
-                        <input name="no_telp" value="<?= $pegawai['no_telp'] ?? '' ?>">
+                        <input type="text" name="no_telp" 
+                            value="<?= $pegawai['no_telp'] ?>" 
+                            placeholder="Contoh: 08XXXXX"
+                            oninput="formatTelp(this)">
                     </div>
 
                     <div class="baris-form">
@@ -514,15 +513,38 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
                     <!-- TOMBOL -->
 
                     <div class="aksi-form">
-                        <button type="submit" name="ubah" class="tombol-ubah">UBAH</button>
-                        <button type="submit" name="hapus" class="tombol-hapus">HAPUS</button>
+                    <button type="button" onclick="klikUbah()" class="tombol-ubah">UBAH</button>
                     </div>
                 </div>
         </form>
 
 
     </main>
+    <div id="modalError" class="modal">
+  <div class="modal-content">
+    <h3>Peringatan</h3>
+    <p id="errorText"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button onclick="closeErrorModal()" class="tombol-batal">OK</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi">OK</button>
+    </div>
+  </div>
+</div>
+
     <?php include '../pegawai/Notifikasi_Logout.php'; ?>
+    <script src="../assets/script_pg.js"></script>
 
     <script>
         function previewImage(event) {
@@ -532,6 +554,13 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
             }
             reader.readAsDataURL(event.target.files[0]);
         }
+
+        const urlParams = new URLSearchParams(window.location.search);
+const status = urlParams.get('status');
+
+if (status === 'berhasil_ubah') {
+    openModalAksi("Berhasil", "Data berhasil diubah", "info");
+}        
     </script>
 
     <script src="../assets/core-ui.js"></script>

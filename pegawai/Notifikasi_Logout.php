@@ -34,7 +34,7 @@
   background: #f2f2f2;
   border-radius: 15px;
   padding: 15px 20px;
-  width: 200px;
+  width: 100%;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 

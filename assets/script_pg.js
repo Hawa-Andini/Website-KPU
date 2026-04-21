@@ -121,3 +121,247 @@ document.addEventListener("DOMContentLoaded", function () {
     function closeErrorModal() {
         document.getElementById("modalError").style.display = "none";
     }
+
+    //UBAH DAN HAPUS
+    function openModalAksi(judul, pesan, tipe, aksiOK = null) {
+        document.getElementById("modalAksi").style.display = "flex";
+        document.getElementById("judulAksi").innerText = judul;
+        document.getElementById("isiAksi").innerText = pesan;
+    
+        let btnOK = document.getElementById("btnOKAksi");
+        let btnBatal = document.getElementById("btnBatalAksi");
+    
+        // 🔥 INI YANG PENTING BANGET
+        btnOK.onclick = null;
+        btnBatal.onclick = null;
+    
+        btnOK.className = "";
+        btnOK.classList.add("tombol-tambah");
+    
+        btnBatal.style.display = "none";
+    
+        // default (info)
+        btnOK.onclick = closeModalAksi;
+    
+        if (tipe === "confirm") {
+            btnBatal.style.display = "inline-block";
+    
+            btnOK.className = "";
+            btnOK.classList.add("tombol-hapus");
+    
+            btnOK.onclick = function () {
+                if (aksiOK) aksiOK();
+                closeModalAksi();
+            };
+    
+            btnBatal.onclick = closeModalAksi;
+        }
+    }
+    window.closeModalAksi = function () {
+        document.getElementById("modalAksi").style.display = "none";
+    };
+// ================= UBAH =================
+function klikUbah() {
+    let kosong = false;
+
+    let nip = document.querySelector("input[name='nip']").value.trim();
+
+    // VALIDASI NIP
+    if (nip.length > 18) {
+        openModalAksi("Peringatan", "NIP tidak boleh lebih dari 18 digit!", "info");
+        return;
+    }
+
+    if (nip.length < 18) {
+        openModalAksi("Peringatan", "NIP tidak boleh kurang dari 18 digit!", "info");
+        return;
+    }
+
+    if (!/^\d+$/.test(nip)) {
+        openModalAksi("Peringatan", "NIP harus berupa angka!", "info");
+        return;
+    }
+
+    let telp = document.querySelector("input[name='no_telp']").value.trim();
+
+    let telpAngka = telp.replace(/\D/g, '');
+
+    if (telpAngka.length === 0) {
+        openModalAksi("Peringatan", "Nomor telepon tidak boleh kosong!", "info");
+        return;
+    }
+
+    if (telpAngka.length > 13) {
+        openModalAksi("Peringatan", "Nomor telepon terlalu panjang!", "info");
+        return;
+    }
+
+    if (telpAngka.length < 10) {
+        openModalAksi("Peringatan", "Nomor telepon terlalu pendek!", "info");
+        return;
+    }
+
+    if (!telpAngka.startsWith("08")) {
+        openModalAksi("Peringatan", "Nomor telepon harus diawali 08!", "info");
+        return;
+    }
+
+    document.querySelectorAll("#formUpload input, #formUpload textarea, #formUpload select").forEach(el => {
+        if (el.type !== "file" && el.value.trim() === "") {
+            kosong = true;
+        }
+    });
+
+    if (kosong) {
+        openModalAksi("Peringatan", "Lengkapi data terlebih dahulu!", "info");
+    } else {
+        openModalAksi(
+            "Konfirmasi",
+            "Apakah Anda ingin mengubah data?",
+            "confirm",
+            function () {
+                let form = document.getElementById("formUpload");
+
+                let input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "ubah";
+                input.value = "1";
+
+                form.appendChild(input);
+                document.querySelector("input[name='no_telp']").value = telpAngka;
+                form.submit();
+            }
+        );
+    }
+}
+
+function klikUbahBeda(idField) {
+
+    let id = document.getElementById(idField).value;
+
+    if (!id) {
+        openModalAksi("Peringatan", "Pilih data dari tabel terlebih dahulu!", "info");
+        return;
+    }
+
+    let kosong = false;
+
+    document.querySelectorAll("#formUpload input, #formUpload textarea, #formUpload select").forEach(el => {
+        if (el.type !== "file" && el.value.trim() === "") {
+            kosong = true;
+        }
+    });
+
+    if (kosong) {
+        openModalAksi("Peringatan", "Lengkapi data terlebih dahulu!", "info");
+        return;
+    }
+
+    openModalAksi(
+        "Konfirmasi",
+        "Apakah Anda ingin mengubah data?",
+        "confirm",
+        function () {
+            let form = document.getElementById("formUpload");
+
+            let input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "ubah";
+            input.value = "1";
+
+            form.appendChild(input);
+            form.submit();
+        }
+    );
+}
+
+function klikTambah() {
+
+    let kosong = false;
+
+    // ambil semua field dalam form
+    document.querySelectorAll("#formUpload input, #formUpload select, #formUpload textarea")
+    .forEach(el => {
+
+        // skip hidden & file
+        if (el.type === "hidden" || el.type === "file") return;
+
+        // skip yang memang tidak wajib (kalau ada)
+        if (el.hasAttribute("data-optional")) return;
+
+        if (el.value.trim() === "") {
+            kosong = true;
+        }
+    });
+
+    if (kosong) {
+        openModalAksi("Peringatan", "Lengkapi data terlebih dahulu!", "info");
+        return;
+    }
+
+    openModalAksi(
+        "Konfirmasi",
+        "Apakah Anda ingin menambahkan data?",
+        "confirm",
+        function () {
+            let form = document.getElementById("formUpload");
+
+            let input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "tambah";
+            input.value = "1";
+
+            form.appendChild(input);
+            form.submit();
+        }
+    );
+}
+
+function klikHapus(idField) {
+    let id = document.getElementById(idField).value;
+
+    if (!id) {
+        openModalAksi("Peringatan", "Pilih data dari tabel terlebih dahulu!", "info");
+        return;
+    }
+
+    openModalAksi(
+        "Konfirmasi",
+        "Apakah Anda ingin menghapus data?",
+        "confirm",
+        function () {
+            let form = document.getElementById("formUpload");
+
+            let input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "hapus";
+            input.value = "1";
+
+            form.appendChild(input);
+            form.submit();
+        }
+    );
+}
+//no telepon
+function formatTelp(input) {
+
+    let angka = input.value.replace(/\D/g, '');
+
+    let format = angka;
+
+    if (angka.length > 4 && angka.length <= 8) {
+        format = angka.substring(0, 4) + '-' + angka.substring(4);
+    } 
+    else if (angka.length > 8) {
+        format = angka.substring(0, 4) + '-' + angka.substring(4, 8) + '-' + angka.substring(8);
+    }
+
+    input.value = format;
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+    let input = document.querySelector("input[name='no_telp']");
+    if (input && input.value) {
+        formatTelp(input);
+    }
+});

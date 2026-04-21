@@ -155,14 +155,24 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
 
             <div class="input-gabung klik-redirect" onclick="window.location='Edit_Riwayat_Golongan_User.php'">
 
-            <select readonly>
-            <?php while($g = mysqli_fetch_assoc($golongan)){ ?>
-            <option value="<?= $g['id_gol'] ?>"
-            <?php if(isset($data_gol['id_gol']) && $data_gol['id_gol'] == $g['id_gol']) echo "selected"; ?>>
-            <?= $g['nama_pangkat'] ?> - <?= $g['kode_gol'] ?>
-            </option>
-            <?php } ?>
-            </select>
+            <select style="pointer-events:none;">
+
+              <?php if(!empty($data_gol)) { ?>
+
+                  <?php while($g = mysqli_fetch_assoc($golongan)){ ?>
+                  <option value="<?= $g['id_gol'] ?>"
+                  <?php if($data_gol['id_gol'] == $g['id_gol']) echo "selected"; ?>>
+                  <?= $g['nama_pangkat'] ?> - <?= $g['kode_gol'] ?>
+                  </option>
+                  <?php } ?>
+
+              <?php } else { ?>
+
+                  <option value="">-- Pilih Pangkat/Gol.Ruang --</option>
+
+              <?php } ?>
+
+              </select>
 
             <input type="date" value="<?= $data_gol['tmt_golongan'] ?? '' ?>" style="pointer-events:none;">
         </div>
@@ -174,12 +184,20 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
 
             <div class="input-gabung klik-redirect" onclick="window.location='Edit_Riwayat_Jabatan_User.php'">
 
-            <select readonly>
-            <?php while($g = mysqli_fetch_assoc($jabatan)){ ?>
-            <option value="<?= $g['id_jabatan'] ?>"
-            <?php if($data_jabatan['id_jabatan']==$g['id_jabatan']) echo "selected"; ?>>
-            <?= $g['nama_jabatan'] ?> - <?= $g['jenis_jabatan'] ?>
-            </option>
+            <select style="pointer-events:none;">
+            <?php if(!empty($data_jabatan)) { ?>
+
+              <?php while($g = mysqli_fetch_assoc($jabatan)){ ?>
+              <option value="<?= $g['id_jabatan'] ?>"
+              <?php if($data_jabatan['id_jabatan']==$g['id_jabatan']) echo "selected"; ?>>
+              <?= $g['nama_jabatan'] ?> - <?= $g['jenis_jabatan'] ?>
+              </option>
+              <?php } ?>
+
+            <?php } else { ?>
+
+              <option value="">-- Pilih Jabatan --</option>
+
             <?php } ?>
             </select>
 
@@ -321,8 +339,11 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
         </div>
 
         <div class="baris-edit">
-        <label>No Telepon</label>
-        <input type="text" name="no_telp" value="<?= $data['no_telp'] ?>">
+          <label>No Telepon</label>
+          <input type="text" name="no_telp" 
+            value="<?= $data['no_telp'] ?>" 
+            placeholder="Contoh: 08XXXXX"
+            oninput="formatTelp(this)">
         </div>
 
 
@@ -333,8 +354,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
 
 
         <div class="aksi-edit">
-        <button type="submit" name="ubah" class="tombol-ubah">UBAH</button>
-        <button type="submit" name="hapus" class="tombol-hapus">HAPUS</button>
+        <button type="button" onclick="klikUbah()" class="tombol-ubah">UBAH</button>
         </div>
 
         </div>
@@ -353,9 +373,30 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
   </div>
 </div>
 
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi">OK</button>
+    </div>
+  </div>
+</div>
+
 <?php include 'Notifikasi_Logout.php'; ?>
 
 <script src="../assets/script_pg.js"></script>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const status = urlParams.get('status');
+
+if (status === 'berhasil_ubah') {
+    openModalAksi("Berhasil", "Data berhasil diubah", "info");
+}
+</script>
 
 </body>
 </html>

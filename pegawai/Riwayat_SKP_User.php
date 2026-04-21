@@ -90,7 +90,7 @@ include 'Data_Pegawai.php';
         </div>
             
         <!-- PDF -->
-        <a href="../admin/pdf/generate_pdf.php?nip=<?php echo $data['nip']; ?>" target="_blank" class="pdf-box">
+        <a href="#" onclick="cekPDF('<?= $data['nip'] ?>')" class="pdf-box">
           <div class="pdf-icon">PDF</div>
             <span>Lihat PDF</span>
         </a>
@@ -152,9 +152,58 @@ include 'Data_Pegawai.php';
       </div>
     </div>
 </main>
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnOKAksi" class="tombol-tambah">OK</button>
+    </div>
+  </div>
+</div>
+
 <?php include 'Notifikasi_Logout.php'; ?>
 
 <script src="../assets/script_pg.js"></script>
+
+<script>
+function showModal(judul, isi) {
+    document.getElementById("judulAksi").innerText = judul;
+    document.getElementById("isiAksi").innerText = isi;
+    document.getElementById("modalAksi").style.display = "flex";
+
+    document.getElementById("btnOKAksi").onclick = function() {
+        document.getElementById("modalAksi").style.display = "none";
+    };
+}
+
+function cekPDF(nip) {
+
+    // DATA DARI PHP 
+    let golongan = <?= isset($data_gol) ? 1 : 0 ?>;
+    let jabatan = <?= isset($data_jabatan) ? 1 : 0 ?>;
+    let pendidikan = <?= isset($data_pendidikan) ? 1 : 0 ?>;
+
+    if (golongan == 0) {
+        showModal("Peringatan", "Riwayat golongan belum diisi!");
+        return;
+    }
+
+    if (jabatan == 0) {
+        showModal("Peringatan", "Riwayat jabatan belum diisi!");
+        return;
+    }
+
+    if (pendidikan == 0) {
+        showModal("Peringatan", "Riwayat pendidikan belum diisi!");
+        return;
+    }
+
+    // kalau lolos → buka PDF
+    window.open("../admin/pdf/generate_pdf.php?nip=" + nip, "_blank");
+}
+</script>
 
 </body>
 </html>

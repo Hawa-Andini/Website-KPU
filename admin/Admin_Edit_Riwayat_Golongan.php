@@ -71,13 +71,9 @@ if (isset($_POST['tambah'])) {
             ('$nip','$id_gol','$tmt_golongan')
             ");
 
-      header("Location: Admin_Edit_Riwayat_Golongan.php?nip=$nip");
+      header("Location: Admin_Edit_Riwayat_Golongan.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
       exit;
-    } else {
-      echo "<script>alert('Data sudah ada');</script>";
-    }
-  } else {
-    echo "<script>alert('Lengkapi data terlebih dahulu');</script>";
+    } 
   }
 }
 
@@ -104,11 +100,9 @@ if (isset($_POST['ubah'])) {
         WHERE id_riwayat_gol='$id'
         ");
 
-    header("Location: Admin_Edit_Riwayat_Golongan.php?nip=$nip");
-    exit;
-  } else {
-    echo "<script>alert('Lengkapi data terlebih dahulu');</script>";
-  }
+        header("Location: Admin_Edit_Riwayat_Golongan.php?nip=" . urlencode($nip) . "&status=berhasil_ubah");
+        exit;
+  } 
 }
 
 
@@ -127,9 +121,8 @@ if (isset($_POST['hapus'])) {
     DELETE FROM riwayat_golongan
     WHERE id_riwayat_gol='$id'
     ");
-
-  header("Location: Admin_Edit_Riwayat_Golongan.php?nip=$nip");
-  exit;
+    header("Location: Admin_Edit_Riwayat_Golongan.php?nip=" . urlencode($nip) . "&status=berhasil_hapus");
+    exit;
 }
 ?>
 
@@ -229,7 +222,7 @@ if (isset($_POST['hapus'])) {
     </div>
     <div class="bagian-identitas">
       <div class="form-edit">
-        <form method="POST">
+      <form method="POST" id="formUpload">
           <input type="hidden" name="nip" value="<?= $nip ?>">
           <input type="hidden" name="id_riwayat_gol" id="id_riwayat_gol">
 
@@ -249,7 +242,7 @@ if (isset($_POST['hapus'])) {
               ?>
             </select>
 
-            <button type="submit" name="tambah" class="tombol-tambah btn-kecil">
+            <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
               TAMBAH
             </button>
           </div>
@@ -260,7 +253,7 @@ if (isset($_POST['hapus'])) {
 
             <input type="date" name="tmt_golongan">
 
-            <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
+            <button type="button" onclick="klikUbahBeda('id_riwayat_gol')" class="tombol-ubah btn-kecil">
               UBAH
             </button>
           </div>
@@ -312,6 +305,17 @@ if (isset($_POST['hapus'])) {
       </div>
 
   </main>
+  <div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-hapus">OK</button>
+    </div>
+  </div>
+</div>
   <?php include '../pegawai/Notifikasi_Logout.php'; ?>
 
   <script>
@@ -325,10 +329,31 @@ if (isset($_POST['hapus'])) {
 
     }
   </script>
+  <script src="../assets/script_pg.js"></script>
 
   <script src="../assets/core-ui.js"></script>
   <script src="../assets/datamaster.js"></script>
   <script src="../assets/admin-ui.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status === 'berhasil_tambah') {
+        openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+    }
+
+    if (status === 'berhasil_ubah') {
+        openModalAksi("Berhasil", "Data berhasil diubah", "info");
+    }
+
+    if (status === 'berhasil_hapus') {
+        openModalAksi("Berhasil", "Data berhasil dihapus", "info");
+    }
+
+});
+</script>
 
 </body>
 

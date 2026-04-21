@@ -23,11 +23,12 @@ $tmt_cpns = $_POST['tmt_cpns'];
 $tmt_pns  = $_POST['tmt_pns'];
 
 
-//* UPLOAD FOTO  */
-$pesan = "";
-
+//* UBAH DATA */
 if (isset($_POST['ubah'])) {
 
+    $updateFoto = "";
+
+    // ===== CEK FOTO =====
     if (!empty($_FILES['foto']['name'])) {
 
         $foto = $_FILES['foto']['name'];
@@ -36,53 +37,47 @@ if (isset($_POST['ubah'])) {
 
         $ext = strtolower(pathinfo($foto, PATHINFO_EXTENSION));
 
+        // format salah
         if ($ext != "jpg" && $ext != "jpeg") {
-            $pesan = "Format foto harus JPG / JPEG!";
-        } 
-        else if ($size > 2000000) {
-            $pesan = "Ukuran foto maksimal 2MB!";
-        } 
-        else {
-            $namaBaru = time() . "_" . $foto;
-
-            move_uploaded_file($tmp, "../uploads/" . $namaBaru);
-
-            mysqli_query($conn, "UPDATE pegawai SET foto='uploads/$namaBaru' WHERE nip='$nip'");
-
-            $pesan = "Foto berhasil diupload!";
+            header("location: Edit_Identitas_User.php?status=error_format");
+            exit;
         }
+
+        // ukuran terlalu besar
+        if ($size > 2000000) {
+            header("location: Edit_Identitas_User.php?status=error_size");
+            exit;
+        }
+
+        // upload berhasil
+        $namaBaru = time() . "_" . $foto;
+        move_uploaded_file($tmp, "../uploads/" . $namaBaru);
+
+        // masukkan ke query
+        $updateFoto = ", foto='uploads/$namaBaru'";
     }
-}
 
-/* UPDATE DATA PEGAWAI */
-mysqli_query($conn,"UPDATE pegawai SET
-nama_pegawai='$nama',
-instansi='$instansi',
-tempat_lahir='$tempat_lahir',
-tanggal_lahir='$tanggal_lahir',
-alamat='$alamat',
-tmt_cpns='$tmt_cpns',
-tmt_pns='$tmt_pns',
-no_telp='$telp',
-id_jenis_kelamin='$jk',
-id_agama='$agama',
-id_status_perkawinan='$status',
-id_unit_kerja='$unit',
-tipe_karyawan='$tipe_karyawan'
-$updateFoto
-WHERE nip='$nip'
-");
+    // ===== UPDATE DATA + FOTO SEKALIGUS =====
+    mysqli_query($conn,"UPDATE pegawai SET
+    nama_pegawai='$nama',
+    instansi='$instansi',
+    tempat_lahir='$tempat_lahir',
+    tanggal_lahir='$tanggal_lahir',
+    alamat='$alamat',
+    tmt_cpns='$tmt_cpns',
+    tmt_pns='$tmt_pns',
+    no_telp='$telp',
+    id_jenis_kelamin='$jk',
+    id_agama='$agama',
+    id_status_perkawinan='$status',
+    id_unit_kerja='$unit',
+    tipe_karyawan='$tipe_karyawan'
+    $updateFoto
+    WHERE nip='$nip'
+    ");
 
-/* HAPUS DATA PEGAWAI */
-if(isset($_POST['hapus'])){
-
-    $nip = $_POST['nip'];
-
-    mysqli_query($conn,"DELETE FROM pegawai WHERE nip='$nip'");
-
+    header("location: Edit_Identitas_User.php?status=berhasil_ubah");
     exit;
 }
-
-header("location: Edit_Identitas_User.php");
 
 ?>

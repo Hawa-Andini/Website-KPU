@@ -46,7 +46,7 @@ if(isset($_POST['tambah'])){
             )
             ");
 
-            header("Location: Edit_Riwayat_SKP_User.php");
+            header("Location: Edit_Riwayat_SKP_User.php?status=berhasil_tambah");
             exit;
         }
     }
@@ -71,7 +71,7 @@ if(isset($_POST['ubah'])){
         WHERE id_riwayat_skp='$id'
         ");
 
-        header("Location: Edit_Riwayat_SKP_User.php");
+        header("Location: Edit_Riwayat_SKP_User.php?status=berhasil_ubah");
         exit;
     }
 }
@@ -85,6 +85,9 @@ if(isset($_POST['hapus'])){
     DELETE FROM riwayat_skp
     WHERE id_riwayat_skp='$id'
     ");
+
+    header("Location: Edit_Riwayat_SKP_User.php?status=berhasil_hapus");
+    exit;
 }
 ?>
 
@@ -167,7 +170,7 @@ if(isset($_POST['hapus'])){
     </div>
       <div class="bagian-identitas">
         <!-- FORM -->
-        <form method="POST">
+        <form method="POST" id="formUpload">
         <input type="hidden" name="id_riwayat_skp" id="id_riwayat_skp">
 
         <!-- BARIS TAHUN -->
@@ -176,7 +179,7 @@ if(isset($_POST['hapus'])){
 
         <input type="number" name="tahun">
 
-        <button type="submit" name="tambah" class="tombol-tambah btn-kecil">
+        <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
         TAMBAH
         </button>
         </div>
@@ -188,7 +191,7 @@ if(isset($_POST['hapus'])){
 
         <input type="number" name="rerata_nilai" step="0.01">
 
-        <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
+        <button type="button" onclick="klikUbahBeda('id_riwayat_skp')"  class="tombol-ubah btn-kecil">
         UBAH
         </button>
         </div>
@@ -200,7 +203,7 @@ if(isset($_POST['hapus'])){
 
         <select name="id_predikat_skp" style="height:30px; border:1px solid #888;">
 
-        <option value="">--Pilih Predikat--</option>
+        <option value="">-- Pilih Predikat --</option>
 
         <?php
         $qPredikat = mysqli_query($conn,"SELECT * FROM master_predikat_skp");
@@ -213,7 +216,7 @@ if(isset($_POST['hapus'])){
 
         <div class="aksi-vertikal">
 
-        <button type="submit" name="hapus" class="tombol-hapus btn-kecil">
+        <button type="button" onclick="klikHapus('id_riwayat_skp')" class="tombol-hapus btn-kecil">
         HAPUS
         </button>
 
@@ -265,9 +268,20 @@ if(isset($_POST['hapus'])){
     </div>
 
 </main>
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-hapus">OK</button>
+    </div>
+  </div>
+</div>
+
 <?php include 'Notifikasi_Logout.php'; ?>
 
-<script src="../assets/script_pg.js"></script>
 
 <script>
 function pilihData(id,tahun,rerata,id_predikat){
@@ -277,6 +291,28 @@ function pilihData(id,tahun,rerata,id_predikat){
     document.querySelector("input[name='rerata_nilai']").value = rerata;
     document.querySelector("select[name='id_predikat_skp']").value = id_predikat;
 }
+</script>
+
+<script src="../assets/script_pg.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status === 'berhasil_tambah') {
+        openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+    }
+
+    if (status === 'berhasil_ubah') {
+        openModalAksi("Berhasil", "Data berhasil diubah", "info");
+    }
+
+    if (status === 'berhasil_hapus') {
+        openModalAksi("Berhasil", "Data berhasil dihapus", "info");
+    }
+});
 </script>
 </body>
 </html>

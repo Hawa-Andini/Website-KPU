@@ -75,11 +75,9 @@ VALUES
 ('$nip','$id_jabatan','$pegawai[id_unit_kerja]','$tmt_jabatan', '$tmt_akhir')
 ");
 
-      header("Location: Admin_Edit_Riwayat_Jabatan.php?nip=$nip");
-      exit;
-    } else {
-      echo "<script>alert('Data sudah ada');</script>";
-    }
+header("Location: Admin_Edit_Riwayat_Jabatan.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
+exit;
+    } 
   }
 }
 
@@ -133,8 +131,8 @@ DELETE FROM riwayat_jabatan
 WHERE id_riwayat_jabatan='$id'
 ");
 
-  header("Location: Admin_Edit_Riwayat_Jabatan.php?nip=$nip");
-  exit;
+header("Location: Admin_Edit_Riwayat_Jabatan.php?nip=" . urlencode($nip) . "&status=berhasil_ubah");
+exit;
 }
 
 ?>
@@ -209,7 +207,6 @@ WHERE id_riwayat_jabatan='$id'
   <!-- KONTEN -->
   <main class="konten">
     <h2>Riwayat Jabatan</h2>
-    <!-- <button class="tombol-keluar">Log Out</button> -->
     <div class="user-profile" id="userProfile">
       <div class="user-info">
         <div class="user-icon">👤</div>
@@ -239,7 +236,7 @@ WHERE id_riwayat_jabatan='$id'
 
     <div class="bagian-identitas">
       <div class="form-edit">
-        <form method="POST">
+      <form method="POST" id="formUpload">
           <input type="hidden" name="nip" value="<?= $nip ?>">
           <input type="hidden" name="id_riwayat_jabatan" id="id_riwayat_jabatan">
 
@@ -259,7 +256,7 @@ WHERE id_riwayat_jabatan='$id'
               ?>
             </select>
 
-            <button type="submit" name="tambah" class="tombol-tambah btn-kecil">
+            <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
               TAMBAH
             </button>
           </div>
@@ -270,7 +267,7 @@ WHERE id_riwayat_jabatan='$id'
 
             <input type="date" name="tmt_jabatan">
 
-            <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
+            <button type="button" onclick="klikUbahBeda('id_riwayat_jabatan')" class="tombol-ubah btn-kecil">
               UBAH
             </button>
           </div>
@@ -281,7 +278,7 @@ WHERE id_riwayat_jabatan='$id'
 
             <input type="date" name="tmt_akhir">
 
-            <button type="submit" name="hapus" class="tombol-hapus btn-kecil">
+            <button type="button" onclick="klikHapus('id_riwayat_jabatan')" class="tombol-hapus btn-kecil">
               HAPUS
             </button>
           </div>
@@ -338,6 +335,17 @@ ORDER BY rj.tmt_jabatan DESC
         </table>
       </div>
   </main>
+  <div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-hapus">OK</button>
+    </div>
+  </div>
+</div>
   <?php include '../pegawai/Notifikasi_Logout.php'; ?>
 
   <script>
@@ -351,9 +359,31 @@ ORDER BY rj.tmt_jabatan DESC
     }
   </script>
 
-  <script src="../assets/core-ui.js"></script>
-  <script src="../assets/datamaster.js"></script>
-  <script src="../assets/admin-ui.js"></script>
+<script src="../assets/script_pg.js"></script>
+
+<script src="../assets/core-ui.js"></script>
+<script src="../assets/datamaster.js"></script>
+<script src="../assets/admin-ui.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+
+  if (status === 'berhasil_tambah') {
+      openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+  }
+
+  if (status === 'berhasil_ubah') {
+      openModalAksi("Berhasil", "Data berhasil diubah", "info");
+  }
+
+  if (status === 'berhasil_hapus') {
+      openModalAksi("Berhasil", "Data berhasil dihapus", "info");
+  }
+
+});
+</script>
 
 </body>
 

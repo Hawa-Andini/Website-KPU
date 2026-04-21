@@ -72,14 +72,10 @@ VALUES
 ('$nip','$id_jenis_diklat','$nama_diklat','$tahun')
 ");
 
-      header("Location: Admin_Edit_Riwayat_Diklat.php?nip=$nip");
-      exit;
-    } else {
-      echo "<script>alert('Data sudah ada');</script>";
-    }
-  } else {
-    echo "<script>alert('Lengkapi data terlebih dahulu');</script>";
-  }
+header("Location: Admin_Edit_Riwayat_Diklat.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
+exit;
+    } 
+  } 
 }
 
 
@@ -109,11 +105,9 @@ tahun='$tahun'
 WHERE id_riwayat_diklat='$id'
 ");
 
-    header("Location: Admin_Edit_Riwayat_Diklat.php?nip=$nip");
-    exit;
-  } else {
-    echo "<script>alert('Lengkapi data terlebih dahulu');</script>";
-  }
+header("Location: Admin_Edit_Riwayat_Diklat.php?nip=" . urlencode($nip) . "&status=berhasil_ubah");
+exit;
+  } 
 }
 
 
@@ -133,8 +127,8 @@ DELETE FROM riwayat_diklat
 WHERE id_riwayat_diklat='$id'
 ");
 
-  header("Location: Admin_Edit_Riwayat_Diklat.php?nip=$nip");
-  exit;
+header("Location: Admin_Edit_Riwayat_Diklat.php?nip=" . urlencode($nip) . "&status=berhasil_hapus");
+exit;
 }
 ?>
 <!DOCTYPE html>
@@ -243,7 +237,7 @@ WHERE id_riwayat_diklat='$id'
     <div class="bagian-identitas">
 
       <div class="form-edit">
-        <form method="POST">
+      <form method="POST" id="formUpload">
           <input type="hidden" name="nip" value="<?= $nip ?>">
 
           <input type="hidden" name="id_riwayat_diklat" id="id_riwayat_diklat">
@@ -266,7 +260,7 @@ WHERE id_riwayat_diklat='$id'
 
             </select>
 
-            <button type="submit" name="tambah" class="tombol-tambah btn-kecil">
+            <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
               TAMBAH
             </button>
 
@@ -279,7 +273,7 @@ WHERE id_riwayat_diklat='$id'
 
             <input type="text" name="nama_diklat" placeholder="Nama Diklat">
 
-            <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
+            <button type="button" onclick="klikUbahBeda('id_riwayat_diklat')" class="tombol-ubah btn-kecil">
               UBAH
             </button>
 
@@ -294,9 +288,9 @@ WHERE id_riwayat_diklat='$id'
 
             <div class="aksi-vertikal">
 
-              <button type="submit" name="hapus" class="tombol-hapus btn-kecil">
-                HAPUS
-              </button>
+            <button type="button" onclick="klikHapus('id_riwayat_diklat')" class="tombol-hapus btn-kecil">
+              HAPUS
+            </button>
 
             </div>
 
@@ -347,6 +341,17 @@ ORDER BY rd.tahun DESC
     </div>
 
   </main>
+  <div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-hapus">OK</button>
+    </div>
+  </div>
+</div>
   <?php include '../pegawai/Notifikasi_Logout.php'; ?>
 
   <script>
@@ -360,10 +365,31 @@ ORDER BY rd.tahun DESC
     }
   </script>
 
-  <script src="../assets/core-ui.js"></script>
-  <script src="../assets/datamaster.js"></script>
-  <script src="../assets/admin-ui.js"></script>
+<script src="../assets/script_pg.js"></script>
 
+<script src="../assets/core-ui.js"></script>
+<script src="../assets/datamaster.js"></script>
+<script src="../assets/admin-ui.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+
+  if (status === 'berhasil_tambah') {
+      openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+  }
+
+  if (status === 'berhasil_ubah') {
+      openModalAksi("Berhasil", "Data berhasil diubah", "info");
+  }
+
+  if (status === 'berhasil_hapus') {
+      openModalAksi("Berhasil", "Data berhasil dihapus", "info");
+  }
+
+});
+</script>
 </body>
 
 </html>

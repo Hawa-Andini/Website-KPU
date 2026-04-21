@@ -44,7 +44,7 @@ if(isset($_POST['tambah'])){
             )
             ");
 
-            header("Location: Edit_Riwayat_Kehormatan_User.php");
+            header("Location: Edit_Riwayat_Kehormatan_User.php?status=berhasil_tambah");
             exit;
         }
     }
@@ -66,7 +66,7 @@ if(isset($_POST['ubah'])){
         WHERE id_riwayat_kehormatan='$id'
         ");
 
-        header("Location: Edit_Riwayat_Kehormatan_User.php");
+        header("Location: Edit_Riwayat_Kehormatan_User.php?status=berhasil_ubah");
         exit;
     }
 }
@@ -79,6 +79,9 @@ if(isset($_POST['hapus'])){
     DELETE FROM riwayat_kehormatan
     WHERE id_riwayat_kehormatan='$id'
     ");
+
+    header("Location: Edit_Riwayat_Kehormatan_User.php?status=berhasil_hapus");
+    exit;
 }
 ?>
 
@@ -163,7 +166,7 @@ if(isset($_POST['hapus'])){
         </div>
       <div class="bagian-identitas">
         <!-- FORM -->
-        <form method="POST">
+        <form method="POST" id="formUpload">
         <input type="hidden" name="id_riwayat_kehormatan" id="id_riwayat_kehormatan">
 
         <!-- BARIS NAMA PENGHARGAAN -->
@@ -172,7 +175,7 @@ if(isset($_POST['hapus'])){
 
             <input type="text" name="nama_penghargaan">
 
-            <button type="submit" name="tambah" class="tombol-tambah btn-kecil">
+            <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
                 TAMBAH
             </button>
         </div>
@@ -185,11 +188,11 @@ if(isset($_POST['hapus'])){
             <input type="number" name="tahun" placeholder="YYYY">
 
             <div class="aksi-vertikal">
-                <button type="submit" name="ubah" class="tombol-ubah btn-kecil">
+            <button type="button" onclick="klikUbahBeda('id_riwayat_kehormatan')" class="tombol-ubah btn-kecil">
                     UBAH
                 </button>
 
-                <button type="submit" name="hapus" class="tombol-hapus btn-kecil">
+                <button type="button" onclick="klikHapus('id_riwayat_kehormatan')" class="tombol-hapus btn-kecil">
                     HAPUS
                 </button>
             </div>
@@ -234,9 +237,20 @@ if(isset($_POST['hapus'])){
     </div>
 
 </main>
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi" class="tombol-hapus">OK</button>
+    </div>
+  </div>
+</div>
+
 <?php include 'Notifikasi_Logout.php'; ?>
 
-<script src="../assets/script_pg.js"></script>
 <script>
 function pilihData(id,nama,tahun){
 
@@ -245,6 +259,28 @@ function pilihData(id,nama,tahun){
     document.querySelector("input[name='tahun']").value = tahun;
 
 }
+</script>
+
+<script src="../assets/script_pg.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status === 'berhasil_tambah') {
+        openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+    }
+
+    if (status === 'berhasil_ubah') {
+        openModalAksi("Berhasil", "Data berhasil diubah", "info");
+    }
+
+    if (status === 'berhasil_hapus') {
+        openModalAksi("Berhasil", "Data berhasil dihapus", "info");
+    }
+});
 </script>
 </body>
 </html>

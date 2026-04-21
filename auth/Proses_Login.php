@@ -30,7 +30,7 @@ if(!$data_user){
 } elseif(!password_verify($password, $data_user['password'])){
     $error_pass = 1;
 } else {
-    // ✅ LOGIN BERHASIL
+    // LOGIN BERHASIL
     $_SESSION['username'] = $data_user['username'];
     $_SESSION['role']     = $data_user['role'];
     $_SESSION['nip']      = $data_user['nip'];
@@ -51,7 +51,7 @@ if(!$data_user){
     exit;
 }
 
-// ❌ JIKA ERROR
+// JIKA ERROR
 header("location:Login.php?error_user=$error_user&error_pass=$error_pass&error_nonaktif=$error_nonaktif");
 exit;
 ?>

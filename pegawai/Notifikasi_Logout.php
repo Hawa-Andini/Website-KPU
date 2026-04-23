@@ -145,4 +145,6 @@ function openLogoutModal() {
 function closeLogoutModal() {
     document.getElementById("modalLogout").style.display = "none";
 }
+
+
 </script>

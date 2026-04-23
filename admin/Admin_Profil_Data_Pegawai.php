@@ -109,7 +109,7 @@ $offset = ($page - 1) * $limit;
       </div>
 
       <div class="dropdown-menu" id="dropdownMenu">
-        <a href="#" onclick="openLogoutModal()">Keluar</a>
+      <a href="#" onclick="event.preventDefault(); openLogoutModal();">Keluar</a>
       </div>
     </div>
     <!-- dropdown akhir-->
@@ -156,7 +156,6 @@ $offset = ($page - 1) * $limit;
   <!-- dropdown-->
   <?php include '../pegawai/Notifikasi_Logout.php'; ?>
 
-  <!-- <script src="script.js"></script> -->
   <script src="../assets/core-ui.js"></script>
   <script src="../assets/datamaster.js"></script>
   <script src="../assets/admin-ui.js"></script>

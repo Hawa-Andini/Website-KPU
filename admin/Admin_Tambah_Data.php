@@ -314,10 +314,8 @@ if (!empty($_FILES['foto']['name'])) {
         // =========================
         mysqli_commit($conn);
 
-        echo "<script>
-            alert('Data berhasil ditambahkan');
-            window.location='Admin_Profil_Data_Pegawai.php';
-        </script>";
+        header("Location: Admin_Tambah_Data.php?status=berhasil_tambah");
+        exit;
 
     } catch (Exception $e) {
         mysqli_rollback($conn);
@@ -436,7 +434,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
         </div>
 
         <!-- FORM TAMBAH DATA -->
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" id="formUpload">
             <div class="pembungkus-form">
 
                 <!-- FOTO -->
@@ -586,7 +584,9 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                     <div class="baris-form">
                         <label>No Telepon</label>
-                        <input type="text" name="no_telp">
+                        <input type="text" name="no_telp" 
+                        placeholder="Contoh: 08XXXXX"
+                        oninput="formatTelp(this)">
                     </div>
 
                     <div class="baris-form">
@@ -760,13 +760,13 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                 <div class="baris-form">
                     <label>Nama</label>
-                    <input type="text" name="nama_keluarga">
+                    <input type="text" name="nama_keluarga" data-optional>
                 </div>
 
                 <div class="baris-form">
                     <label>Hubungan Keluarga</label>
 
-                    <select name="id_hub_kel">
+                    <select name="id_hub_kel" data-optional>
 
                         <option value="">-- Pilih Hubungan --</option>
 
@@ -786,12 +786,14 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                 <div class="baris-form">
                     <label>No. Telepon</label>
-                    <input type="text" name="no_telp_keluarga">
+                    <input type="text" name="no_telp_keluarga"
+                    placeholder="Contoh: 08XXXXX"
+                    oninput="formatTelp(this)" data-optional>
                 </div>
 
                 <div class="baris-form">
                     <label>Alamat</label>
-                    <input type="text" name="alamat_keluarga">
+                    <input type="text" name="alamat_keluarga" data-optional>
                 </div>
 
             </div>
@@ -853,12 +855,33 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
             <!-- TOMBOL TAMBAH -->
             <div class="aksi-form" style="margin-top:50px;">
-                <button type="submit" name="tambah" class="tombol-tambah">TAMBAH</button>
+            <button type="button" onclick="klikTambah()" class="tombol-tambah">TAMBAH</button>
             </div>
         </form>
     </main>
+    <div id="modalError" class="modal">
+  <div class="modal-content">
+    <h3>Peringatan</h3>
+    <p id="errorText"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button onclick="closeErrorModal()" class="tombol-batal">OK</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalAksi" class="modal">
+  <div class="modal-content">
+    <h3 id="judulAksi"></h3>
+    <p id="isiAksi"></p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnBatalAksi" class="tombol-batal" style="display:none;">Batal</button>
+      <button id="btnOKAksi">OK</button>
+    </div>
+  </div>
+</div> 
     <?php include '../pegawai/Notifikasi_Logout.php'; ?>
-    <!-- <script src="script.js"></script> -->
     <script>
         function previewImage(event) {
             const reader = new FileReader();
@@ -867,28 +890,19 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
             }
             reader.readAsDataURL(event.target.files[0]);
         }
+
+        // notif berhasil
+        const urlParams = new URLSearchParams(window.location.search);
+const status = urlParams.get('status');
+
+if (status === 'berhasil_tambah') {
+    openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+}
     </script>
-    <script src=" ../assets/core-ui.js"></script>
+      <script src=" ../assets/core-ui.js"></script>
     <script src=" ../assets/datamaster.js"></script>
     <script src=" ../assets/admin-ui.js"></script>
-
-    <!-- <script>
-      // Dropdown User Profile
-      const userProfile = document.getElementById("userProfile");
-
-      if (userProfile) {
-        userProfile.addEventListener("click", function () {
-          userProfile.classList.toggle("active");
-        });
-
-        // Tutup jika klik luar
-        document.addEventListener("click", function (e) {
-          if (!userProfile.contains(e.target)) {
-            userProfile.classList.remove("active");
-          }
-        });
-      }
-    </script> -->
+    <script src="../assets/script_pg.js"></script>
 
 
 

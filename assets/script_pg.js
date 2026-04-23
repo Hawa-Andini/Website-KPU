@@ -274,6 +274,7 @@ function klikUbahBeda(idField) {
         }
     );
 }
+// ================= TAMBAH =================
 
 function klikTambah() {
 
@@ -317,6 +318,8 @@ function klikTambah() {
     );
 }
 
+
+// hapus
 function klikHapus(idField) {
     let id = document.getElementById(idField).value;
 

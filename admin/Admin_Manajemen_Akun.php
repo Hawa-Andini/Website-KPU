@@ -2,6 +2,9 @@
 session_start();
 include '../config/koneksi.php';
 
+$notif = "";
+$reload = false; //
+
 if (!isset($_SESSION['nip'])) {
     header("location: ../auth/Login.php");
     exit;
@@ -53,8 +56,7 @@ if (isset($_POST['tambah'])) {
         !preg_match('/[0-9]/', $password_input)
     ) {
 
-        echo "<script>alert('Password harus minimal 8 karakter, mengandung huruf besar dan angka');</script>";
-
+        $notif = "Password minimal 8 karakter, harus ada huruf besar & angka";
     } else {
 
         $password = password_hash($password_input, PASSWORD_DEFAULT);
@@ -64,7 +66,7 @@ if (isset($_POST['tambah'])) {
 
         if (mysqli_num_rows($cek) > 0) {
 
-            echo "<script>alert('Username sudah digunakan');</script>";
+            $notif = "Username sudah digunakan";
 
         } else {
 
@@ -73,7 +75,8 @@ if (isset($_POST['tambah'])) {
                 VALUES ('$nip','$username','$email','$password','$role',1)
             ");
 
-            echo "<script>alert('User berhasil ditambahkan'); location.reload();</script>";
+            $notif = "User berhasil ditambahkan";
+$reload = true; 
         }
     }
 }
@@ -90,16 +93,14 @@ if (isset($_POST['reset_password'])) {
     // VALIDASI
     if ($password !== $confirm) {
 
-        echo "<script>alert('Konfirmasi password tidak sama!');</script>";
-
+        $notif = "Konfirmasi password tidak sama!";    
     } elseif (
         strlen($password) < 8 || 
         !preg_match('/[A-Z]/', $password) || 
         !preg_match('/[0-9]/', $password)
     ) {
 
-        echo "<script>alert('Password baru harus minimal 8 karakter, mengandung huruf besar dan angka');</script>";
-
+        $notif = "Password minimal 8 karakter, harus ada huruf besar & angka";
     } else {
 
         // HASH PASSWORD
@@ -116,8 +117,20 @@ if (isset($_POST['reset_password'])) {
             header("Location: Admin_Manajemen_Akun.php?success=reset");
             exit;
         } else {
-            echo "<script>alert('Gagal reset password!');</script>";
+            $notif = "Gagal reset password!";
         }
+    }
+}
+
+
+// 
+if(isset($_GET['success'])){
+    if($_GET['success'] === 'reset'){
+        $notif = "Password berhasil direset!";
+    } elseif($_GET['success'] === 'nonaktif'){
+        $notif = "Akun berhasil dinonaktifkan!";
+    } elseif($_GET['success'] === 'aktif'){
+        $notif = "Akun berhasil diaktifkan!";
     }
 }
 ?>
@@ -147,6 +160,8 @@ if (isset($_POST['reset_password'])) {
     transform: translateY(-50%);
     cursor: pointer;
 }
+
+
 </style>
 </head>
 
@@ -207,20 +222,6 @@ if (isset($_POST['reset_password'])) {
 
     <!-- KONTEN -->
     <main class="konten">
-        <?php if(isset($_GET['success'])){ ?>
-            <script>
-                <?php if($_GET['success'] === 'reset'){ ?>
-                    alert("Password berhasil direset!");
-                <?php } elseif($_GET['success'] === 'nonaktif'){ ?>
-                    alert("Akun berhasil dinonaktifkan!");
-                <?php } elseif($_GET['success'] === 'aktif'){ ?>
-                    alert("Akun berhasil diaktifkan!");
-                <?php } ?>
-
-                // hapus parameter dari URL biar tidak muncul lagi saat refresh
-                window.history.replaceState(null, null, window.location.pathname);
-            </script>
-        <?php } ?>
 
             <div class="dropdown-menu" id="dropdownMenu">
                 <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
@@ -406,6 +407,41 @@ if (isset($_POST['reset_password'])) {
         </div>
 
     </main>
+
+    <!-- MODAL NOTIFIKASI -->
+<div id="modalNotif" class="modal">
+  <div class="modal-content" style="text-align:center;">
+    
+    <h3 id="judulNotif">Notifikasi</h3>
+    <p id="isiNotif">Pesan notifikasi</p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button onclick="closeNotif()" class="tombol-batal">
+        OK
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!--  -->
+<div id="modalNonaktif" class="modal">
+  <div class="modal-content">
+    <h3>Konfirmasi</h3>
+    <p id="textNonaktif"></p>
+
+    <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+      <button onclick="closeNonaktif()" class="tombol-batal">Batal</button>
+      <button onclick="lanjutNonaktif()" class="tombol-keluar">Ya</button>
+    </div>
+  </div>
+</div>
+<script>
+var notifMessage = "<?= $notif ?>";
+var reloadAfterNotif = <?= $reload ? 'true' : 'false' ?>;
+
+
+</script>
     <?php include '../pegawai/Notifikasi_Logout.php'; ?>
 
     <script>
@@ -449,11 +485,44 @@ if (isset($_POST['reset_password'])) {
             }
         }
         //btn non aktif
-        function confirmNonaktif(id, username){
-            if(confirm("Apakah Anda akan menonaktifkan akun (" + username + ")?")){
-                window.location.href = "nonaktifkan_akun.php?id=" + id;
-            }
-        }
+        let selectedId = "";
+
+function confirmNonaktif(id, username){
+    selectedId = id;
+    document.getElementById("textNonaktif").innerText =
+        "Apakah Anda akan menonaktifkan akun (" + username + ")?";
+    document.getElementById("modalNonaktif").style.display = "flex";
+}
+
+function closeNonaktif(){
+    document.getElementById("modalNonaktif").style.display = "none";
+}
+
+function lanjutNonaktif(){
+    window.location.href = "nonaktifkan_akun.php?id=" + selectedId;
+}
+
+
+        // Notif
+        function showNotif(pesan, judul = "Notifikasi") {
+    document.getElementById("judulNotif").innerText = judul;
+    document.getElementById("isiNotif").innerText = pesan;
+    document.getElementById("modalNotif").style.display = "flex";
+}
+
+function closeNotif() {
+    document.getElementById("modalNotif").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (notifMessage && notifMessage.trim() !== "") {
+        showNotif(notifMessage);
+    }
+
+    if (reloadAfterNotif) {
+        setTimeout(() => location.reload(), 1500);
+    }
+});
 </script>
     <script src="../assets/core-ui.js"></script>
     <script src="../assets/datamaster.js"></script>

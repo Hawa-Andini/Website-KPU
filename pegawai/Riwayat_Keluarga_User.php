@@ -13,10 +13,10 @@ include 'Data_Pegawai.php';
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-  <div class="logo">
-    <span>LOGO</span>
-    <button class="tombol-menu" id="tombolMenu">✕</button>
-  </div>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
 
   <hr class="garis-menu" />
 

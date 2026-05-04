@@ -13,10 +13,10 @@ include 'Data_Pegawai.php';
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-  <div class="logo">
-    <span>LOGO</span>
-    <button class="tombol-menu" id="tombolMenu">✕</button>
-  </div>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
 
   <hr class="garis-menu" />
 
@@ -137,7 +137,7 @@ include 'Data_Pegawai.php';
         
         while($row = $result->fetch_assoc()){
             echo "<tr>
-                <td>".$row['kode_gol']." - ".$row['nama_pangkat']."</td>
+                <td>".$row['nama_pangkat']." / ".$row['kode_gol']."</td>
                 <td>".date('d-m-Y', strtotime($row['tmt_golongan']))."</td>
             </tr>";
         }

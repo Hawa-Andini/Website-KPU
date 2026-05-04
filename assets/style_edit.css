@@ -58,6 +58,7 @@
     text-decoration: none;
 }
 
+
 .bagian-identitas {
     display: flex;
     align-items: flex-start;
@@ -121,7 +122,7 @@
 }
 
 .tabel-riwayat{
-    width:750px;
+    width:800px;
     margin-top:30px;
 }
 .konten-akun{

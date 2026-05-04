@@ -138,9 +138,9 @@ exit;
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
 
-        <div class="logo">
-            <span>LOGO</span>
-            <button class="tombol-menu" id="tombolMenu">✕</button>
+        <div class="logo_siproga">
+        <img src="../auth/Logo_Siproga.png">
+        <button class="tombol-menu" id="tombolMenu">✕</button>
         </div>
 
         <hr class="garis-menu" />
@@ -237,7 +237,7 @@ exit;
                 <!-- TAMBAH -->
                 <div class="baris-form" style="grid-template-columns:150px 500px 120px;">
                     <label>Nama Penghargaan</label>
-                    <input type="text" name="nama_penghargaan">
+                    <input type="text" name="nama_penghargaan" placeholder="Masukan Nama Penghargaan">
 
                     <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
               TAMBAH
@@ -247,7 +247,7 @@ exit;
                 <!-- UBAH -->
                 <div class="baris-form" style="grid-template-columns:150px 500px 120px;">
                     <label>Tahun</label>
-                    <input type="number" name="tahun" placeholder="YYYY">
+                    <input type="number" name="tahun" placeholder="Contoh: 2022">
 
                     <button type="button" onclick="klikUbahBeda('id_riwayat_kehormatan')" class="tombol-ubah btn-kecil">
               UBAH
@@ -264,7 +264,7 @@ exit;
             </button>
                 </div>
 
-                <table class="tabel-riwayat">
+                <table class="tabel-riwayat" border="1" cellpadding="5" style="width: 780px;">
 
                     <thead>
                         <tr>
@@ -277,18 +277,18 @@ exit;
 
                         <?php
                         $dataRiwayat = mysqli_query($conn, "
-SELECT * FROM riwayat_kehormatan
-WHERE nip='$nip'
-ORDER BY tahun DESC
-");
+                        SELECT * FROM riwayat_kehormatan
+                        WHERE nip='$nip'
+                        ORDER BY tahun DESC
+                        ");
 
                         while ($row = mysqli_fetch_assoc($dataRiwayat)) {
                             echo "<tr onclick=\"pilihData('" . $row['id_riwayat_kehormatan'] . "','" . $row['nama_penghargaan'] . "','" . $row['tahun'] . "')\">
 
-<td>" . $row['nama_penghargaan'] . "</td>
-<td>" . $row['tahun'] . "</td>
+                        <td>" . $row['nama_penghargaan'] . "</td>
+                        <td>" . $row['tahun'] . "</td>
 
-</tr>";
+                        </tr>";
                         }
                         ?>
 
@@ -323,7 +323,7 @@ ORDER BY tahun DESC
         }
     </script>
 
-<script src="../assets/script_pg.js"></script>
+<script src="../assets/script_edit.js"></script>
 
 <script src="../assets/core-ui.js"></script>
 <script src="../assets/datamaster.js"></script>

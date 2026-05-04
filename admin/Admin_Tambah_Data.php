@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 include '../config/koneksi.php';
 
@@ -46,9 +47,14 @@ if (isset($_POST['tambah'])) {
     $tmt_pns = $_POST['tmt_pns'] ?? null;
     $tipe_karyawan = $_POST['tipe_karyawan'] ?? '';
     $instansi = "KPU Kota Surabaya";
-
+    $unit_kerja = $_POST['unit_kerja'] ?? '';
     $id_agama = !empty($_POST['id_agama']) ? (int)$_POST['id_agama'] : null;
-    $id_unit_kerja = !empty($_POST['id_unit_kerja']) ? (int)$_POST['id_unit_kerja'] : null;
+    $id_unit_kerja = !empty($_POST['id_unit_kerja']) ? (int)$_POST['id_unit_kerja'] : 1;
+
+// ===============================
+// TAMBAHKAN DI SINI 👇
+// ===============================
+
     $id_gol = !empty($_POST['id_gol']) ? (int)$_POST['id_gol'] : null;
     $id_jenis_kelamin = !empty($_POST['id_jenis_kelamin']) ? (int)$_POST['id_jenis_kelamin'] : null;
     $id_status_perkawinan = !empty($_POST['id_status_perkawinan']) ? (int)$_POST['id_status_perkawinan'] : null;
@@ -57,14 +63,14 @@ if (isset($_POST['tambah'])) {
     $tmt_golongan = $_POST['tmt_golongan'] ?? null;
     $id_jabatan = $_POST['id_jabatan'] ?? null;
     $tmt_jabatan = $_POST['tmt_jabatan'] ?? null;
-    $tmt_akhir = $_POST['tmt_akhir'] ?? null;
 
     $id_jenjang_pend = $_POST['id_jenjang_pend'] ?? null;
     $institusi = $_POST['institusi'] ?? '';
     $tahun_lulus = $_POST['tahun_lulus'] ?? null;
 
-    $id_jenis_diklat = $_POST['id_jenis_diklat'] ?? null;
     $nama_diklat = $_POST['nama_diklat'] ?? '';
+    $penyelenggara_diklat = $_POST['penyelenggara_diklat'];
+    $id_jenis_diklat = $_POST['id_jenis_diklat'] ?? null;
     $tahun_diklat = $_POST['tahun_diklat'] ?? null;
 
     $nama_penghargaan = $_POST['nama_penghargaan'] ?? '';
@@ -83,7 +89,7 @@ if (isset($_POST['tambah'])) {
     // VALIDASI DATA WAJIB
     // =========================
     if (empty($nip_baru) || empty($nama)) {
-        echo "<script>alert('Nama dan NIP wajib diisi');</script>";
+        header("Location: Admin_Tambah_Data.php?status=gagal_kosong");
         exit;
     }
 
@@ -94,9 +100,10 @@ if (isset($_POST['tambah'])) {
     $stmtCek->bind_param("s", $nip_baru);
     $stmtCek->execute();
     $stmtCek->store_result();
+    
 
     if ($stmtCek->num_rows > 0) {
-        echo "<script>alert('NIP sudah terdaftar');</script>";
+        header("Location: Admin_Tambah_Data.php?status=nip_duplikat");
         exit;
     }
 
@@ -104,7 +111,7 @@ if (isset($_POST['tambah'])) {
 // =========================
 // UPLOAD FOTO
 // =========================
-$fotoPath = "uploads/default.png";
+$fotoPath = null;
 
 if (!empty($_FILES['foto']['name'])) {
 
@@ -218,12 +225,12 @@ if (!empty($_FILES['foto']['name'])) {
         if (!empty($id_jabatan) && !empty($tmt_jabatan)) {
             $stmt = $conn->prepare("
                 INSERT INTO riwayat_jabatan
-                (nip, id_jabatan, id_unit_kerja, tmt_jabatan, tmt_akhir)
+                (nip, id_jabatan, id_unit_kerja, tmt_jabatan, unit_kerja)
                 VALUES (?, ?, ?, ?, ?)
             ");
             $stmt->bind_param("siiss",
                 $nip_baru, $id_jabatan, $id_unit_kerja,
-                $tmt_jabatan, $tmt_akhir
+                $tmt_jabatan, $unit_kerja
             );
             $stmt->execute();
         }
@@ -247,16 +254,17 @@ if (!empty($_FILES['foto']['name'])) {
         // =========================
         // RIWAYAT DIKLAT
         // =========================
-        if (!empty($id_jenis_diklat)) {
+        if (!empty($nama_diklat)) {
             $stmt = $conn->prepare("
-                INSERT INTO riwayat_diklat
-                (nip, id_jenis_diklat, nama_diklat, tahun)
-                VALUES (?, ?, ?, ?)
+            INSERT INTO riwayat_diklat
+            (nip, nama_diklat, penyelenggara_diklat)
+                VALUES (?, ?, ?)
             ");
-            $stmt->bind_param("sisi",
-                $nip_baru, $id_jenis_diklat,
-                $nama_diklat, $tahun_diklat
-            );
+            $stmt->bind_param("sss",
+            $nip_baru,
+            $nama_diklat,
+            $penyelenggara_diklat
+        );
             $stmt->execute();
         }
 
@@ -346,20 +354,16 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
     <title>Manage Jenis Kelamin</title>
     <link rel="stylesheet" href="../assets/style.css">
     <link rel="stylesheet" href="../assets/fotoadmin.css">    
-    <style>
 
-
-
-    </style>
 </head>
 
 <body class="role-admin">
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <div class="logo">
-            <span>LOGO</span>
-            <button class="tombol-menu" id="tombolMenu">✕</button>
+        <div class="logo_siproga">
+        <img src="../auth/Logo_Siproga.png">
+        <button class="tombol-menu" id="tombolMenu">✕</button>
         </div>
 
         <hr class="garis-menu" />
@@ -421,9 +425,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
             <div class="user-info">
                 <div class="user-icon">👤</div>
                 <div class="user-text">
-                    <div class="user-name">
-                        <?= htmlspecialchars($data['nama_pegawai']); ?>
-                    </div>
+                    <div class="user-name"><?= htmlspecialchars($data['nama_pegawai']); ?></div>
                 </div>
             </div>
 
@@ -441,8 +443,8 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
                 <div class="kotak-foto">
 
                     <div class="pratinjau-foto">
-                        <img id="preview" class="foto-preview"
-                            src="<?= isset($pegawai['foto']) ? '../' . $pegawai['foto'] : '../uploads/default.png' ?>">
+                     
+                            <img id="preview" class="foto-preview" src="" alt="Preview Foto">
                     </div>
 
                     <label class="tombol-unggah">
@@ -578,7 +580,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
                     </div>
 
                     <div class="baris-form">
-                        <label>Tipe Karyawan</label>
+                        <label>Jenis Pegawai</label>
                         <input type="text" name="tipe_karyawan" placeholder="Contoh: PNS, CPNS, PPPK, dll">
                     </div>
 
@@ -605,7 +607,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
             <div class="form">
                 <div class="baris-form">
-                    <label>Golongan Pangkat</label>
+                    <label>Pangkat / Gol. Ruang</label>
                     <!-- <select>
                 <option>-- Pilih --</option>
             </select> -->
@@ -614,7 +616,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                         <?php while ($g = mysqli_fetch_assoc($golongan)) { ?>
                             <option value="<?= $g['id_gol']; ?>">
-                                <?= $g['nama_pangkat']; ?> (<?= $g['kode_gol']; ?>)
+                                <?= $g['nama_pangkat']; ?> / <?= $g['kode_gol']; ?>
                             </option>
                         <?php } ?>
 
@@ -657,7 +659,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                 <div class="baris-form">
 
-                    <label>TMT Awal</label>
+                    <label>TMT</label>
 
                     <input type="date" name="tmt_jabatan">
 
@@ -665,11 +667,12 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                 <div class="baris-form">
 
-                    <label>TMT Akhir</label>
+                    <label>Unit Kerja Asal</label>
 
-                    <input type="date" name="tmt_akhir">
+                    <input type="text" name="unit_kerja" placeholder="Contoh: KPU Kota Sorong">
 
                 </div>
+
 
             </div>
 
@@ -720,35 +723,16 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
             <div class="form">
 
-                <div class="baris-form">
-                    <label>Jenis Diklat</label>
-
-                    <select name="id_jenis_diklat">
-
-                        <option value="">-- Pilih Diklat --</option>
-
-                        <?php
-                        while ($d = mysqli_fetch_assoc($diklat)) {
-                        ?>
-
-                            <option value="<?= $d['id_jenis_diklat']; ?>">
-                                <?= $d['jenis_diklat']; ?>
-                            </option>
-
-                        <?php } ?>
-
-                    </select>
-
-                </div>
+ 
 
                 <div class="baris-form">
                     <label>Nama Diklat</label>
-                    <input type="text" name="nama_diklat">
+                    <input type="text" name="nama_diklat" data-optional>
                 </div>
 
                 <div class="baris-form">
-                    <label>Tahun</label>
-                    <input type="number" name="tahun_diklat">
+                    <label>Penyelenggara Diklat</label>
+                    <input type="text" name="penyelenggara_diklat" placeholder="Masukan Penyelenggara Diklat" data-optional>
                 </div>
 
             </div>
@@ -805,12 +789,12 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                 <div class="baris-form">
                     <label>Nama Penghargaan</label>
-                    <input type="text" name="nama_penghargaan" placeholder="Masukkan nama penghargaan">
+                    <input type="text" name="nama_penghargaan" placeholder="Masukkan nama penghargaan" data-optional>
                 </div>
 
                 <div class="baris-form">
                     <label>Tahun</label>
-                    <input type="number" name="tahun_penghargaan" placeholder="Contoh: 2022">
+                    <input type="number" name="tahun_penghargaan" placeholder="Contoh: 2022" data-optional>
                 </div>
 
             </div>
@@ -822,12 +806,12 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                 <div class="baris-form">
                     <label>Tahun</label>
-                    <input type="number" name="tahun_skp">
+                    <input type="number" name="tahun_skp" data-optional>
                 </div>
 
                 <div class="baris-form">
-                    <label>Rata-Rata</label>
-                    <input type="number" step="0.01" name="rerata_nilai">
+                    <label>Nilai SKP</label>
+                    <input type="number" step="0.01" name="rerata_nilai" data-optional>
                 </div>
 
                 <div class="baris-form">
@@ -892,17 +876,26 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
         }
 
         // notif berhasil
-        const urlParams = new URLSearchParams(window.location.search);
-const status = urlParams.get('status');
+        document.addEventListener("DOMContentLoaded", function () {
 
-if (status === 'berhasil_tambah') {
-    openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
-}
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+
+        if (status === 'berhasil_tambah') {
+            openModalAksi("Berhasil", "Data berhasil ditambahkan", "info");
+        }
+
+        if (status === 'nip_duplikat') {
+            openModalAksi("Gagal", "NIP sudah terdaftar!", "info");
+        }
+
+        });
     </script>
       <script src=" ../assets/core-ui.js"></script>
     <script src=" ../assets/datamaster.js"></script>
     <script src=" ../assets/admin-ui.js"></script>
-    <script src="../assets/script_pg.js"></script>
+    <script src=" ../assets/tambah_data.js"></script>
+
 
 
 

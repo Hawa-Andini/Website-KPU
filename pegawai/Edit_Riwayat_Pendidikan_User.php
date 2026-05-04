@@ -17,6 +17,7 @@ if(isset($_POST['tambah'])){
 
     $id_jenjang_pend = $_POST['id_jenjang_pend'];
     $institusi       = $_POST['institusi'];
+    $jurusan         = $_POST['jurusan'];
     $tahun_lulus     = $_POST['tahun_lulus'];
 
     if(!empty($id_jenjang_pend) && !empty($institusi) && !empty($tahun_lulus)){
@@ -26,6 +27,7 @@ if(isset($_POST['tambah'])){
         WHERE nip='$nip'
         AND id_jenjang_pend='$id_jenjang_pend'
         AND institusi='$institusi'
+        AND jurusan='$jurusan'
         AND tahun_lulus='$tahun_lulus'
         ");
 
@@ -37,6 +39,7 @@ if(isset($_POST['tambah'])){
             nip,
             id_jenjang_pend,
             institusi,
+            jurusan,
             tahun_lulus
             )
             VALUES
@@ -44,6 +47,7 @@ if(isset($_POST['tambah'])){
             '$nip',
             '$id_jenjang_pend',
             '$institusi',
+            '$jurusan',
             '$tahun_lulus'
             )
             ");
@@ -60,15 +64,17 @@ if(isset($_POST['ubah'])){
     $id              = $_POST['id_riwayat_pend'];
     $id_jenjang_pend = $_POST['id_jenjang_pend'];
     $institusi       = $_POST['institusi'];
+    $jurusan         = $_POST['jurusan'];
     $tahun_lulus     = $_POST['tahun_lulus'];
 
-    if(!empty($id) && !empty($id_jenjang_pend) && !empty($institusi) && !empty($tahun_lulus)){
+    if(!empty($id) && !empty($id_jenjang_pend) && !empty($institusi) && !empty($jurusan) && !empty($tahun_lulus)){
 
         mysqli_query($conn,"
         UPDATE riwayat_pendidikan
         SET
         id_jenjang_pend='$id_jenjang_pend',
         institusi='$institusi',
+        jurusan='$jurusan',
         tahun_lulus='$tahun_lulus'
         WHERE id_riwayat_pend='$id'
         ");
@@ -112,9 +118,9 @@ if(isset($_POST['hapus'])){
 
 <!-- SIDEBAR -->
 <aside class="sidebar-edit">
-    <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
       <hr class="garis-menu" />
 
@@ -196,23 +202,28 @@ if(isset($_POST['hapus'])){
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>Institusi</label>
 
-            <input type="text" name="institusi" placeholder="Nama Sekolah / Universitas">
+            <input type="text" name="institusi" placeholder=" Masukan Nama Sekolah / Universitas">
 
             <button type="button" onclick="klikUbahBeda('id_riwayat_pend')" class="tombol-ubah btn-kecil">
                 UBAH
             </button>
         </div>
 
+        <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+            <label>Jurusan</label>
+
+            <input type="text" name="jurusan" placeholder="Contoh: Sistem Informasi">
+            <button type="button" onclick="klikHapus('id_riwayat_pend')" class="tombol-hapus btn-kecil">
+              HAPUS
+            </button>
+
+          </div>
 
         <!-- BARIS TAHUN LULUS -->
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>Tahun Lulus</label>
 
-            <input type="number" name="tahun_lulus" placeholder="YYYY">
-
-            <button type="button" onclick="klikHapus('id_riwayat_pend')" class="tombol-hapus btn-kecil">
-                HAPUS
-            </button>
+            <input type="number" name="tahun_lulus" placeholder="Contoh: 2022">
         </div>
     
            <!-- TABEL -->
@@ -222,6 +233,7 @@ if(isset($_POST['hapus'])){
           <tr>
           <th>Jenjang Pendidikan</th>
           <th>Institusi</th>
+          <th>Jurusan</th>
           <th>Tahun Lulus</th>
           </tr>
           </thead>
@@ -240,10 +252,11 @@ if(isset($_POST['hapus'])){
 
           while($row = mysqli_fetch_assoc($data)){
 
-          echo "<tr onclick=\"pilihData('".$row['id_riwayat_pend']."','".$row['id_jenjang_pend']."','".$row['institusi']."','".$row['tahun_lulus']."')\">
+          echo "<tr onclick=\"pilihData('".$row['id_riwayat_pend']."','".$row['id_jenjang_pend']."','".$row['institusi']."','".$row['jurusan']."','".$row['tahun_lulus']."')\">
 
           <td>".$row['jenjang_pend']."</td>
           <td>".$row['institusi']."</td>
+          <td>".$row['jurusan']."</td>
           <td>".$row['tahun_lulus']."</td>
 
           </tr>";
@@ -269,11 +282,12 @@ if(isset($_POST['hapus'])){
 <?php include 'Notifikasi_Logout.php'; ?>
 
 <script>
-function pilihData(id,id_jenjang,institusi,tahun){
+function pilihData(id,id_jenjang,institusi,jurusan,tahun){
 
     document.getElementById("id_riwayat_pend").value = id;
     document.querySelector("select[name='id_jenjang_pend']").value = id_jenjang;
     document.querySelector("input[name='institusi']").value = institusi;
+    document.querySelector("input[name='jurusan']").value = jurusan;
     document.querySelector("input[name='tahun_lulus']").value = tahun;
 
 }

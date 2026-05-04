@@ -32,27 +32,32 @@
         .card {
             background: #ffffff;
             width: 360px;
-            padding: 30px 35px 35px;
+
+            padding: 25px 20px;
             border-radius: 14px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+
+
             text-align: center;
             color: #7a0000;
         }
 
-        .card h1 {
-            margin-bottom: 18px;
+        .card h2 {
+            margin-bottom: 10px;
             font-weight: bold;
+            margin-top: 10px; 
+            font-size: 28px;
         }
 
         .logo {
-            width: 120px;
-            margin: 10px auto 20px;
-            display: block;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            margin-bottom: 22px;
+            width: 250px;
+            margin-top: 40px;
+            margin-bottom: 50px;
         }
 
         .btn {
@@ -77,13 +82,9 @@
 
 <div class="container">
     <div class="card">
-        <h1>Selamat Datang!</h1>
+        <h2>SELAMAT DATANG!</h2>
 
-        <img src="Logo.png" alt="Logo KPU" class="logo">
-
-        <div class="subtitle">
-            Sistem Profil Kepegawaian
-        </div>
+        <img src="LogoSiproga.png" alt="Logo KPU" class="logo">
 
         <a href="Login.php" class="btn">MASUK</a>
     </div>

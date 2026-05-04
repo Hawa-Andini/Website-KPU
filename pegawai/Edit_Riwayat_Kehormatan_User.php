@@ -110,9 +110,9 @@ if(isset($_POST['hapus'])){
 
 <!-- SIDEBAR -->
 <aside class="sidebar-edit">
-    <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
       <hr class="garis-menu" />
 
@@ -173,7 +173,7 @@ if(isset($_POST['hapus'])){
         <div class="baris-form" style="grid-template-columns:150px 500px 120px;">
             <label>Nama Penghargaan</label>
 
-            <input type="text" name="nama_penghargaan">
+            <input type="text" name="nama_penghargaan"  placeholder="Masukan Nama Penghargaan">
 
             <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
                 TAMBAH
@@ -185,7 +185,7 @@ if(isset($_POST['hapus'])){
         <div class="baris-form" style="grid-template-columns:150px 500px 120px;">
             <label>Tahun</label>
 
-            <input type="number" name="tahun" placeholder="YYYY">
+            <input type="number" name="tahun" placeholder="Contoh: 2022">
 
             <div class="aksi-vertikal">
             <button type="button" onclick="klikUbahBeda('id_riwayat_kehormatan')" class="tombol-ubah btn-kecil">

@@ -33,7 +33,10 @@ function loadData() {
                     <td>${no++}</td>
                     <td>${item.nama_pegawai}</td>
                     <td>${item.nama_jabatan ?? '-'}</td>
-                    <td>${item.nama_pangkat ?? '-'}</td>
+                    <td>
+                    ${item.nama_pangkat ?? '-'} 
+                    ${item.kode_gol ? ' / ' + item.kode_gol : ' / -'}
+                    </td>
                     <td>${item.nip}</td>
                     <td>${item.tipe_karyawan}</td>
                     <td>${item.unit_kerja ?? '-'}</td>
@@ -132,3 +135,4 @@ function updateInfo(totalData) {
     document.getElementById("infoData").innerHTML =
         `Showing ${start}–${end} of ${totalData} entries`;
 }
+console.log(res.data);

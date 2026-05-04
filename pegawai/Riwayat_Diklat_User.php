@@ -13,10 +13,10 @@ include 'Data_Pegawai.php';
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-  <div class="logo">
-    <span>LOGO</span>
-    <button class="tombol-menu" id="tombolMenu">✕</button>
-  </div>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
 
   <hr class="garis-menu" />
 
@@ -117,9 +117,11 @@ include 'Data_Pegawai.php';
           <table class="tabel-riwayat" border="1" cellpadding="5">
           <thead>
           <tr>
-          <th>Jenis Diklat</th>
           <th>Nama Diklat</th>
-          <th>Tahun</th>
+          <th>Penyelenggara Diklat</th>
+          <th>Tanggal Pelaksanaan Awal</th>
+          <th>Tanggal Pelaksanaan Akhir</th>
+          <th>Jam Pelajaran (Jam)</th>
           </tr>
           </thead>
 
@@ -127,21 +129,21 @@ include 'Data_Pegawai.php';
 
           <?php
           $data = mysqli_query($conn,"
-          SELECT rd.*, md.jenis_diklat
-          FROM riwayat_diklat rd
-          JOIN master_diklat md
-          ON rd.id_jenis_diklat = md.id_jenis_diklat
-          WHERE rd.nip='$nip'
-          ORDER BY rd.tahun DESC
+          SELECT *
+          FROM riwayat_diklat
+          WHERE nip='$nip'
+          ORDER BY tp_awal DESC
           ");
 
           while($row = mysqli_fetch_assoc($data)){
 
-          echo "<tr onclick=\"pilihData('".$row['id_riwayat_diklat']."','".$row['id_jenis_diklat']."','".$row['nama_diklat']."','".$row['tahun']."')\">
+          echo "<tr onclick=\"pilihData('".$row['id_riwayat_diklat']."','".$row['nama_diklat']."','".$row['penyelenggara_diklat']."','".$row['tp_awal']."','".$row['tp_akhir']."','".$row['jp']."')\">
 
-          <td>".$row['jenis_diklat']."</td>
           <td>".$row['nama_diklat']."</td>
-          <td>".$row['tahun']."</td>
+          <td>".$row['penyelenggara_diklat']."</td>
+          <td>".date('d-m-Y', strtotime($row['tp_awal']))."</td>
+          <td>".date('d-m-Y', strtotime($row['tp_akhir']))."</td>
+          <td>".date('H:i', strtotime($row['jp']))."</td>
 
           </tr>";
 

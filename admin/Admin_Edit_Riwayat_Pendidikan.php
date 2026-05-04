@@ -94,15 +94,17 @@ if (isset($_POST['ubah'])) {
 
   $id_jenjang_pend = $_POST['id_jenjang_pend'];
   $institusi = $_POST['institusi'];
+  $jurusan = $_POST['jurusan'];
   $tahun_lulus = $_POST['tahun_lulus'];
 
-  if (!empty($id_jenjang_pend) && !empty($institusi) && !empty($tahun_lulus)) {
+  if (!empty($id_jenjang_pend) && !empty($institusi) && !empty($institusi) && !empty($tahun_lulus)) {
 
     mysqli_query($conn, "
 UPDATE riwayat_pendidikan
 SET
 id_jenjang_pend='$id_jenjang_pend',
 institusi='$institusi',
+jurusan='$jurusan',
 tahun_lulus='$tahun_lulus'
 WHERE id_riwayat_pend='$id'
 ");
@@ -149,8 +151,8 @@ exit;
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="logo">
-      <span>LOGO</span>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
       <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
 
@@ -246,7 +248,7 @@ exit;
 
             <select name="id_jenjang_pend" style="height:30px; border:1px solid #888;">
 
-              <option value="">Pilih Jenjang</option>
+              <option value="">-- Pilih Jenjang --</option>
 
               <?php
               $qPend = mysqli_query($conn, "SELECT * FROM master_jenjang_pend ORDER BY id_jenjang_pend");
@@ -267,7 +269,7 @@ exit;
           <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>Institusi</label>
 
-            <input type="text" name="institusi" placeholder="Nama Sekolah / Universitas">
+            <input type="text" name="institusi" placeholder="Masukan Nama Sekolah / Universitas">
 
             <button type="button" onclick="klikUbahBeda('id_riwayat_pend')" class="tombol-ubah btn-kecil">
               UBAH
@@ -276,12 +278,22 @@ exit;
           </div>
 
           <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-            <label>Tahun Lulus</label>
+            <label>Jurusan</label>
 
-            <input type="number" name="tahun_lulus" placeholder="YYYY">
+            <input type="text" name="jurusan" placeholder="Contoh: Sistem Informasi">
             <button type="button" onclick="klikHapus('id_riwayat_pend')" class="tombol-hapus btn-kecil">
               HAPUS
             </button>
+
+          </div>
+
+          <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+            <label>Tahun Lulus</label>
+
+            <input type="number" name="tahun_lulus" placeholder="Contoh: 2022">
+            <!-- <button type="button" onclick="klikHapus('id_riwayat_pend')" class="tombol-hapus btn-kecil">
+              HAPUS
+            </button> -->
 
           </div>
 
@@ -291,6 +303,7 @@ exit;
               <tr>
                 <th>Jenjang Pendidikan</th>
                 <th>Institusi</th>
+                <th>Jurusan</th>
                 <th>Tahun Lulus</th>
               </tr>
             </thead>
@@ -309,10 +322,11 @@ ORDER BY rp.tahun_lulus DESC
 
               while ($row = mysqli_fetch_assoc($dataRiwayat)) {
 
-                echo "<tr onclick=\"pilihData('" . $row['id_riwayat_pend'] . "','" . $row['id_jenjang_pend'] . "','" . $row['institusi'] . "','" . $row['tahun_lulus'] . "')\">
+                echo "<tr onclick=\"pilihData('" . $row['id_riwayat_pend'] . "','" . $row['id_jenjang_pend'] . "','" . $row['institusi'] . "','" . $row['jurusan'] . "','" . $row['tahun_lulus'] . "')\">
 
 <td>" . $row['jenjang_pend'] . "</td>
 <td>" . $row['institusi'] . "</td>
+<td>" . $row['jurusan'] . "</td>
 <td>" . $row['tahun_lulus'] . "</td>
 
 </tr>";
@@ -351,7 +365,7 @@ ORDER BY rp.tahun_lulus DESC
 
     }
   </script>
-  <script src="../assets/script_pg.js"></script>
+    <script src="../assets/script_edit.js"></script>
 
 <script src="../assets/core-ui.js"></script>
 <script src="../assets/datamaster.js"></script>

@@ -13,10 +13,10 @@ include 'Data_Pegawai.php';
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-  <div class="logo">
-    <span>LOGO</span>
-    <button class="tombol-menu" id="tombolMenu">✕</button>
-  </div>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
 
   <hr class="garis-menu" />
 
@@ -117,6 +117,7 @@ include 'Data_Pegawai.php';
           <tr>
           <th>Jenjang Pendidikan</th>
           <th>Institusi</th>
+          <th>Jurusan</th>
           <th>Tahun Lulus</th>
           </tr>
           </thead>
@@ -135,11 +136,12 @@ include 'Data_Pegawai.php';
 
           while($row = mysqli_fetch_assoc($data)){
 
-          echo "<tr onclick=\"pilihData('".$row['id_riwayat_pend']."','".$row['id_jenjang_pend']."','".$row['institusi']."','".$row['tahun_lulus']."')\">
+            echo "<tr onclick=\"pilihData('".$row['id_riwayat_pend']."','".$row['id_jenjang_pend']."','".$row['institusi']."','".$row['jurusan']."','".$row['tahun_lulus']."')\">
 
-          <td>".$row['jenjang_pend']."</td>
-          <td>".$row['institusi']."</td>
-          <td>".$row['tahun_lulus']."</td>
+            <td>".$row['jenjang_pend']."</td>
+            <td>".$row['institusi']."</td>
+            <td>".$row['jurusan']."</td>
+            <td>".$row['tahun_lulus']."</td>
 
           </tr>";
 

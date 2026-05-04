@@ -17,16 +17,16 @@ $data = mysqli_fetch_assoc($query);
 
     $id_jabatan = $_POST['id_jabatan'];
     $tmt_jabatan = $_POST['tmt_jabatan'];
-    $tmt_akhir = $_POST['tmt_akhir'];
-    
-    if(!empty($id_jabatan) && !empty($tmt_jabatan) && !empty($tmt_akhir)){
+    $unit_kerja = $_POST['unit_kerja'];
+
+    if(!empty($id_jabatan) && !empty($tmt_jabatan) && !empty($unit_kerja)){
 
         $cek = mysqli_query($conn,"
         SELECT * FROM riwayat_jabatan
         WHERE nip='$nip'
         AND id_jabatan='$id_jabatan'
         AND tmt_jabatan  ='$tmt_jabatan'
-        AND tmt_akhir  ='$tmt_akhir'
+        AND unit_kerja = '$unit_kerja'
         ");
 
         if(mysqli_num_rows($cek)==0){
@@ -38,7 +38,7 @@ $data = mysqli_fetch_assoc($query);
             id_jabatan,
             id_unit_kerja,
             tmt_jabatan,
-            tmt_akhir  
+            unit_kerja  
             )
             VALUES
             (
@@ -46,7 +46,7 @@ $data = mysqli_fetch_assoc($query);
             '$id_jabatan',
             '1',
             '$tmt_jabatan',
-            '$tmt_akhir'
+            '$unit_kerja'
             )
             ");
 
@@ -60,16 +60,16 @@ $data = mysqli_fetch_assoc($query);
     $id         = $_POST['id_riwayat_jabatan'];
     $id_jabatan = $_POST['id_jabatan'];
     $tmt_jabatan = $_POST['tmt_jabatan'];
-    $tmt_akhir = $_POST['tmt_akhir'];
+    $unit_kerja  = $_POST['unit_kerja'];
     
-    if(!empty($id) && !empty($id_jabatan) && !empty($tmt_jabatan) && !empty($tmt_akhir)){
+    if(!empty($id) && !empty($id_jabatan) && !empty($tmt_jabatan) && !empty($unit_kerja)){
     
     mysqli_query($conn,"
     UPDATE riwayat_jabatan
     SET
     id_jabatan='$id_jabatan',
     tmt_jabatan='$tmt_jabatan',
-    tmt_akhir='$tmt_akhir'
+    unit_kerja='$unit_kerja'
     WHERE id_riwayat_jabatan='$id'
     ");
 
@@ -103,9 +103,9 @@ if(isset($_POST['hapus'])){
 
 <!-- SIDEBAR -->
 <aside class="sidebar-edit">
-    <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
       <hr class="garis-menu" />
 
@@ -181,10 +181,10 @@ if(isset($_POST['hapus'])){
                 </button>
             </div>
     
-            <!-- BARIS TMT -->
+            <!-- BARIS UNIT KERJA -->
             <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-                <label>TMT Awal</label>
-                <input type="date" name="tmt_jabatan">
+                <label>Unit Kerja Awal</label>
+                <input type="text" name="unit_kerja" placeholder="Masukan Unit Kerja Awal">
 
                 <div class="aksi-vertikal">
                 <button type="button" onclick="klikUbahBeda('id_riwayat_jabatan')" class="tombol-ubah btn-kecil">
@@ -192,9 +192,11 @@ if(isset($_POST['hapus'])){
                     </button>
                 </div>
             </div>
+
+            <!-- BARIS TMT -->
             <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-                <label>TMT Akhir</label>
-                <input type="date" name="tmt_akhir">
+                <label>TMT</label>
+                <input type="date" name="tmt_jabatan">
 
                 <div class="aksi-vertikal">
                     <button type="button" onclick="klikHapus('id_riwayat_jabatan')" class="tombol-hapus btn-kecil">
@@ -210,8 +212,8 @@ if(isset($_POST['hapus'])){
             <thead>
             <tr>
             <th>Nama Jabatan</th>
+            <th>Unit Kerja Awal</th>
             <th>TMT Awal</th>
-            <th>TMT Akhir</th>
             </tr>
             </thead>
 
@@ -227,10 +229,10 @@ if(isset($_POST['hapus'])){
 
             while($row = mysqli_fetch_assoc($data)){
 
-                echo "<tr onclick=\"pilihData('".$row['id_riwayat_jabatan']."','".$row['id_jabatan']."','".$row['tmt_jabatan']."', '".$row['tmt_akhir']."')\">
+                echo "<tr onclick=\"pilihData('".$row['id_riwayat_jabatan']."','".$row['id_jabatan']."','".$row['tmt_jabatan']."','".$row['unit_kerja']."')\">
                 <td>".$row['jenis_jabatan']." - ".$row['nama_jabatan']."</td>
+                <td>".$row['unit_kerja']."</td>
                 <td>".date('d-m-Y', strtotime($row['tmt_jabatan']))."</td>
-                <td>".date('d-m-Y', strtotime($row['tmt_akhir']))."</td>
                 </tr>";
                 
                 }
@@ -260,12 +262,12 @@ if(isset($_POST['hapus'])){
 <?php include 'Notifikasi_Logout.php'; ?>
 
 <script> 
-function pilihData(id,id_jabatan,tmt_jabatan,tmt_akhir){
+function pilihData(id,id_jabatan,tmt_jabatan,unit_kerja){
 
     document.getElementById("id_riwayat_jabatan").value = id;
     document.querySelector("select[name='id_jabatan']").value = id_jabatan;
     document.querySelector("input[name='tmt_jabatan']").value = tmt_jabatan;
-    document.querySelector("input[name='tmt_akhir']").value = tmt_akhir;
+    document.querySelector("input[name='unit_kerja']").value = unit_kerja;
 }
 </script>
 

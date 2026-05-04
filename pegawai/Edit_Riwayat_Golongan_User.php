@@ -101,9 +101,9 @@ if(isset($_POST['hapus'])){
 
 <!-- SIDEBAR -->
 <aside class="sidebar-edit">
-    <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
       <hr class="garis-menu" />
 
@@ -165,7 +165,7 @@ if(isset($_POST['hapus'])){
 
         <select name="id_gol" style="height:30px; border:1px solid #888;">
 
-        <option value="">Pilih Golongan</option>
+        <option value="">-- Pilih Golongan --</option>
 
         <?php
 
@@ -173,7 +173,7 @@ if(isset($_POST['hapus'])){
 
         while($g = mysqli_fetch_assoc($qGol)){
 
-        echo "<option value='$g[id_gol]'>$g[kode_gol] - $g[nama_pangkat]</option>";
+        echo "<option value='$g[id_gol]'>$g[nama_pangkat] / $g[kode_gol]</option>";
 
         }
 
@@ -229,7 +229,7 @@ if(isset($_POST['hapus'])){
           while($row = mysqli_fetch_assoc($data)){
 
             echo "<tr onclick=\"pilihData('".$row['id_riwayat_gol']."','".$row['id_gol']."','".$row['tmt_golongan']."')\">
-            <td>".$row['kode_gol']." - ".$row['nama_pangkat']."</td>
+            <td>".$row['nama_pangkat']." / ".$row['kode_gol']."</td>
             <td>".date('d-m-Y', strtotime($row['tmt_golongan']))."</td>
             </tr>";
             

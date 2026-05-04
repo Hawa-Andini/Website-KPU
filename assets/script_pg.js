@@ -21,35 +21,33 @@ document.addEventListener("DOMContentLoaded", function () {
     const menuEditData = document.getElementById("menuEditData");
     const submenuEditData = document.getElementById("submenuEditData");
     const panahEditData = document.getElementById("panahEditData");
-    
-    // Semua item menu utama
     const semuaMenu = document.querySelectorAll(".item-menu");
-    
-    menuEditData.addEventListener("click", function (e) {
-        e.stopPropagation(); // supaya tidak bentrok
-    
-        const isAktif = submenuEditData.classList.contains("aktif");
-    
-        // Tutup semua submenu dulu
-        submenuEditData.classList.remove("aktif");
-        panahEditData.textContent = "▼";
-    
-        // Kalau sebelumnya belum aktif, buka lagi
-        if (!isAktif) {
-            submenuEditData.classList.add("aktif");
-            panahEditData.textContent = "▲";
-        }
-    });
-    
-    // Kalau klik menu lain → otomatis tutup submenu
-    semuaMenu.forEach(menu => {
-        if (menu !== menuEditData) {
-            menu.addEventListener("click", function () {
-                submenuEditData.classList.remove("aktif");
-                panahEditData.textContent = "▼";
-            });
-        }
-    });
+
+    if (menuEditData && submenuEditData && panahEditData) {
+
+        menuEditData.addEventListener("click", function (e) {
+            e.stopPropagation();
+
+            const isAktif = submenuEditData.classList.contains("aktif");
+
+            submenuEditData.classList.remove("aktif");
+            panahEditData.textContent = "▼";
+
+            if (!isAktif) {
+                submenuEditData.classList.add("aktif");
+                panahEditData.textContent = "▲";
+            }
+        });
+
+        semuaMenu.forEach(menu => {
+            if (menu !== menuEditData) {
+                menu.addEventListener("click", function () {
+                    submenuEditData.classList.remove("aktif");
+                    panahEditData.textContent = "▼";
+                });
+            }
+        });
+    }
     
     // TAB SWITCH
     const tabs = document.querySelectorAll(".tab");
@@ -131,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let btnOK = document.getElementById("btnOKAksi");
         let btnBatal = document.getElementById("btnBatalAksi");
     
-        // 🔥 INI YANG PENTING BANGET
         btnOK.onclick = null;
         btnBatal.onclick = null;
     
@@ -257,6 +254,21 @@ function klikUbahBeda(idField) {
         return;
     }
 
+     // VALIDASI NO TELP
+     let telpInput = document.querySelector("input[name='no_telp']");
+     if (telpInput) {
+        let telp = telpInput.value.trim();
+        let telpAngka = telp.replace(/\D/g, '');
+    
+        if (telpAngka.length < 10) {
+        openModalAksi("Peringatan", "Nomor telepon terlalu pendek!", "info");
+        return;
+        }
+        if (telpAngka.length > 13) {
+            openModalAksi("Peringatan", "Nomor telepon terlalu panjang!", "info");
+            return;
+        }
+    }
     openModalAksi(
         "Konfirmasi",
         "Apakah Anda ingin mengubah data?",
@@ -280,15 +292,9 @@ function klikTambah() {
 
     let kosong = false;
 
-    // ambil semua field dalam form
     document.querySelectorAll("#formUpload input, #formUpload select, #formUpload textarea")
     .forEach(el => {
-
-        // skip hidden & file
         if (el.type === "hidden" || el.type === "file") return;
-
-        // skip yang memang tidak wajib (kalau ada)
-        if (el.hasAttribute("data-optional")) return;
 
         if (el.value.trim() === "") {
             kosong = true;
@@ -298,6 +304,23 @@ function klikTambah() {
     if (kosong) {
         openModalAksi("Peringatan", "Lengkapi data terlebih dahulu!", "info");
         return;
+    }
+
+    // VALIDASI NO TELP
+    let telpInput = document.querySelector("input[name='no_telp']");
+
+    if (telpInput) {
+        let telp = telpInput.value.trim();
+        let telpAngka = telp.replace(/\D/g, '');
+
+        if (telpAngka.length < 10) {
+            openModalAksi("Peringatan", "Nomor telepon terlalu pendek!", "info");
+            return;
+            }
+        if (telpAngka.length > 13) {
+            openModalAksi("Peringatan", "Nomor telepon terlalu panjang!", "info");
+            return;
+        }
     }
 
     openModalAksi(

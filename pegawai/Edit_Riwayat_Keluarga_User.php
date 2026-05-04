@@ -118,9 +118,9 @@ if(isset($_POST['hapus'])){
 
 <!-- SIDEBAR -->
 <aside class="sidebar-edit">
-    <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
       <hr class="garis-menu" />
 
@@ -179,7 +179,7 @@ if(isset($_POST['hapus'])){
         <!-- Nama -->
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>Nama</label>
-            <input type="text" name="nama">
+            <input type="text" name="nama"  placeholder="Masukan Nama">
             <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">TAMBAH</button>
         </div>
 
@@ -201,14 +201,14 @@ if(isset($_POST['hapus'])){
         <!-- No Telepon -->
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>No Telepon</label>
-            <input type="text" name="no_telp">
+            <input type="text" name="no_telp"  placeholder="Contoh: 08XXXXX" oninput="formatTelp(this)">
             <button type="button" onclick="klikHapus('id_riwayat_kel')" class="tombol-hapus btn-kecil">HAPUS</button>
         </div>
 
         <!-- Alamat -->
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
             <label>Alamat</label>
-            <input type="text" name="alamat">
+            <input type="text" name="alamat"  placeholder="Masukan Alamat">
         </div>
 
         </form>
@@ -226,22 +226,34 @@ if(isset($_POST['hapus'])){
         <tbody>
 
         <?php
-        $data = mysqli_query($conn,"
-        SELECT rk.*, mh.hub_kel
-        FROM riwayat_keluarga rk
-        JOIN master_hub_kel mh ON rk.id_hub_kel = mh.id_hub_kel
-        WHERE rk.nip='$nip'
-        ");
+            $data = mysqli_query($conn,"
+            SELECT rk.*, mh.hub_kel
+            FROM riwayat_keluarga rk
+            JOIN master_hub_kel mh ON rk.id_hub_kel = mh.id_hub_kel
+            WHERE rk.nip='$nip'
+            ");
 
-        while($row = mysqli_fetch_assoc($data)){
-            echo "<tr onclick=\"pilihData('".$row['id_riwayat_kel']."','".$row['nama']."','".$row['no_telp']."','".$row['alamat']."','".$row['id_hub_kel']."')\">
-            
-            <td>".$row['nama']."</td>
-            <td>".$row['no_telp']."</td>
-            <td>".$row['alamat']."</td>
-            <td>".$row['hub_kel']."</td>
-            
-            </tr>";
+            while($row = mysqli_fetch_assoc($data)){
+
+                // FORMAT NOMOR
+                $no = preg_replace('/\D/', '', $row['no_telp']);
+
+                if(strlen($no) > 8){
+                    $no_format = substr($no,0,4).'-'.substr($no,4,4).'-'.substr($no,8);
+                }else if(strlen($no) > 4){
+                    $no_format = substr($no,0,4).'-'.substr($no,4);
+                }else{
+                    $no_format = $no;
+                }
+
+                echo "<tr onclick=\"pilihData('".$row['id_riwayat_kel']."','".$row['nama']."','".$row['no_telp']."','".$row['alamat']."','".$row['id_hub_kel']."')\">
+                
+                <td>".$row['nama']."</td>
+                <td>".$no_format."</td>
+                <td>".$row['alamat']."</td>
+                <td>".$row['hub_kel']."</td>
+                
+                </tr>";
             }
         ?>
 
@@ -285,7 +297,7 @@ function pilihData(id,nama,no_telp,alamat,id_hub_kel){
 
     document.getElementById("id_riwayat_kel").value = id;
     document.querySelector("input[name='nama']").value = nama;
-    document.querySelector("input[name='no_telp']").value = no_telp;
+    document.querySelector("input[name='no_telp']").value = formatTelpValue(no_telp);
     document.querySelector("input[name='alamat']").value = alamat;
     document.querySelector("select[name='id_hub_kel']").value = id_hub_kel;
 
@@ -293,6 +305,29 @@ function pilihData(id,nama,no_telp,alamat,id_hub_kel){
 </script>
 
 <script src="../assets/script_pg.js"></script>
+<script>
+function formatTelp(input){
+    let angka = input.value.replace(/\D/g, '').slice(0,13); // batas 13 digit
+
+    if(angka.length > 4 && angka.length <= 8){
+        input.value = angka.slice(0,4) + '-' + angka.slice(4);
+    }else if(angka.length > 8){
+        input.value = angka.slice(0,4) + '-' + angka.slice(4,8) + '-' + angka.slice(8);
+    }else{
+        input.value = angka;
+    }
+}
+function formatTelpValue(value){
+    let angka = value.replace(/\D/g, '').slice(0,13);
+
+    if(angka.length > 4 && angka.length <= 8){
+        return angka.slice(0,4) + '-' + angka.slice(4);
+    }else if(angka.length > 8){
+        return angka.slice(0,4) + '-' + angka.slice(4,8) + '-' + angka.slice(8);
+    }
+    return angka;
+}
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

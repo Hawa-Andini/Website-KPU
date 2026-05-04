@@ -63,6 +63,7 @@ $dataSql = "
         p.tipe_karyawan,
         mj.nama_jabatan,
         mg.nama_pangkat,
+        mg.kode_gol,
         md.unit_kerja
     FROM pegawai p
     LEFT JOIN riwayat_jabatan rj ON rj.id_riwayat_jabatan = (
@@ -73,13 +74,15 @@ $dataSql = "
         LIMIT 1
     )
     LEFT JOIN master_jabatan mj ON rj.id_jabatan = mj.id_jabatan
-    LEFT JOIN riwayat_golongan rg ON rg.id_riwayat_gol = (
-        SELECT id_riwayat_gol
+    LEFT JOIN (
+        SELECT *
         FROM riwayat_golongan
-        WHERE nip = p.nip
-        ORDER BY id_riwayat_gol DESC
-        LIMIT 1
-    )
+        WHERE id_riwayat_gol IN (
+            SELECT MAX(id_riwayat_gol)
+            FROM riwayat_golongan
+            GROUP BY nip
+        )
+    ) rg ON rg.nip = p.nip
     LEFT JOIN master_golongan mg ON rg.id_gol = mg.id_gol
     LEFT JOIN master_divisi md ON p.id_unit_kerja = md.id_unit_kerja
     WHERE 

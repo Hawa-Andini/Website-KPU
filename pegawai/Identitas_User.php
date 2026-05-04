@@ -13,10 +13,10 @@ include 'Data_Pegawai.php';
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-  <div class="logo">
-    <span>LOGO</span>
-    <button class="tombol-menu" id="tombolMenu">✕</button>
-  </div>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
 
   <hr class="garis-menu" />
 
@@ -123,13 +123,13 @@ include 'Data_Pegawai.php';
       </div>
 
       <div class="baris-form">
-        <label>Pangkat/Gol. Ruang/TMT</label>
-        <input value="<?= $data_gol['nama_pangkat'] ?? '-' ?> (<?= $data_gol['kode_gol'] ?? '-' ?>) / <?= isset($data_gol['tmt_golongan']) ? date('d-m-Y', strtotime($data_gol['tmt_golongan'])) : '-' ?>" readonly>
+        <label>Pangkat / Gol. Ruang / TMT</label>
+        <input value="<?= $data_gol['nama_pangkat'] ?? '/' ?> / <?= $data_gol['kode_gol'] ?? '-' ?> / <?= isset($data_gol['tmt_golongan']) ? date('d-m-Y', strtotime($data_gol['tmt_golongan'])) : '-' ?>" readonly>
       </div>
 
       <div class="baris-form">
         <label>Jabatan Terakhir / TMT</label>
-        <input value="<?= $data_jabatan['nama_jabatan'] ?? '-' ?> - <?= $data_jabatan['jenis_jabatan'] ?? '-' ?> / <?= isset($data_jabatan['tmt_jabatan']) ? date('d-m-Y', strtotime($data_jabatan['tmt_jabatan'])) : '-' ?>" readonly>
+        <input value="<?= $data_jabatan['nama_jabatan'] ?? '/' ?> / <?= $data_jabatan['jenis_jabatan'] ?? '/' ?> / <?= isset($data_jabatan['tmt_jabatan']) ? date('d-m-Y', strtotime($data_jabatan['tmt_jabatan'])) : '-' ?>" readonly>
       </div>
 
       <div class="baris-form">
@@ -174,7 +174,7 @@ include 'Data_Pegawai.php';
       </div>
 
       <div class="baris-form">
-        <label>Tipe Karyawan</label>    
+        <label>Jenis Pegawai</label>    
         <input value="<?= $data['tipe_karyawan'] ?>" readonly>         
       </div>
 

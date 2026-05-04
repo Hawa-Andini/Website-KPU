@@ -70,9 +70,9 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
     
 <!-- SIDEBAR -->
 <aside class="sidebar-edit">
-    <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
       <hr class="garis-menu" />
 
@@ -162,7 +162,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
                   <?php while($g = mysqli_fetch_assoc($golongan)){ ?>
                   <option value="<?= $g['id_gol'] ?>"
                   <?php if($data_gol['id_gol'] == $g['id_gol']) echo "selected"; ?>>
-                  <?= $g['nama_pangkat'] ?> - <?= $g['kode_gol'] ?>
+                  <?= $g['nama_pangkat'] ?> / <?= $g['kode_gol'] ?>
                   </option>
                   <?php } ?>
 
@@ -190,7 +190,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
               <?php while($g = mysqli_fetch_assoc($jabatan)){ ?>
               <option value="<?= $g['id_jabatan'] ?>"
               <?php if($data_jabatan['id_jabatan']==$g['id_jabatan']) echo "selected"; ?>>
-              <?= $g['nama_jabatan'] ?> - <?= $g['jenis_jabatan'] ?>
+              <?= $g['nama_jabatan'] ?> / <?= $g['jenis_jabatan'] ?>
               </option>
               <?php } ?>
 
@@ -332,7 +332,7 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
         </div>
 
         <div class="baris-edit">
-        <label>Tipe Karyawan</label>    
+        <label>Jenis Pegawai</label>    
         <input type="text" name="tipe_karyawan"
         value="<?= $data['tipe_karyawan'] ?? '' ?>"
         placeholder="Contoh: PNS, CPNS, PPPK, dll">            

@@ -166,9 +166,9 @@ if(isset($_POST['update_data'])){
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="logo">
-            <span>LOGO</span>
-            <button class="tombol-menu" id="tombolMenu">✕</button>
+        <div class="logo_siproga">
+        <img src="../auth/Logo_Siproga.png">
+        <button class="tombol-menu" id="tombolMenu">✕</button>
         </div>
 
         <hr class="garis-menu" />
@@ -327,7 +327,7 @@ if(isset($_POST['update_data'])){
 
     <?php include '../pegawai/Notifikasi_Logout.php'; ?>
   <script src="../assets/admin-ui.js"></script>
-  <script src="../assets/script_pg.js"></script>
+  <script src="../assets/tambah_data.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

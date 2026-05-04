@@ -141,8 +141,8 @@ if (isset($_POST['hapus'])) {
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="logo">
-      <span>LOGO</span>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
       <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
 
@@ -195,6 +195,7 @@ if (isset($_POST['hapus'])) {
 
   <!-- KONTEN -->
   <main class="konten">
+  <h2>Riwayat Golongan</h2>
     <!-- dropdown-->
     <div class="user-profile" id="userProfile">
       <div class="user-info">
@@ -231,7 +232,7 @@ if (isset($_POST['hapus'])) {
             <label>Golongan Pangkat</label>
 
             <select name="id_gol" style="height:30px; border:1px solid #888;">
-              <option value="">Pilih Golongan</option>
+              <option value="">-- Pilih Golongan --</option>
 
               <?php
               $qGol = mysqli_query($conn, "SELECT * FROM master_golongan ORDER BY kode_gol");
@@ -329,7 +330,7 @@ if (isset($_POST['hapus'])) {
 
     }
   </script>
-  <script src="../assets/script_pg.js"></script>
+    <script src="../assets/script_edit.js"></script>
 
   <script src="../assets/core-ui.js"></script>
   <script src="../assets/datamaster.js"></script>

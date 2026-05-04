@@ -115,9 +115,9 @@ if(isset($_POST['hapus'])){
 
 <!-- SIDEBAR -->
 <aside class="sidebar-edit">
-    <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
       <hr class="garis-menu" />
 
@@ -177,7 +177,7 @@ if(isset($_POST['hapus'])){
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
         <label>Tahun</label>
 
-        <input type="number" name="tahun">
+        <input type="number" name="tahun"  placeholder="Masukan Tahun">
 
         <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
         TAMBAH
@@ -187,9 +187,9 @@ if(isset($_POST['hapus'])){
 
         <!-- BARIS RATA RATA -->
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-        <label>Rata-Rata</label>
+        <label>Nilai SKP</label>
 
-        <input type="number" name="rerata_nilai" step="0.01">
+        <input type="number" name="rerata_nilai" step="0.01"  placeholder="Masukan Nilai SKP">
 
         <button type="button" onclick="klikUbahBeda('id_riwayat_skp')"  class="tombol-ubah btn-kecil">
         UBAH
@@ -229,7 +229,7 @@ if(isset($_POST['hapus'])){
         <thead>
         <tr>
         <th>Tahun</th>
-        <th>Rata-Rata</th>
+        <th>Nilai SKP</th>
         <th>Predikat</th>
         </tr>
         </thead>

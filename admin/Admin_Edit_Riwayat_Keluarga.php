@@ -143,9 +143,9 @@ exit;
 
     <aside class="sidebar" id="sidebar">
 
-        <div class="logo">
-            <span>LOGO</span>
-            <button class="tombol-menu" id="tombolMenu">✕</button>
+        <div class="logo_siproga">
+        <img src="../auth/Logo_Siproga.png">
+        <button class="tombol-menu" id="tombolMenu">✕</button>
         </div>
 
         <hr class="garis-menu" />
@@ -239,48 +239,41 @@ exit;
 
                     <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
                         <label>Nama</label>
-                        <input type="text" name="nama">
+                        <input type="text" name="nama"  placeholder="Masukan Nama">
                         <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
               TAMBAH
             </button>
                     </div>
 
                     <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-                        <label>No Telepon</label>
-                        <input type="text" name="no_telp">
-                        <button type="button" onclick="klikUbahBeda('id_riwayat_kel')" class="tombol-ubah btn-kecil">
-              UBAH
-            </button>
-                    </div>
+            <label>Keterangan</label>
+            <select name="id_hub_kel" style="height:30px; border:1px solid #888;">
+                <option value="">-- Pilih Keterangan --</option>
+                <?php
+                $qHub = mysqli_query($conn,"SELECT * FROM master_hub_kel");
+                while($h = mysqli_fetch_assoc($qHub)){
+                    echo "<option value='".$h['id_hub_kel']."'>".$h['hub_kel']."</option>";
+                }
+                ?>
+            </select>
+            <button type="button" onclick="klikUbahBeda('id_riwayat_kel')" class="tombol-ubah btn-kecil">UBAH</button>
+        </div>
 
-                    <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-                        <label>Alamat</label>
-                        <input type="text" name="alamat">
-                        <button type="button" onclick="klikHapus('id_riwayat_kel')" class="tombol-hapus btn-kecil">
-              HAPUS
-            </button>
-                    </div>
+        <!-- No Telepon -->
+        <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+            <label>No Telepon</label>
+            <input type="text" name="no_telp"  placeholder="Contoh: 08XXXXX" oninput="formatTelp(this)">
+            <button type="button" onclick="klikHapus('id_riwayat_kel')" class="tombol-hapus btn-kecil">HAPUS</button>
+        </div>
 
-                    <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-                        <label>Keterangan</label>
+        <!-- Alamat -->
+        <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+            <label>Alamat</label>
+            <input type="text" name="alamat"  placeholder="Masukan Alamat">
+        </div>
+            </form>
 
-                        <select name="id_hub_kel" style="height:30px; border:1px solid #888;">
-
-                            <option value="">Pilih Keterangan</option>
-
-                            <?php
-                            $qHub = mysqli_query($conn, "SELECT * FROM master_hub_kel");
-
-                            while ($h = mysqli_fetch_assoc($qHub)) {
-                                echo "<option value='" . $h['id_hub_kel'] . "'>" . $h['hub_kel'] . "</option>";
-                            }
-                            ?>
-
-                        </select>
-
-                    </div>
-
-                    <table class="tabel-riwayat">
+                    <table class="tabel-riwayat" border="1" cellpadding="5">
 
                         <thead>
                             <tr>
@@ -295,34 +288,44 @@ exit;
 
                             <?php
                             $data = mysqli_query($conn, "
-SELECT rk.*, mh.hub_kel
-FROM riwayat_keluarga rk
-JOIN master_hub_kel mh ON rk.id_hub_kel = mh.id_hub_kel
-WHERE rk.nip='$nip'
-");
+                                SELECT rk.*, mh.hub_kel
+                                FROM riwayat_keluarga rk
+                                JOIN master_hub_kel mh ON rk.id_hub_kel = mh.id_hub_kel
+                                WHERE rk.nip='$nip'
+                                ");
 
-                            while ($row = mysqli_fetch_assoc($data)) {
+                                while ($row = mysqli_fetch_assoc($data)) {
+                                     // FORMAT NOMOR
+                                    $no = preg_replace('/\D/', '', $row['no_telp']);
+
+                                    if(strlen($no) > 8){
+                                        $no_format = substr($no,0,4).'-'.substr($no,4,4).'-'.substr($no,8);
+                                    }else if(strlen($no) > 4){
+                                        $no_format = substr($no,0,4).'-'.substr($no,4);
+                                    }else{
+                                        $no_format = $no;
+                                    }
                                 echo "<tr onclick=\"pilihData('" . $row['id_riwayat_kel'] . "','" . $row['nama'] . "','" . $row['no_telp'] . "','" . $row['alamat'] . "','" . $row['id_hub_kel'] . "')\">
 
-<td>" . $row['nama'] . "</td>
-<td>" . $row['no_telp'] . "</td>
-<td>" . $row['alamat'] . "</td>
-<td>" . $row['hub_kel'] . "</td>
+                                <td>" . $row['nama'] . "</td>
+                                <td>" . $row['no_telp'] . "</td>
+                                <td>" . $row['alamat'] . "</td>
+                                <td>" . $row['hub_kel'] . "</td>
 
-</tr>";
+                                </tr>";
                             }
 
                             $qJumlah = mysqli_query($conn, "
-SELECT COUNT(*) as total
-FROM riwayat_keluarga
-WHERE nip='$nip'
-");
+                                SELECT COUNT(*) as total
+                                FROM riwayat_keluarga
+                                WHERE nip='$nip'
+                                ");
 
                             $j = mysqli_fetch_assoc($qJumlah);
                             ?>
 
                             <tr>
-                                <td colspan="2"><b>Jumlah Anggota Keluarga : <?php echo $j['total']; ?></b></td>
+                                <td colspan="4"><b>Jumlah Anggota Keluarga : <?php echo $j['total']; ?></b></td>
                             </tr>
 
                         </tbody>
@@ -360,7 +363,7 @@ WHERE nip='$nip'
         }
     </script>
 
-<script src="../assets/script_pg.js"></script>
+<script src="../assets/script_edit.js"></script>
 
 <script src="../assets/core-ui.js"></script>
 <script src="../assets/datamaster.js"></script>

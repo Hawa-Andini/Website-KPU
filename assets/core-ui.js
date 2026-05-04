@@ -18,19 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
 
-    // ===============================
-    // LOG OUT
-    // ===============================
-
-    // const tombolKeluar = document.querySelector(".tombol-keluar");
-
-    // if (tombolKeluar) {
-    //     tombolKeluar.addEventListener("click", function () {
-    //         if (confirm("Apakah Anda yakin ingin keluar?")) {
-    //             window.location.href = "Login.html";
-    //         }
-    //     });
-    // }
 
    
 

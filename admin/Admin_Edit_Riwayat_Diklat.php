@@ -49,33 +49,38 @@ if (!$pegawai) {
    ========================= */
 if (isset($_POST['tambah'])) {
 
-  $id_jenis_diklat = $_POST['id_jenis_diklat'];
-  $nama_diklat = $_POST['nama_diklat'];
-  $tahun = $_POST['tahun'];
+  
+    $nama_diklat            = $_POST['nama_diklat'];
+    $penyelenggara_diklat   = $_POST['penyelenggara_diklat'];
+    $tp_awal                = $_POST['tp_awal'];
+    $tp_akhir               = $_POST['tp_akhir'];
+    $jp                     = $_POST['jp'];
 
-  if (!empty($id_jenis_diklat) && !empty($nama_diklat) && !empty($tahun)) {
+    if(!empty($nama_diklat) && !empty($penyelenggara_diklat) && !empty($tp_awal) && !empty($tp_akhir) && !empty($jp)){
 
-    $cek = mysqli_query($conn, "
-SELECT * FROM riwayat_diklat
-WHERE nip='$nip'
-AND id_jenis_diklat='$id_jenis_diklat'
-AND nama_diklat='$nama_diklat'
-AND tahun='$tahun'
-");
+        $cek = mysqli_query($conn,"
+        SELECT * FROM riwayat_diklat
+        WHERE nip='$nip'
+        AND nama_diklat='$nama_diklat'
+        AND penyelenggara_diklat='$penyelenggara_diklat'
+        AND tp_awal='$tp_awal'
+        AND tp_akhir='$tp_akhir'
+        AND jp='$jp'
+        ");
 
     if (mysqli_num_rows($cek) == 0) {
 
       mysqli_query($conn, "
-INSERT INTO riwayat_diklat
-(nip,id_jenis_diklat,nama_diklat,tahun)
-VALUES
-('$nip','$id_jenis_diklat','$nama_diklat','$tahun')
-");
+      INSERT INTO riwayat_diklat
+      (nip,nama_diklat,penyelenggara_diklat,tp_awal,tp_akhir,jp)
+      VALUES
+      ('$nip','$nama_diklat','$penyelenggara_diklat','$tp_awal','$tp_akhir','$jp')
+      ");
 
-header("Location: Admin_Edit_Riwayat_Diklat.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
-exit;
-    } 
-  } 
+      header("Location: Admin_Edit_Riwayat_Diklat.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
+      exit;
+          } 
+        } 
 }
 
 
@@ -90,20 +95,24 @@ if (isset($_POST['ubah'])) {
     die("Pilih data dulu");
   }
 
-  $id_jenis_diklat = $_POST['id_jenis_diklat'];
-  $nama_diklat = $_POST['nama_diklat'];
-  $tahun = $_POST['tahun'];
+  $nama_diklat            = $_POST['nama_diklat'];
+  $penyelenggara_diklat   = $_POST['penyelenggara_diklat'];
+  $tp_awal                = $_POST['tp_awal'];
+  $tp_akhir               = $_POST['tp_akhir'];
+  $jp                     = $_POST['jp'];
 
-  if (!empty($id_jenis_diklat) && !empty($nama_diklat) && !empty($tahun)) {
+  if(!empty($nama_diklat) && !empty($penyelenggara_diklat) && !empty($tp_awal) && !empty($tp_akhir) && !empty($jp)){
 
-    mysqli_query($conn, "
-UPDATE riwayat_diklat
-SET
-id_jenis_diklat='$id_jenis_diklat',
-nama_diklat='$nama_diklat',
-tahun='$tahun'
-WHERE id_riwayat_diklat='$id'
-");
+      mysqli_query($conn,"
+      UPDATE riwayat_diklat
+      SET
+      nama_diklat='$nama_diklat',
+      penyelenggara_diklat='$penyelenggara_diklat',
+      tp_awal='$tp_awal',
+      tp_akhir='$tp_akhir',
+      jp='$jp'
+      WHERE id_riwayat_diklat='$id'
+      ");
 
 header("Location: Admin_Edit_Riwayat_Diklat.php?nip=" . urlencode($nip) . "&status=berhasil_ubah");
 exit;
@@ -146,8 +155,8 @@ exit;
 
   <aside class="sidebar" id="sidebar">
 
-    <div class="logo">
-      <span>LOGO</span>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
       <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
 
@@ -242,23 +251,11 @@ exit;
 
           <input type="hidden" name="id_riwayat_diklat" id="id_riwayat_diklat">
 
-          <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+          <div class="baris-form" style="grid-template-columns:170px 500px 120px;">
 
-            <label>Jenis Diklat</label>
+            <label>Nama Diklat</label>
 
-            <select name="id_jenis_diklat" style="height:30px; border:1px solid #888;">
-
-              <option value="">Pilih Jenis Diklat</option>
-
-              <?php
-              $qDiklat = mysqli_query($conn, "SELECT * FROM master_diklat ORDER BY id_jenis_diklat");
-
-              while ($d = mysqli_fetch_assoc($qDiklat)) {
-                echo "<option value='$d[id_jenis_diklat]'>$d[jenis_diklat]</option>";
-              }
-              ?>
-
-            </select>
+            <input type="text" name="nama_diklat" placeholder="Masukan Nama Diklat">
 
             <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
               TAMBAH
@@ -267,11 +264,11 @@ exit;
           </div>
 
 
-          <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+          <div class="baris-form" style="grid-template-columns:170px 500px 120px;">
 
-            <label>Nama Diklat</label>
+            <label>Penyelenggara Diklat</label>
 
-            <input type="text" name="nama_diklat" placeholder="Nama Diklat">
+            <input type="text" name="penyelenggara_diklat" placeholder="Masukan Penyelenggara Diklat">
 
             <button type="button" onclick="klikUbahBeda('id_riwayat_diklat')" class="tombol-ubah btn-kecil">
               UBAH
@@ -280,11 +277,10 @@ exit;
           </div>
 
 
-          <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
+          <div class="baris-form" style="grid-template-columns:170px 500px 120px;">
 
-            <label>Tahun</label>
-
-            <input type="number" name="tahun" placeholder="YYYY">
+              <label>Tanggal Pelaksanaan Awal</label>
+                <input type="date" name="tp_awal">
 
             <div class="aksi-vertikal">
 
@@ -296,14 +292,26 @@ exit;
 
           </div>
 
+          <div class="baris-form" style="grid-template-columns:170px 500px 120px;">
+                <label>Tanggal Pelaksanaan Akhir</label>
+                <input type="date" name="tp_akhir">
+            </div>
 
-          <table class="tabel-riwayat" border="1" cellpadding="5">
+            <div class="baris-form" style="grid-template-columns:170px 500px 120px;">
+                <label>Jam Pelajaran (Jam)</label>
+                <input type="time" name="jp">
+            </div>
+
+
+          <table class="tabel-riwayat" border="1" cellpadding="5" style="width: 800px;">
 
             <thead>
               <tr>
-                <th>Jenis Diklat</th>
                 <th>Nama Diklat</th>
-                <th>Tahun</th>
+                <th>Penyelenggara Diklat</th>
+                <th>Tanggal Pelaksanaan Awal</th>
+                <th>Tanggal Pelaksanaan Akhir</th>
+                <th>Jam Pelajaran (Jam)</th>
               </tr>
             </thead>
 
@@ -311,23 +319,22 @@ exit;
 
               <?php
               $dataRiwayat = mysqli_query($conn, "
-SELECT rd.*, md.jenis_diklat
-FROM riwayat_diklat rd
-JOIN master_diklat md
-ON rd.id_jenis_diklat = md.id_jenis_diklat
-WHERE rd.nip='$nip'
-ORDER BY rd.tahun DESC
-");
+              SELECT *
+              FROM riwayat_diklat
+              WHERE nip='$nip'
+              ORDER BY tp_awal DESC
+              ");
 
               while ($row = mysqli_fetch_assoc($dataRiwayat)) {
 
-                echo "<tr onclick=\"pilihData('" . $row['id_riwayat_diklat'] . "','" . $row['id_jenis_diklat'] . "','" . $row['nama_diklat'] . "','" . $row['tahun'] . "')\">
+                echo "<tr onclick=\"pilihData('".$row['id_riwayat_diklat']."','".$row['nama_diklat']."','".$row['penyelenggara_diklat']."','".$row['tp_awal']."','".$row['tp_akhir']."','".$row['jp']."')\">
 
-<td>" . $row['jenis_diklat'] . "</td>
-<td>" . $row['nama_diklat'] . "</td>
-<td>" . $row['tahun'] . "</td>
-
-</tr>";
+                <td>".$row['nama_diklat']."</td>
+                <td>".$row['penyelenggara_diklat']."</td>
+                <td>".(!empty($row['tp_awal']) ? date('d-m-Y', strtotime($row['tp_awal'])) : '-')."</td>
+                <td>".(!empty($row['tp_akhir']) ? date('d-m-Y', strtotime($row['tp_akhir'])) : '-')."</td>
+                <td>".(!empty($row['jp']) ? date('H:i', strtotime($row['jp'])) : '-')."</td>
+                </tr>";
               }
               ?>
 
@@ -355,17 +362,19 @@ ORDER BY rd.tahun DESC
   <?php include '../pegawai/Notifikasi_Logout.php'; ?>
 
   <script>
-    function pilihData(id, id_jenis, nama, tahun) {
+    function pilihData(id, nama, penyelenggara, tp_awal, tp_akhir, jp){
 
-      document.getElementById("id_riwayat_diklat").value = id;
-      document.querySelector("select[name='id_jenis_diklat']").value = id_jenis;
-      document.querySelector("input[name='nama_diklat']").value = nama;
-      document.querySelector("input[name='tahun']").value = tahun;
+    document.getElementById("id_riwayat_diklat").value = id;
+    document.querySelector("input[name='nama_diklat']").value = nama;
+    document.querySelector("input[name='penyelenggara_diklat']").value = penyelenggara;
+    document.querySelector("input[name='tp_awal']").value = tp_awal;
+    document.querySelector("input[name='tp_akhir']").value = tp_akhir;
+    document.querySelector("input[name='jp']").value = jp;
 
     }
   </script>
 
-<script src="../assets/script_pg.js"></script>
+<script src="../assets/script_edit.js"></script>
 
 <script src="../assets/core-ui.js"></script>
 <script src="../assets/datamaster.js"></script>

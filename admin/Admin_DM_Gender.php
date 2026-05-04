@@ -158,9 +158,9 @@ if (isset($_POST['id_delete'])) {
 <aside class="sidebar" id="sidebar">
 
     <!-- LOGO -->
-    <div class="logo">
-        <span>LOGO</span>
-        <button class="tombol-menu" id="tombolMenu">✕</button>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
 
     <hr class="garis-menu">
@@ -226,9 +226,7 @@ if (isset($_POST['id_delete'])) {
                 <?= htmlspecialchars($admin['nama_pegawai']); ?>
             </div>
             <!-- Opsional: tampilkan username -->
-            <!-- <div class="user-role">
-                <?= htmlspecialchars($admin['username']); ?>
-            </div> -->
+
         </div>
     </div>
 

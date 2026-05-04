@@ -13,10 +13,10 @@ include 'Data_Pegawai.php';
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-  <div class="logo">
-    <span>LOGO</span>
-    <button class="tombol-menu" id="tombolMenu">✕</button>
-  </div>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
+      <button class="tombol-menu" id="tombolMenu">✕</button>
+    </div>
 
   <hr class="garis-menu" />
 
@@ -118,9 +118,10 @@ include 'Data_Pegawai.php';
 
           <thead>
           <tr>
-          <th>Nama Jabatan</th>
-          <th>TMT Awal</th>
-          <th>TMT Akhir</th>
+            <th>Nama Jabatan</th>
+            <th>Unit Kerja Awal</th>
+            <th>TMT</th>
+            
           </tr>
           </thead>
 
@@ -131,15 +132,15 @@ include 'Data_Pegawai.php';
           FROM riwayat_jabatan rg
           JOIN master_jabatan mg ON rg.id_jabatan = mg.id_jabatan
           WHERE rg.nip='$nip'
-          ORDER BY rg.tmt_jabatan
+          ORDER BY rg.tmt_jabatan 
           ");
 
           while($row = mysqli_fetch_assoc($data)){
 
-              echo "<tr onclick=\"pilihData('".$row['id_riwayat_jabatan']."','".$row['id_jabatan']."','".$row['tmt_jabatan']."')\">
+              echo "<tr onclick=\"pilihData('".$row['id_riwayat_jabatan']."','".$row['id_jabatan']."','".$row['tmt_jabatan']."','".$row['unit_kerja']."')\">
               <td>".$row['jenis_jabatan']." - ".$row['nama_jabatan']."</td>
+              <td>".$row['unit_kerja']."</td>
               <td>".date('d-m-Y', strtotime($row['tmt_jabatan']))."</td>
-              <td>".($row['tmt_akhir'] ? date('d-m-Y', strtotime($row['tmt_akhir'])) : '-')."</td>
               </tr>";
               
               }

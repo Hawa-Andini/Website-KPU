@@ -51,28 +51,27 @@ if (!$pegawai) {
 
 if (isset($_POST['tambah'])) {
 
-  $id_jabatan = $_POST['id_jabatan'];
-  $tmt_jabatan = $_POST['tmt_jabatan'];
-  $tmt_akhir = $_POST['tmt_akhir'];
+    $id_jabatan = $_POST['id_jabatan'];
+    $tmt_jabatan = $_POST['tmt_jabatan'];
+    $unit_kerja = $_POST['unit_kerja'];
 
+    if(!empty($id_jabatan) && !empty($tmt_jabatan) && !empty($unit_kerja)){
 
-  if (!empty($id_jabatan) && !empty($tmt_jabatan)) {
-
-    $cek = mysqli_query($conn, "
-SELECT * FROM riwayat_jabatan
-WHERE nip='$nip'
-AND id_jabatan='$id_jabatan'
-AND tmt_jabatan='$tmt_jabatan'
-AND tmt_akhir='$tmt_akhir'
-");
+        $cek = mysqli_query($conn,"
+        SELECT * FROM riwayat_jabatan
+        WHERE nip='$nip'
+        AND id_jabatan='$id_jabatan'
+        AND tmt_jabatan  ='$tmt_jabatan'
+        AND unit_kerja = '$unit_kerja'
+        ");
 
     if (mysqli_num_rows($cek) == 0) {
 
       mysqli_query($conn, "
-INSERT INTO riwayat_jabatan
-(nip, id_jabatan, id_unit_kerja, tmt_jabatan, tmt_akhir)
-VALUES
-('$nip','$id_jabatan','$pegawai[id_unit_kerja]','$tmt_jabatan', '$tmt_akhir')
+      INSERT INTO riwayat_jabatan
+      (nip, id_jabatan, tmt_jabatan, unit_kerja)
+      VALUES
+      ('$nip','$id_jabatan','$tmt_jabatan','$unit_kerja')
 ");
 
 header("Location: Admin_Edit_Riwayat_Jabatan.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
@@ -91,22 +90,23 @@ if (isset($_POST['ubah'])) {
   $id = $_POST['id_riwayat_jabatan'];
   $id_jabatan = $_POST['id_jabatan'];
   $tmt_jabatan = $_POST['tmt_jabatan'];
-  $tmt_akhir = $_POST['tmt_akhir'];
+  $unit_kerja = $_POST['unit_kerja'];
 
 
   if (empty($id)) {
     die("Pilih data dulu");
   }
 
-  if (!empty($id_jabatan) && !empty($tmt_jabatan)) {
-
-    mysqli_query($conn, "
-UPDATE riwayat_jabatan
-SET id_jabatan='$id_jabatan',
+  if(!empty($id) && !empty($id_jabatan) && !empty($tmt_jabatan) && !empty($unit_kerja)){
+    
+    mysqli_query($conn,"
+    UPDATE riwayat_jabatan
+    SET
+    id_jabatan='$id_jabatan',
     tmt_jabatan='$tmt_jabatan',
-    tmt_akhir='$tmt_akhir'
-WHERE id_riwayat_jabatan='$id'
-");
+    unit_kerja='$unit_kerja'
+    WHERE id_riwayat_jabatan='$id'
+    ");
 
     header("Location: Admin_Edit_Riwayat_Jabatan.php?nip=$nip");
     exit;
@@ -152,8 +152,8 @@ exit;
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="logo">
-      <span>LOGO</span>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
       <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
 
@@ -245,7 +245,7 @@ exit;
             <label>Nama Jabatan</label>
 
             <select name="id_jabatan" style="height:30px; border:1px solid #888;">
-              <option value="">Pilih Jabatan</option>
+              <option value="">-- Pilih Jabatan --</option>
 
               <?php
               $qJabatan = mysqli_query($conn, "SELECT * FROM master_jabatan ORDER BY jenis_jabatan");
@@ -263,9 +263,8 @@ exit;
 
           <!-- UBAH -->
           <div class="baris-form" style="grid-template-columns:120px 500px 120px">
-            <label>TMT</label>
-
-            <input type="date" name="tmt_jabatan">
+                <label>Unit Kerja Awal</label>
+                <input type="text" name="unit_kerja" placeholder="Masukan Unit Kerja Awal">
 
             <button type="button" onclick="klikUbahBeda('id_riwayat_jabatan')" class="tombol-ubah btn-kecil">
               UBAH
@@ -274,9 +273,8 @@ exit;
 
           <!-- HAPUS -->
           <div class="baris-form" style="grid-template-columns:120px 500px 120px">
-            <label>TMT Akhir</label>
-
-            <input type="date" name="tmt_akhir">
+                <label>TMT</label>
+                <input type="date" name="tmt_jabatan">
 
             <button type="button" onclick="klikHapus('id_riwayat_jabatan')" class="tombol-hapus btn-kecil">
               HAPUS
@@ -290,9 +288,10 @@ exit;
 
           <thead>
             <tr>
-              <th>Nama Jabatan</th>
-              <th>TMT Mulai</th>
-              <th>TMT Akhir</th>
+            <th>Nama Jabatan</th>
+            <th>Unit Kerja Awal</th>
+            <th>TMT Awal</th>
+            </tr>
             </tr>
           </thead>
 
@@ -300,34 +299,20 @@ exit;
 
             <?php
             $dataRiwayat = mysqli_query($conn, "
-SELECT rj.*, mj.jenis_jabatan, mj.nama_jabatan
-FROM riwayat_jabatan rj
-JOIN master_jabatan mj ON rj.id_jabatan = mj.id_jabatan
-WHERE rj.nip='$nip'
-ORDER BY rj.tmt_jabatan DESC
-");
+            SELECT rg.*, mg.jenis_jabatan, mg.nama_jabatan
+            FROM riwayat_jabatan rg
+            JOIN master_jabatan mg ON rg.id_jabatan = mg.id_jabatan
+            WHERE rg.nip='$nip'
+            ORDER BY rg.tmt_jabatan DESC
+            ");
 
             while ($row = mysqli_fetch_assoc($dataRiwayat)) {
 
-              echo "<tr onclick=\"pilihData(
-'" . $row['id_riwayat_jabatan'] . "',
-'" . $row['id_jabatan'] . "',
-'" . $row['tmt_jabatan'] . "',
-'" . $row['tmt_akhir'] . "'
-)\">
-
-<td>" . $row['jenis_jabatan'] . " - " . $row['nama_jabatan'] . "</td>
-
-<td>" . date('d-m-Y', strtotime($row['tmt_jabatan'])) . "</td>
-
-<td>" .
-                ($row['tmt_akhir']
-                  ? date('d-m-Y', strtotime($row['tmt_akhir']))
-                  : '-'
-                ) .
-                "</td>
-
-</tr>";
+              echo "<tr onclick=\"pilihData('".$row['id_riwayat_jabatan']."','".$row['id_jabatan']."','".$row['tmt_jabatan']."','".$row['unit_kerja']."')\">
+              <td>".$row['jenis_jabatan']." - ".$row['nama_jabatan']."</td>
+              <td>".$row['unit_kerja']."</td>
+              <td>".date('d-m-Y', strtotime($row['tmt_jabatan']))."</td>
+              </tr>";
             }
             ?>
 
@@ -349,17 +334,17 @@ ORDER BY rj.tmt_jabatan DESC
   <?php include '../pegawai/Notifikasi_Logout.php'; ?>
 
   <script>
-    function pilihData(id, id_jabatan, tmt_jabatan, tmt_akhir) {
+    function pilihData(id,id_jabatan,tmt_jabatan,unit_kerja){
 
-      document.getElementById("id_riwayat_jabatan").value = id;
-      document.querySelector("select[name='id_jabatan']").value = id_jabatan;
-      document.querySelector("input[name='tmt_jabatan']").value = tmt_jabatan;
-      document.querySelector("input[name='tmt_akhir']").value = tmt_akhir;
+    document.getElementById("id_riwayat_jabatan").value = id;
+    document.querySelector("select[name='id_jabatan']").value = id_jabatan;
+    document.querySelector("input[name='tmt_jabatan']").value = tmt_jabatan;
+    document.querySelector("input[name='unit_kerja']").value = unit_kerja;
 
     }
   </script>
 
-<script src="../assets/script_pg.js"></script>
+<script src="../assets/script_edit.js"></script>
 
 <script src="../assets/core-ui.js"></script>
 <script src="../assets/datamaster.js"></script>

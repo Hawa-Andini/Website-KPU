@@ -124,7 +124,7 @@ if (isset($_POST['reset_password'])) {
 
 
 // 
-if(isset($_GET['success'])){
+if($notif == "" && isset($_GET['success'])){
     if($_GET['success'] === 'reset'){
         $notif = "Password berhasil direset!";
     } elseif($_GET['success'] === 'nonaktif'){
@@ -168,9 +168,9 @@ if(isset($_GET['success'])){
 <body class="role-admin">
 
     <aside class="sidebar" id="sidebar">
-        <div class="logo">
-            <span>LOGO</span>
-            <button class="tombol-menu" id="tombolMenu">✕</button>
+        <div class="logo_siproga">
+        <img src="../auth/Logo_Siproga.png">
+        <button class="tombol-menu" id="tombolMenu">✕</button>
         </div>
 
         <hr class="garis-menu" />

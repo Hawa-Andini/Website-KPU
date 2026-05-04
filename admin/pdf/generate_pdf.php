@@ -262,10 +262,18 @@ td, th {
 .label {
     width: 40%;
     font-weight: bold;
+    vertical-align: top;
 }
 
 .value {
     width: 60%;
+    vertical-align: top;
+}
+
+.colon {
+    width: 5%;
+    text-align: center;
+    vertical-align: top;
 }
 
 .row {
@@ -353,19 +361,95 @@ td, th {
 
 <td width="65%">
 <table class="no-border">
-<tr><td class="label">NAMA</td><td>: '.strtoupper($data['nama_pegawai'] ?? '-').'</td></tr>
-<tr><td class="label">NIP</td><td>: '.strtoupper($data['nip'] ?? '-').'</td></tr>
-<tr><td class="label">PANGKAT / GOL / TMT</td><td>: '.strtoupper($data_gol['nama_pangkat'] ?? '-').' / ('.strtoupper($data_gol['kode_gol'] ?? '-').') / '. formatTanggalIndo($data_gol['tmt_golongan']).'</td></tr>
-<tr><td class="label">JABATAN TERAKHIR / TMT</td><td>: '.strtoupper($data_jabatan['jenis_jabatan'] ?? '-').' / '. formatTanggalIndo($data_jabatan['tmt_jabatan']).'</td></tr>
-<tr><td class="label">TIPE KARYAWAN</td><td>: '.strtoupper($data['tipe_karyawan'] ?? '-').'</td></tr>
-<tr><td class="label">TMT CPNS / TMT PNS</td><td>: '. formatTanggalIndo($data['tmt_cpns']).' / '. formatTanggalIndo($data['tmt_pns']).'</td></tr>
-<tr><td class="label">TTL</td><td>: '.strtoupper($data['tempat_lahir'] ?? '-').', '. formatTanggalIndo($data['tanggal_lahir']).'</td></tr>
-<tr><td class="label">JENIS KELAMIN</td><td>: '.strtoupper($data['jenis_kelamin'] ?? '-').'</td></tr>
-<tr><td class="label">AGAMA</td><td>: '.strtoupper($data['agama'] ?? '-').'</td></tr>
-<tr><td class="label">STATUS PERKAWINAN</td><td>: '.strtoupper($data['status_perkawinan'] ?? '-').'</td></tr>
-<tr><td class="label">UNIT KERJA</td><td>: '.strtoupper($data['unit_kerja'] ?? '-').'</td></tr>
-<tr><td class="label">INSTANSI</td><td>: KPU KOTA SURABAYA</td></tr>
-<tr><td class="label">ALAMAT</td><td>: '.strtoupper($data['alamat'] ?? '-').'</td></tr>
+<tr>
+    <td class="label">NAMA</td>
+    <td class="colon">:</td>
+    <td class="value">'.strtoupper($data['nama_pegawai'] ?? '-').'</td>
+</tr>
+<tr>
+    <td class="label">NIP</td>
+    <td class="colon">:</td>
+    <td class="value">'.strtoupper($data['nip'] ?? '-').'</td>
+</tr>
+
+<tr>
+    <td class="label">PANGKAT / GOL / TMT</td>
+    <td class="colon">:</td>
+    <td class="value">'
+        .strtoupper($data_gol['nama_pangkat'] ?? '-').' / '
+        .strtoupper($data_gol['kode_gol'] ?? '-').' / '
+        .formatTanggalIndo($data_gol['tmt_golongan']).'
+    </td>
+</tr>
+
+<tr>
+    <td class="label">JABATAN TERAKHIR / TMT</td>
+    <td class="colon">:</td>
+    <td class="value">'
+        .strtoupper($data_jabatan['jenis_jabatan'] ?? '-').' / '
+        .formatTanggalIndo($data_jabatan['tmt_jabatan']).'
+    </td>
+</tr>
+
+<tr>
+    <td class="label">JENIS PEGAWAI</td>
+    <td class="colon">:</td>
+    <td class="value">'.strtoupper($data['tipe_karyawan'] ?? '-').'</td>
+</tr>
+
+<tr>
+    <td class="label">TMT CPNS / TMT PNS</td>
+    <td class="colon">:</td>
+    <td class="value">'
+        .formatTanggalIndo($data['tmt_cpns']).' / '
+        .formatTanggalIndo($data['tmt_pns']).'
+    </td>
+</tr>
+
+<tr>
+    <td class="label">TTL</td>
+    <td class="colon">:</td>
+    <td class="value">'
+        .strtoupper($data['tempat_lahir'] ?? '-').', '
+        .formatTanggalIndo($data['tanggal_lahir']).'
+    </td>
+</tr>
+
+<tr>
+    <td class="label">JENIS KELAMIN</td>
+    <td class="colon">:</td>
+    <td class="value">'.strtoupper($data['jenis_kelamin'] ?? '-').'</td>
+</tr>
+
+<tr>
+    <td class="label">AGAMA</td>
+    <td class="colon">:</td>
+    <td class="value">'.strtoupper($data['agama'] ?? '-').'</td>
+</tr>
+
+<tr>
+    <td class="label">STATUS PERKAWINAN</td>
+    <td class="colon">:</td>
+    <td class="value">'.strtoupper($data['status_perkawinan'] ?? '-').'</td>
+</tr>
+
+<tr>
+    <td class="label">UNIT KERJA</td>
+    <td class="colon">:</td>
+    <td class="value">'.strtoupper($data['unit_kerja'] ?? '-').'</td>
+</tr>
+
+<tr>
+    <td class="label">INSTANSI</td>
+    <td class="colon">:</td>
+    <td class="value">KPU KOTA SURABAYA</td>
+</tr>
+
+<tr>
+    <td class="label">ALAMAT</td>
+    <td class="colon">:</td>
+    <td class="value">'.strtoupper($data['alamat'] ?? '-').'</td>
+</tr>
 </table>
 
 </td>
@@ -396,7 +480,7 @@ $html .= '
 <tr style="font-weight:bold;">
     <td width="20%">Golongan</td>
     <td width="50%", style="padding-left:30px;">Pangkat</td>
-    <td width="30%">TMT</td>
+    <td width="30%", align=center >TMT</td>
 </tr>';
 
 while($g = mysqli_fetch_assoc($golongan)){
@@ -404,7 +488,7 @@ while($g = mysqli_fetch_assoc($golongan)){
     <tr>
         <td>'.$g['kode_gol'].'</td>
         <td style="padding-left:30px;">'.$g['nama_pangkat'].'</td>
-        <td>'.safeDate($g['tmt_golongan']).'</td>
+        <td style="text-align:center;">'.safeDate($g['tmt_golongan']).'</td>
     </tr>';
 }
 
@@ -428,13 +512,14 @@ $html .= '
 $html .= '
 <table class="table-outer">
 <tr>
-    <td colspan="3" class="section-header">RIWAYAT JABATAN</td>
+    <td colspan="4" class="section-header">RIWAYAT JABATAN</td>
 </tr>
 
 <tr style="font-weight:bold;">
-    <td>Nama Jabatan</td>
-    <td>Jenis Jabatan</td>
-    <td>TMT</td>
+    <td width="25%">Nama Jabatan</td>
+    <td width="25%">Jenis Jabatan</td>
+    <td width="25%", align=center >TMT</td>
+    <td width="25%">Unit Kerja</td>
 </tr>';
 
 while($j = mysqli_fetch_assoc($jabatan)){
@@ -442,7 +527,8 @@ while($j = mysqli_fetch_assoc($jabatan)){
     <tr>
         <td>'.$j['nama_jabatan'].'</td>
         <td>'.$j['jenis_jabatan'].'</td>
-        <td>'.safeDate($j['tmt_jabatan']).' '.(!empty($j['tmt_akhir']) ? ' s/d '.safeDate($j['tmt_akhir']) : '').'</td>
+        <td style="text-align:center;">'.safeDate($j['tmt_jabatan']).'</td>
+        <td>'.$j['unit_kerja'].'</td>
     </tr>';
 }
 
@@ -477,13 +563,14 @@ $html .= '
 $html .= '
 <table class="table-outer">
 <tr>
-    <td colspan="3" class="section-header">RIWAYAT PENDIDIKAN</td>
+    <td colspan="4" class="section-header">RIWAYAT PENDIDIKAN</td>
 </tr>
 
 <tr style="font-weight:bold;">
-    <td>Nama Pendidikan</td>
-    <td>Strata</td>
-    <td>Tahun</td>
+    <td width="40%">Nama Pendidikan</td>
+    <td width="10%">Strata</td>
+    <td width="40%", align=center >Jurusan</td>
+    <td width="10%">Tahun</td>
 </tr>';
 
 if($pendidikan && mysqli_num_rows($pendidikan) > 0){
@@ -491,12 +578,13 @@ if($pendidikan && mysqli_num_rows($pendidikan) > 0){
         $html .= '
         <tr>
             <td>'.$p['institusi'].'</td>
-            <td>'.$p['jenjang_pend'].'</td>
-            <td>'.$p['tahun_lulus'].'</td>
+            <td style="text-align:center;">'.$p['jenjang_pend'].'</td>
+            <td>'.$p['jurusan'].'</td>
+            <td style="text-align:center;">'.$p['tahun_lulus'].'</td>
         </tr>';
     }
 } else {
-    $html .= '<tr><td colspan="3">Tidak ada pendidikan</td></tr>';
+    $html .= '<tr><td colspan="4">Tidak ada pendidikan</td></tr>';
 }
 
 // TUTUP TABLE PENDIDIKAN
@@ -518,12 +606,14 @@ $html .= '
 $html .= '
 <table class="table-outer">
 <tr>
-    <td colspan="2" class="section-header">RIWAYAT DIKLAT</td>
+    <td colspan="4" class="section-header">RIWAYAT DIKLAT</td>
 </tr>
 
 <tr style="font-weight:bold;">
     <td>Nama Diklat</td>
-    <td>Tahun</td>
+    <td>Penyelenggara</td>
+    <td align=center>Tanggal Pelaksanaan</td>
+    <td>JP</td>
 </tr>';
 
 if($diklat && mysqli_num_rows($diklat) > 0){
@@ -531,11 +621,13 @@ if($diklat && mysqli_num_rows($diklat) > 0){
         $html .= '
         <tr>
             <td>'.$d['nama_diklat'].'</td>
-            <td>'.$d['tahun'].'</td>
+            <td style="text-align:center;">'.$d['penyelenggara_diklat'].'</td>
+            <td>'.safeDate($d['tp_awal']).'<br>'.(!empty($d['tp_akhir']) ? 's/d '.safeDate($d['tp_akhir']) : '-').'</td>
+            <td style="text-align:center;">'.$d['jp'].' jam</td>
         </tr>';
     }
 } else {
-    $html .= '<tr><td colspan="1">Tidak ada diklat</td></tr>';
+    $html .= '<tr><td colspan="4">Tidak ada diklat</td></tr>';
 }
 
 // TUTUP TABLE DIKLAT
@@ -572,8 +664,8 @@ $html .= '
 
 <tr style="font-weight:bold;">
     <td>Nama</td>
-    <td>Hubungan</td>
-    <td>No. Telepon</td>
+    <td align=center>Hubungan</td>
+    <td align=center>No. Telepon</td>
 </tr>';
 
 if($keluarga && mysqli_num_rows($keluarga) > 0){
@@ -581,8 +673,8 @@ if($keluarga && mysqli_num_rows($keluarga) > 0){
         $html .= '
         <tr>
             <td>'.$k['nama'].'</td>
-            <td>'.$k['hub_kel'].'</td>
-            <td>'.$k['no_telp'].'</td>
+            <td style="text-align:center;">'.$k['hub_kel'].'</td>
+            <td style="text-align:center;">'.$k['no_telp'].'</td>
         </tr>';
     }
 } else {
@@ -612,7 +704,7 @@ $html .= '
 
 <tr style="font-weight:bold;">
     <td>Nama Penghargaan</td>
-    <td>Tahun</td>
+    <td align=center>Tahun</td>
 </tr>';
 
 if($penghargaan && mysqli_num_rows($penghargaan) > 0){
@@ -620,7 +712,7 @@ if($penghargaan && mysqli_num_rows($penghargaan) > 0){
         $html .= '
         <tr>
             <td>'.$ph['nama_penghargaan'].'</td>
-            <td>'.$ph['tahun'].'</td>
+            <td style="text-align:center;">'.$ph['tahun'].'</td>
         </tr>';
     }
 } else {
@@ -667,8 +759,8 @@ $html .= '
 
 <tr style="font-weight:bold;">
     <td>Tahun</td>
-    <td>Rerata Nilai</td>
-    <td>Predikat</td>
+    <td align=center>Rerata Nilai</td>
+    <td align=center>Predikat</td>
 </tr>';
 
 if($skp && mysqli_num_rows($skp) > 0){
@@ -676,8 +768,8 @@ if($skp && mysqli_num_rows($skp) > 0){
         $html .= '
         <tr>
             <td>'.$s['tahun'].'</td>
-            <td>'.number_format($s['rerata_nilai'], 2).'</td>
-            <td>'.$s['predikat_skp'].'</td>
+            <td style="text-align:center;">'.number_format($s['rerata_nilai'], 2).'</td>
+            <td style="text-align:center;">'.$s['predikat_skp'].'</td>
         </tr>';
     }
 } else {

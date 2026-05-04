@@ -63,9 +63,7 @@ $stmtJabatan->bind_param("s", $nip);
 $stmtJabatan->execute();
 $data_jabatan = $stmtJabatan->get_result()->fetch_assoc() ?? [];
 
-// =========================
-// PROSES UBAH DATA
-// =========================
+
 // =========================
 // PROSES UBAH DATA
 // =========================
@@ -83,6 +81,7 @@ if (isset($_POST['ubah'])) {
     $tmt_cpns = $_POST['tmt_cpns'] ?? '';
     $tmt_pns  = $_POST['tmt_pns'] ?? '';
     $golongan = $_POST['id_gol'] ?? '';
+    $kode_gol = $_POST['kode_gol'] ?? '';
     $tmt_gol  = $_POST['tmt_golongan'] ?? '';
     $jabatan  = $_POST['id_jabatan'] ?? '';
     $tmt_jab  = $_POST['tmt_jabatan'] ?? '';
@@ -127,6 +126,124 @@ if (isset($_POST['ubah'])) {
     $stmtUpdate->execute();
 
     // =========================
+// RIWAYAT GOLONGAN
+// =========================
+
+if (!empty($golongan) && !empty($tmt_gol)) {
+
+    $stmtCekGol = $conn->prepare("
+        SELECT id_gol, tmt_golongan 
+        FROM riwayat_golongan 
+        WHERE nip = ?
+        ORDER BY id_riwayat_gol DESC
+        LIMIT 1
+    ");
+    $stmtCekGol->bind_param("s", $nip);
+    $stmtCekGol->execute();
+    $lastGol = $stmtCekGol->get_result()->fetch_assoc();
+
+    $perluInsert = false;
+
+    if (!$lastGol) {
+        $perluInsert = true;
+    } else {
+        if (
+            $golongan != $lastGol['id_gol'] ||
+            $tmt_gol != $lastGol['tmt_golongan']
+        ) {
+            $perluInsert = true;
+        }
+    }
+
+    if ($perluInsert) {
+        $stmtInsertGol = $conn->prepare("
+            INSERT INTO riwayat_golongan (nip, id_gol, tmt_golongan)
+            VALUES (?, ?, ?)
+        ");
+        $stmtInsertGol->bind_param("sss", $nip, $golongan, $tmt_gol);
+        $stmtInsertGol->execute();
+    }
+}
+// Update Unit Kerja
+    $stmtUnit = $conn->prepare("
+    SELECT unit_kerja 
+    FROM master_divisi 
+    WHERE id_unit_kerja = ?
+");
+$stmtUnit->bind_param("s", $unit);
+$stmtUnit->execute();
+$dataUnit = $stmtUnit->get_result()->fetch_assoc();
+
+$nama_unit = $dataUnit['unit_kerja'] ?? '';
+
+    $stmtLast = $conn->prepare("
+    SELECT id_riwayat_jabatan 
+    FROM riwayat_jabatan 
+    WHERE nip = ? 
+    ORDER BY id_riwayat_jabatan DESC 
+    LIMIT 1
+");
+$stmtLast->bind_param("s", $nip);
+$stmtLast->execute();
+$resultLast = $stmtLast->get_result()->fetch_assoc();
+
+// =========================
+// VALIDASI JABATAN
+// =========================
+
+// 1. Pastikan tidak kosong
+if (!empty($jabatan) && !empty($tmt_jab)) {
+
+    // 2. Ambil data terakhir langsung dari DB (lebih aman)
+    $stmtCek = $conn->prepare("
+        SELECT id_jabatan, tmt_jabatan 
+        FROM riwayat_jabatan 
+        WHERE nip = ?
+        ORDER BY id_riwayat_jabatan DESC
+        LIMIT 1
+    ");
+    $stmtCek->bind_param("s", $nip);
+    $stmtCek->execute();
+    $lastData = $stmtCek->get_result()->fetch_assoc();
+
+    // 3. Tentukan apakah perlu insert
+    $perluInsert = false;
+
+    if (!$lastData) {
+        // belum ada riwayat sama sekali
+        $perluInsert = true;
+    } else {
+        if (
+            $jabatan != $lastData['id_jabatan'] ||
+            $tmt_jab != $lastData['tmt_jabatan']
+        ) {
+            $perluInsert = true;
+        }
+    }
+
+    // 4. Insert hanya jika benar-benar perlu
+    if ($perluInsert) {
+
+        $stmtInsertJabatan = $conn->prepare("
+            INSERT INTO riwayat_jabatan 
+            (nip, id_jabatan, tmt_jabatan, id_unit_kerja, unit_kerja)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+
+        $stmtInsertJabatan->bind_param(
+            "sssss",
+            $nip,
+            $jabatan,
+            $tmt_jab,
+            $unit,
+            $nama_unit
+        );
+
+        $stmtInsertJabatan->execute();
+    }
+}
+
+    // =========================
     // UPLOAD & UPDATE FOTO
     // =========================
     if (!empty($_FILES['foto']['name'])) {
@@ -136,18 +253,6 @@ if (isset($_POST['ubah'])) {
 
             $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
             $allowedExt = ['jpg', 'jpeg'];
-
-            // Validasi ekstensi
-            if (!in_array($ext, $allowedExt)) {
-                echo "<script>alert('Foto harus berformat JPG/JPEG');</script>";
-                exit;
-            }
-
-            // Validasi ukuran (maksimal 2MB)
-            if ($_FILES['foto']['size'] > 2 * 1024 * 1024) {
-                echo "<script>alert('Ukuran foto maksimal 2MB');</script>";
-                exit;
-            }
 
             // Pastikan folder uploads tersedia
             $uploadDir = __DIR__ . "/../uploads/";
@@ -242,9 +347,9 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
 
 
     <aside class="sidebar" id="sidebar">
-        <div class="logo">
-            <span>LOGO</span>
-            <button class="tombol-menu" id="tombolMenu">✕</button>
+        <div class="logo_siproga">
+        <img src="../auth/Logo_Siproga.png">
+        <button class="tombol-menu" id="tombolMenu">✕</button>
         </div>
 
         <hr class="garis-menu" />
@@ -362,14 +467,14 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
                     </div>
 
                     <div class="baris-form">
-                        <label>Pangkat/Gol. Ruang/TMT</label>
+                        <label>Pangkat / Gol. Ruang / TMT</label>
                         <div style="display:flex; gap:10px;">
 
                             <select name="id_gol">
                                 <?php while ($g = mysqli_fetch_assoc($golongan)) { ?>
                                     <option value="<?= $g['id_gol'] ?>"
                                         <?= ($pegawai['id_gol'] == $g['id_gol']) ? 'selected' : '' ?>>
-                                        <?= $g['nama_pangkat'] ?>
+                                        <?= $g['nama_pangkat'] ?> / <?= $g['kode_gol'] ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -491,7 +596,7 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
 
                     <div class="baris-form">
 
-                        <label>Tipe Karyawan</label>
+                        <label>Jenis Pegawai</label>
 
                         <input type="text" name="tipe_karyawan"
                             value="<?= $pegawai['tipe_karyawan'] ?? '' ?>"
@@ -544,24 +649,37 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
 </div>
 
     <?php include '../pegawai/Notifikasi_Logout.php'; ?>
-    <script src="../assets/script_pg.js"></script>
 
     <script>
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                document.getElementById('preview').src = reader.result;
-            }
-            reader.readAsDataURL(event.target.files[0]);
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+function previewImage(event) {
+    const file = event.target.files[0];
+
+    if (file) {
+
+        const maxSize = 2 * 1024 * 1024; 
+
+        if (file.size > maxSize) {
+            openModalAksi("Peringatan", "Ukuran foto maksimal 2MB!", "info");
+            event.target.value = ""; 
+            return;
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
-const status = urlParams.get('status');
-
+        const reader = new FileReader();
+        reader.onload = function() {
+            document.getElementById('preview').src = reader.result;
+        }
+        reader.readAsDataURL(file);
+    }
+}
 if (status === 'berhasil_ubah') {
     openModalAksi("Berhasil", "Data berhasil diubah", "info");
 }        
     </script>
+    <script src="../assets/script_edit.js"></script>
+
 
     <script src="../assets/core-ui.js"></script>
     <script src="../assets/datamaster.js"></script>

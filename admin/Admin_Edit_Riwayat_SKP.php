@@ -137,8 +137,8 @@ exit;
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
 
-    <div class="logo">
-      <span>LOGO</span>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
       <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
 
@@ -232,7 +232,7 @@ exit;
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
           <label>Tahun</label>
 
-          <input type="number" name="tahun">
+          <input type="number" name="tahun" placeholder="Contoh: 2022">
 
           <button type="button" onclick="klikTambah()" class="tombol-tambah btn-kecil">
               TAMBAH
@@ -240,9 +240,9 @@ exit;
         </div>
 
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-          <label>Rata-Rata</label>
+          <label>Nilai SKP</label>
 
-          <input type="number" name="rerata_nilai" step="0.01">
+          <input type="number" name="rerata_nilai" step="0.01"  placeholder="Masukan Nilai SKP">
 
           <button type="button" onclick="klikUbahBeda('id_riwayat_skp')" class="tombol-ubah btn-kecil">
               UBAH
@@ -254,7 +254,7 @@ exit;
 
           <select name="id_predikat_skp" style="height:30px; border:1px solid #888;">
 
-            <option value="">Pilih Predikat</option>
+            <option value="">-- Pilih Predikat --</option>
 
             <?php
             $qPredikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
@@ -276,7 +276,7 @@ exit;
 
         </div>
 
-        <table class="tabel-riwayat">
+        <table class="tabel-riwayat" border="1" cellpadding="5">
 
           <thead>
             <tr>
@@ -341,7 +341,7 @@ ORDER BY rs.tahun DESC
 
     }
   </script>
-  <script src="../assets/script_pg.js"></script>
+    <script src="../assets/script_edit.js"></script>
 
 <script src="../assets/core-ui.js"></script>
 <script src="../assets/datamaster.js"></script>

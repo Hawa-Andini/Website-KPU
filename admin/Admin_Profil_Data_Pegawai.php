@@ -42,8 +42,8 @@ $offset = ($page - 1) * $limit;
 
 <body class="role-admin">
   <aside class="sidebar" id="sidebar">
-    <div class="logo">
-      <span>LOGO</span>
+    <div class="logo_siproga">
+      <img src="../auth/Logo_Siproga.png">
       <button class="tombol-menu" id="tombolMenu">✕</button>
     </div>
 
@@ -138,9 +138,9 @@ $offset = ($page - 1) * $limit;
           <th>No</th>
           <th>Nama</th>
           <th>Jabatan</th>
-          <th>Golongan</th>
+          <th>Pangkat / Gol. Ruang</th>
           <th>NIP</th>
-          <th>Tipe Karyawan</th>
+          <th>Jenis Pegawai</th>
           <th>Divisi/Unit</th>
           <th>Aksi</th>
         </tr>

@@ -47,9 +47,10 @@ if (!$pegawai) {
 if (isset($_POST['tambah'])) {
   $tahun = $_POST['tahun'];
   $rerata_nilai = $_POST['rerata_nilai'];
+  $rerata_nilai_sql = ($rerata_nilai !== '') ? "'$rerata_nilai'" : "NULL";
   $id_predikat_skp = $_POST['id_predikat_skp'];
 
-  if (!empty($tahun) && !empty($rerata_nilai) && !empty($id_predikat_skp)) {
+  if (!empty($tahun) && !empty($id_predikat_skp)) {
     $cek = mysqli_query($conn, "
 SELECT * FROM riwayat_skp
 WHERE nip='$nip'
@@ -62,7 +63,7 @@ AND tahun='$tahun'
 INSERT INTO riwayat_skp
 (nip,tahun,rerata_nilai,id_predikat_skp)
 VALUES
-('$nip','$tahun','$rerata_nilai','$id_predikat_skp')
+('$nip','$tahun',$rerata_nilai_sql,'$id_predikat_skp')
 ");
 
 header("Location: Admin_Edit_Riwayat_SKP.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
@@ -83,15 +84,16 @@ if (isset($_POST['ubah'])) {
 
   $tahun = $_POST['tahun'];
   $rerata_nilai = $_POST['rerata_nilai'];
+  $rerata_nilai_sql = ($rerata_nilai !== '') ? "'$rerata_nilai'" : "NULL";
   $id_predikat_skp = $_POST['id_predikat_skp'];
 
-  if (!empty($tahun) && !empty($rerata_nilai) && !empty($id_predikat_skp)) {
+  if (!empty($tahun)  && !empty($id_predikat_skp)) {
 
     mysqli_query($conn, "
 UPDATE riwayat_skp
 SET
 tahun='$tahun',
-rerata_nilai='$rerata_nilai',
+rerata_nilai=$rerata_nilai_sql,
 id_predikat_skp='$id_predikat_skp'
 WHERE id_riwayat_skp='$id'
 ");
@@ -195,21 +197,7 @@ exit;
 
     <h2>Riwayat SKP</h2>
     <!-- dropdown-->
-    <div class="user-profile" id="userProfile">
-      <div class="user-info">
-        <div class="user-icon">👤</div>
-        <div class="user-text">
-          <div class="user-name">
-            <?= htmlspecialchars($admin['nama_pegawai']); ?>
-          </div>
-        </div>
-      </div>
-
-      <div class="dropdown-menu" id="dropdownMenu">
-        <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-        <a href="#" onclick="openLogoutModal()">Keluar</a>
-      </div>
-    </div>
+  
     <div class="tab-menu">
 
       <a href="identitas-pegawai.php?nip=<?= $nip ?>" class="tab">Identitas</a>
@@ -242,7 +230,7 @@ exit;
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
           <label>Nilai SKP</label>
 
-          <input type="number" name="rerata_nilai" step="0.01"  placeholder="Masukan Nilai SKP">
+          <input type="number" name="rerata_nilai" step="0.01"  placeholder="Masukan Nilai SKP" data-optional>
 
           <button type="button" onclick="klikUbahBeda('id_riwayat_skp')" class="tombol-ubah btn-kecil">
               UBAH
@@ -303,7 +291,7 @@ ORDER BY rs.tahun DESC
               echo "<tr onclick=\"pilihData('" . $row['id_riwayat_skp'] . "','" . $row['tahun'] . "','" . $row['rerata_nilai'] . "','" . $row['id_predikat_skp'] . "')\">
 
 <td>" . $row['tahun'] . "</td>
-<td>" . $row['rerata_nilai'] . "</td>
+<td>".($row['rerata_nilai'] !== null ? number_format($row['rerata_nilai'], 2) : '-')."</td>
 <td>" . $row['predikat_skp'] . "</td>
 
 </tr>";

@@ -54,14 +54,16 @@ if (isset($_POST['tambah'])) {
   $id_jenjang_pend = $_POST['id_jenjang_pend'];
   $institusi = $_POST['institusi'];
   $tahun_lulus = $_POST['tahun_lulus'];
+  $jurusan = $_POST['jurusan'];
 
-  if (!empty($id_jenjang_pend) && !empty($institusi) && !empty($tahun_lulus)) {
+  if (!empty($id_jenjang_pend) && !empty($institusi) && !empty($jurusan) && !empty($tahun_lulus)) {
 
     $cek = mysqli_query($conn, "
 SELECT * FROM riwayat_pendidikan
 WHERE nip='$nip'
 AND id_jenjang_pend='$id_jenjang_pend'
 AND institusi='$institusi'
+AND jurusan='$jurusan'
 AND tahun_lulus='$tahun_lulus'
 ");
 
@@ -69,9 +71,9 @@ AND tahun_lulus='$tahun_lulus'
 
       mysqli_query($conn, "
 INSERT INTO riwayat_pendidikan
-(nip,id_jenjang_pend,institusi,tahun_lulus)
+(nip,id_jenjang_pend,institusi, jurusan, tahun_lulus)
 VALUES
-('$nip','$id_jenjang_pend','$institusi','$tahun_lulus')
+('$nip','$id_jenjang_pend','$institusi', '$jurusan', '$tahun_lulus')
 ");
 
 header("Location: Admin_Edit_Riwayat_Pendidikan.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
@@ -208,21 +210,7 @@ exit;
     <h2>Riwayat Pendidikan</h2>
 
     <!-- dropdown-->
-    <div class="user-profile" id="userProfile">
-      <div class="user-info">
-        <div class="user-icon">👤</div>
-        <div class="user-text">
-          <div class="user-name">
-            <?= htmlspecialchars($admin['nama_pegawai']); ?>
-          </div>
-        </div>
-      </div>
 
-      <div class="dropdown-menu" id="dropdownMenu">
-        <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-        <a href="#" onclick="openLogoutModal()">Keluar</a>
-      </div>
-    </div>
 
     <div class="tab-menu">
       <a href="identitas-pegawai.php?nip=<?= $nip ?>" class="tab">Identitas</a>
@@ -312,24 +300,24 @@ exit;
 
               <?php
               $dataRiwayat = mysqli_query($conn, "
-SELECT rp.*, mj.jenjang_pend
-FROM riwayat_pendidikan rp
-JOIN master_jenjang_pend mj
-ON rp.id_jenjang_pend = mj.id_jenjang_pend
-WHERE rp.nip='$nip'
-ORDER BY rp.tahun_lulus DESC
-");
+              SELECT rp.*, mj.jenjang_pend
+              FROM riwayat_pendidikan rp
+              JOIN master_jenjang_pend mj
+              ON rp.id_jenjang_pend = mj.id_jenjang_pend
+              WHERE rp.nip='$nip'
+              ORDER BY rp.tahun_lulus DESC
+              ");
 
-              while ($row = mysqli_fetch_assoc($dataRiwayat)) {
+                            while ($row = mysqli_fetch_assoc($dataRiwayat)) {
 
-                echo "<tr onclick=\"pilihData('" . $row['id_riwayat_pend'] . "','" . $row['id_jenjang_pend'] . "','" . $row['institusi'] . "','" . $row['jurusan'] . "','" . $row['tahun_lulus'] . "')\">
+                              echo "<tr onclick=\"pilihData('" . $row['id_riwayat_pend'] . "','" . $row['id_jenjang_pend'] . "','" . $row['institusi'] . "','" . $row['jurusan'] . "','" . $row['tahun_lulus'] . "')\">
 
-<td>" . $row['jenjang_pend'] . "</td>
-<td>" . $row['institusi'] . "</td>
-<td>" . $row['jurusan'] . "</td>
-<td>" . $row['tahun_lulus'] . "</td>
+              <td>" . $row['jenjang_pend'] . "</td>
+              <td>" . $row['institusi'] . "</td>
+              <td>" . $row['jurusan'] . "</td>
+              <td>" . $row['tahun_lulus'] . "</td>
 
-</tr>";
+              </tr>";
               }
               ?>
 
@@ -356,12 +344,13 @@ ORDER BY rp.tahun_lulus DESC
   <?php include '../pegawai/Notifikasi_Logout.php'; ?>
 
   <script>
-    function pilihData(id, id_jenjang, institusi, tahun) {
+   function pilihData(id,id_jenjang,institusi,jurusan,tahun){
 
-      document.getElementById("id_riwayat_pend").value = id;
-      document.querySelector("select[name='id_jenjang_pend']").value = id_jenjang;
-      document.querySelector("input[name='institusi']").value = institusi;
-      document.querySelector("input[name='tahun_lulus']").value = tahun;
+    document.getElementById("id_riwayat_pend").value = id;
+    document.querySelector("select[name='id_jenjang_pend']").value = id_jenjang;
+    document.querySelector("input[name='institusi']").value = institusi;
+    document.querySelector("input[name='jurusan']").value = jurusan;
+    document.querySelector("input[name='tahun_lulus']").value = tahun;
 
     }
   </script>

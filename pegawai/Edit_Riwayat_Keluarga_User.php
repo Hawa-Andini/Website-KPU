@@ -307,7 +307,7 @@ function pilihData(id,nama,no_telp,alamat,id_hub_kel){
 <script src="../assets/script_pg.js"></script>
 <script>
 function formatTelp(input){
-    let angka = input.value.replace(/\D/g, '').slice(0,13); // batas 13 digit
+    let angka = input.value.replace(/\D/g, '');
 
     if(angka.length > 4 && angka.length <= 8){
         input.value = angka.slice(0,4) + '-' + angka.slice(4);

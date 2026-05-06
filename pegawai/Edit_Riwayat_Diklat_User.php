@@ -226,7 +226,7 @@ if(isset($_POST['hapus'])){
 
             <div class="baris-form" style="grid-template-columns:170px 500px 120px;">
                 <label>Jam Pelajaran (Jam)</label>
-                <input type="time" name="jp">
+                <input type="number" name="jp">
             </div>
 
 
@@ -261,7 +261,7 @@ if(isset($_POST['hapus'])){
             <td>".$row['penyelenggara_diklat']."</td>
             <td>".date('d-m-Y', strtotime($row['tp_awal']))."</td>
             <td>".date('d-m-Y', strtotime($row['tp_akhir']))."</td>
-            <td>".date('H:i', strtotime($row['jp']))."</td>
+            <td>".(($row['jp'] !== null && $row['jp'] !== '') ? $row['jp'] : '-')."</td>
 
             </tr>";
 

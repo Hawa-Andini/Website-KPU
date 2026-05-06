@@ -69,9 +69,9 @@ if (isset($_POST['tambah'])) {
 
       mysqli_query($conn, "
       INSERT INTO riwayat_jabatan
-      (nip, id_jabatan, tmt_jabatan, unit_kerja)
+      (nip, id_jabatan, tmt_jabatan, id_unit_kerja, unit_kerja)
       VALUES
-      ('$nip','$id_jabatan','$tmt_jabatan','$unit_kerja')
+      ('$nip','$id_jabatan','$tmt_jabatan','1', '$unit_kerja')
 ");
 
 header("Location: Admin_Edit_Riwayat_Jabatan.php?nip=" . urlencode($nip) . "&status=berhasil_tambah");
@@ -207,21 +207,7 @@ exit;
   <!-- KONTEN -->
   <main class="konten">
     <h2>Riwayat Jabatan</h2>
-    <div class="user-profile" id="userProfile">
-      <div class="user-info">
-        <div class="user-icon">👤</div>
-        <div class="user-text">
-          <div class="user-name">
-            <?= htmlspecialchars($admin['nama_pegawai']); ?>
-          </div>
-        </div>
-      </div>
-
-      <div class="dropdown-menu" id="dropdownMenu">
-        <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-        <a href="#" onclick="openLogoutModal()">Keluar</a>
-      </div>
-    </div>
+ 
     <div class="tab-menu">
       <a href="identitas-pegawai.php?nip=<?= $nip ?>" class="tab">Identitas</a>
       <a href="Admin_Edit_Riwayat_Golongan.php?nip=<?= $nip ?>" class="tab">Riwayat Golongan</a>
@@ -263,7 +249,7 @@ exit;
 
           <!-- UBAH -->
           <div class="baris-form" style="grid-template-columns:120px 500px 120px">
-                <label>Unit Kerja Awal</label>
+                <label>Riwayat Unit Kerja</label>
                 <input type="text" name="unit_kerja" placeholder="Masukan Unit Kerja Awal">
 
             <button type="button" onclick="klikUbahBeda('id_riwayat_jabatan')" class="tombol-ubah btn-kecil">
@@ -289,7 +275,7 @@ exit;
           <thead>
             <tr>
             <th>Nama Jabatan</th>
-            <th>Unit Kerja Awal</th>
+            <th>Riwayat Unit Kerja</th>
             <th>TMT Awal</th>
             </tr>
             </tr>

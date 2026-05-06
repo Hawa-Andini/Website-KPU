@@ -386,7 +386,7 @@ margin-top:30px;
 }
 
 /* TAMPIL SAAT AKTIF */
-.user-profile.active .dropdown-menu {
+.user-profile.active #dropdownMenu {
   display: block;
 }
 

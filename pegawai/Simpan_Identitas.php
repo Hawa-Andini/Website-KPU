@@ -19,9 +19,11 @@ $unit   = $_POST['id_unit_kerja'];
 $telp   = $_POST['no_telp'];
 $alamat = $_POST['alamat'];
 
-$tmt_cpns = $_POST['tmt_cpns'];
-$tmt_pns  = $_POST['tmt_pns'];
+$tmt_cpns = !empty($_POST['tmt_cpns']) ? $_POST['tmt_cpns'] : null;
+$tmt_pns  = !empty($_POST['tmt_pns']) ? $_POST['tmt_pns'] : null;
 
+$tmt_cpns_sql = $tmt_cpns ? "'$tmt_cpns'" : "NULL";
+$tmt_pns_sql  = $tmt_pns  ? "'$tmt_pns'"  : "NULL";
 
 //* UBAH DATA */
 if (isset($_POST['ubah'])) {
@@ -64,8 +66,8 @@ if (isset($_POST['ubah'])) {
     tempat_lahir='$tempat_lahir',
     tanggal_lahir='$tanggal_lahir',
     alamat='$alamat',
-    tmt_cpns='$tmt_cpns',
-    tmt_pns='$tmt_pns',
+    tmt_cpns=$tmt_cpns_sql,
+    tmt_pns=$tmt_pns_sql,
     no_telp='$telp',
     id_jenis_kelamin='$jk',
     id_agama='$agama',

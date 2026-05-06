@@ -398,10 +398,17 @@ td, th {
 </tr>
 
 <tr>
-    <td class="label">TMT CPNS / TMT PNS</td>
+    <td class="label">TMT CPNS</td>
     <td class="colon">:</td>
     <td class="value">'
-        .formatTanggalIndo($data['tmt_cpns']).' / '
+        .formatTanggalIndo($data['tmt_cpns']).'
+    </td>
+</tr>
+
+<tr>
+    <td class="label">TMT PNS / TMT PPPK</td>
+    <td class="colon">:</td>
+    <td class="value">'
         .formatTanggalIndo($data['tmt_pns']).'
     </td>
 </tr>
@@ -479,7 +486,7 @@ $html .= '
 
 <tr style="font-weight:bold;">
     <td width="20%">Golongan</td>
-    <td width="50%", style="padding-left:30px;">Pangkat</td>
+    <td width="50%", style="text-align:center;">Pangkat</td>
     <td width="30%", align=center >TMT</td>
 </tr>';
 
@@ -487,7 +494,7 @@ while($g = mysqli_fetch_assoc($golongan)){
     $html .= '
     <tr>
         <td>'.$g['kode_gol'].'</td>
-        <td style="padding-left:30px;">'.$g['nama_pangkat'].'</td>
+        <td style="text-align:center;">'.$g['nama_pangkat'].'</td>
         <td style="text-align:center;">'.safeDate($g['tmt_golongan']).'</td>
     </tr>';
 }
@@ -519,7 +526,7 @@ $html .= '
     <td width="25%">Nama Jabatan</td>
     <td width="25%">Jenis Jabatan</td>
     <td width="25%", align=center >TMT</td>
-    <td width="25%">Unit Kerja</td>
+    <td width="25%", align=center >Unit Kerja</td>
 </tr>';
 
 while($j = mysqli_fetch_assoc($jabatan)){
@@ -528,7 +535,7 @@ while($j = mysqli_fetch_assoc($jabatan)){
         <td>'.$j['nama_jabatan'].'</td>
         <td>'.$j['jenis_jabatan'].'</td>
         <td style="text-align:center;">'.safeDate($j['tmt_jabatan']).'</td>
-        <td>'.$j['unit_kerja'].'</td>
+        <td style="text-align:center;">'.$j['unit_kerja'].'</td>
     </tr>';
 }
 
@@ -579,7 +586,7 @@ if($pendidikan && mysqli_num_rows($pendidikan) > 0){
         <tr>
             <td>'.$p['institusi'].'</td>
             <td style="text-align:center;">'.$p['jenjang_pend'].'</td>
-            <td>'.$p['jurusan'].'</td>
+            <td style="text-align:center;">'.$p['jurusan'].'</td>
             <td style="text-align:center;">'.$p['tahun_lulus'].'</td>
         </tr>';
     }
@@ -622,7 +629,7 @@ if($diklat && mysqli_num_rows($diklat) > 0){
         <tr>
             <td>'.$d['nama_diklat'].'</td>
             <td style="text-align:center;">'.$d['penyelenggara_diklat'].'</td>
-            <td>'.safeDate($d['tp_awal']).'<br>'.(!empty($d['tp_akhir']) ? 's/d '.safeDate($d['tp_akhir']) : '-').'</td>
+            <td style="text-align:center;">'.safeDate($d['tp_awal']).'<br>'.(!empty($d['tp_akhir']) ? 's/d '.safeDate($d['tp_akhir']) : '-').'</td>
             <td style="text-align:center;">'.$d['jp'].' jam</td>
         </tr>';
     }

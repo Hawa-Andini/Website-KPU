@@ -17,9 +17,10 @@ if(isset($_POST['tambah'])){
 
     $tahun            = $_POST['tahun'];
     $rerata_nilai     = $_POST['rerata_nilai'];
+    $rerata_nilai_sql = ($rerata_nilai !== '') ? "'$rerata_nilai'" : "NULL";
     $id_predikat_skp  = $_POST['id_predikat_skp'];
 
-    if(!empty($tahun) && !empty($rerata_nilai) && !empty($id_predikat_skp)){
+    if(!empty($tahun)  && !empty($id_predikat_skp)){
 
         $cek = mysqli_query($conn,"
         SELECT * FROM riwayat_skp
@@ -41,7 +42,7 @@ if(isset($_POST['tambah'])){
             (
             '$nip',
             '$tahun',
-            '$rerata_nilai',
+            $rerata_nilai_sql,
             '$id_predikat_skp'
             )
             ");
@@ -57,16 +58,17 @@ if(isset($_POST['ubah'])){
 
     $id               = $_POST['id_riwayat_skp'];
     $tahun            = $_POST['tahun'];
-    $rerata_nilai     = $_POST['rerata_nilai'];
+    $rerata_nilai = $_POST['rerata_nilai'];
+    $rerata_nilai_sql = ($rerata_nilai !== '') ? "'$rerata_nilai'" : "NULL";
     $id_predikat_skp  = $_POST['id_predikat_skp'];
 
-    if(!empty($id) && !empty($tahun) && !empty($rerata_nilai) && !empty($id_predikat_skp)){
+    if(!empty($id) && !empty($tahun)  && !empty($id_predikat_skp)){
 
         mysqli_query($conn,"
         UPDATE riwayat_skp
         SET
         tahun='$tahun',
-        rerata_nilai='$rerata_nilai',
+        rerata_nilai=$rerata_nilai_sql,
         id_predikat_skp='$id_predikat_skp'
         WHERE id_riwayat_skp='$id'
         ");
@@ -189,7 +191,7 @@ if(isset($_POST['hapus'])){
         <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
         <label>Nilai SKP</label>
 
-        <input type="number" name="rerata_nilai" step="0.01"  placeholder="Masukan Nilai SKP">
+        <input type="number" name="rerata_nilai" step="0.01"  placeholder="Masukan Nilai SKP" data-optional>
 
         <button type="button" onclick="klikUbahBeda('id_riwayat_skp')"  class="tombol-ubah btn-kecil">
         UBAH
@@ -250,7 +252,7 @@ if(isset($_POST['hapus'])){
 
             echo "<tr onclick=\"pilihData('".$row['id_riwayat_skp']."','".$row['tahun']."','".$row['rerata_nilai']."','".$row['id_predikat_skp']."')\">
             <td>".$row['tahun']."</td>
-            <td>".number_format($row['rerata_nilai'], 2)."</td>
+            <td>".($row['rerata_nilai'] !== null ? number_format($row['rerata_nilai'], 2) : '-')."</td>
             <td>".$row['predikat_skp']."</td>
             </tr>";
         

@@ -43,8 +43,8 @@ if (isset($_POST['tambah'])) {
     $tanggal_lahir = $_POST['tanggal_lahir'] ?? '';
     $alamat = $_POST['alamat'] ?? '';
     $no_telp = $_POST['no_telp'] ?? '';
-    $tmt_cpns = $_POST['tmt_cpns'] ?? null;
-    $tmt_pns = $_POST['tmt_pns'] ?? null;
+    $tmt_cpns = !empty($_POST['tmt_cpns']) ? $_POST['tmt_cpns'] : null;
+    $tmt_pns  = !empty($_POST['tmt_pns']) ? $_POST['tmt_pns'] : null;
     $tipe_karyawan = $_POST['tipe_karyawan'] ?? '';
     $instansi = "KPU Kota Surabaya";
     $unit_kerja = $_POST['unit_kerja'] ?? '';
@@ -476,7 +476,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
                     </div>
 
                     <div class="baris-form">
-                        <label>TMT PNS</label>
+                        <label>TMT PNS / PPPK</label>
                         <input type="date" name="tmt_pns">
                     </div>
 
@@ -710,7 +710,7 @@ $predikat = mysqli_query($conn, "SELECT * FROM master_predikat_skp");
 
                 <div class="baris-form">
 
-                    <label>TMT</label>
+                    <label>Tahun Lulus</label>
 
                     <input type="number" name="tahun_lulus">
 

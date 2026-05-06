@@ -139,7 +139,7 @@ include 'Data_Pegawai.php';
         echo "<tr onclick=\"pilihData('".$row['id_riwayat_skp']."','".$row['tahun']."','".$row['rerata_nilai']."','".$row['id_predikat_skp']."')\">
 
         <td>".$row['tahun']."</td>
-        <td>".$row['rerata_nilai']."</td>
+        <td>".($row['rerata_nilai'] !== null ? number_format($row['rerata_nilai'], 2) : '-')."</td>
         <td>".$row['predikat_skp']."</td>
 
         </tr>";

@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     });
+    
     //LOGOUT
     function openLogoutModal() {
         document.getElementById("modalLogout").style.display = "flex";
@@ -204,7 +205,13 @@ function klikUbah() {
     }
 
     document.querySelectorAll("#formUpload input, #formUpload textarea, #formUpload select").forEach(el => {
-        if (el.type !== "file" && el.value.trim() === "") {
+        if (
+            el.type === "file" ||
+            el.type === "hidden" ||
+            el.hasAttribute("data-optional")
+        ) return;
+    
+        if (el.value.trim() === "") {
             kosong = true;
         }
     });
@@ -244,7 +251,13 @@ function klikUbahBeda(idField) {
     let kosong = false;
 
     document.querySelectorAll("#formUpload input, #formUpload textarea, #formUpload select").forEach(el => {
-        if (el.type !== "file" && el.value.trim() === "") {
+        if (
+            el.type === "file" ||
+            el.type === "hidden" ||
+            el.hasAttribute("data-optional")
+        ) return;
+    
+        if (el.value.trim() === "") {
             kosong = true;
         }
     });
@@ -266,6 +279,10 @@ function klikUbahBeda(idField) {
         }
         if (telpAngka.length > 13) {
             openModalAksi("Peringatan", "Nomor telepon terlalu panjang!", "info");
+            return;
+        }
+        if (!telpAngka.startsWith("08")) {
+            openModalAksi("Peringatan", "Nomor telepon harus diawali 08!", "info");
             return;
         }
     }
@@ -292,10 +309,13 @@ function klikTambah() {
 
     let kosong = false;
 
-    document.querySelectorAll("#formUpload input, #formUpload select, #formUpload textarea")
-    .forEach(el => {
-        if (el.type === "hidden" || el.type === "file") return;
-
+    document.querySelectorAll("#formUpload input, #formUpload textarea, #formUpload select").forEach(el => {
+        if (
+            el.type === "file" ||
+            el.type === "hidden" ||
+            el.hasAttribute("data-optional")
+        ) return;
+    
         if (el.value.trim() === "") {
             kosong = true;
         }
@@ -319,6 +339,10 @@ function klikTambah() {
             }
         if (telpAngka.length > 13) {
             openModalAksi("Peringatan", "Nomor telepon terlalu panjang!", "info");
+            return;
+        }
+        if (!telpAngka.startsWith("08")) {
+            openModalAksi("Peringatan", "Nomor telepon harus diawali 08!", "info");
             return;
         }
     }

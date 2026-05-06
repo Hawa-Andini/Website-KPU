@@ -197,21 +197,7 @@ exit;
 
         <h2>Riwayat Kehormatan</h2>
         <!-- dropdown-->
-        <div class="user-profile" id="userProfile">
-            <div class="user-info">
-                <div class="user-icon">👤</div>
-                <div class="user-text">
-                    <div class="user-name">
-                        <?= htmlspecialchars($admin['nama_pegawai']); ?>
-                    </div>
-                </div>
-            </div>
 
-            <div class="dropdown-menu" id="dropdownMenu">
-                <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-                <a href="#" onclick="openLogoutModal()">Keluar</a>
-            </div>
-        </div>
 
 
         <div class="tab-menu">

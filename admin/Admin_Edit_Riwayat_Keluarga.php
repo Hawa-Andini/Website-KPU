@@ -201,21 +201,7 @@ exit;
 
         <h2>Riwayat Keluarga</h2>
         <!-- dropdown-->
-        <div class="user-profile" id="userProfile">
-            <div class="user-info">
-                <div class="user-icon">👤</div>
-                <div class="user-text">
-                    <div class="user-name">
-                        <?= htmlspecialchars($admin['nama_pegawai']); ?>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dropdown-menu" id="dropdownMenu">
-                <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-                <a href="#" onclick="openLogoutModal()">Keluar</a>
-            </div>
-        </div>
+ 
         <div class="tab-menu">
 
             <a href="identitas-pegawai.php?nip=<?= $nip ?>" class="tab">Identitas</a>

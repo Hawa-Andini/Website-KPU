@@ -212,23 +212,7 @@ exit;
 
     <h2>Riwayat Diklat</h2>
     <!-- dropdown-->
-    <div class="user-profile" id="userProfile">
-      <div class="user-info">
-        <div class="user-icon">👤</div>
-        <div class="user-text">
-          <div class="user-name">
-            <?= htmlspecialchars($admin['nama_pegawai']); ?>
-          </div>
-        </div>
-      </div>
-
-      <div class="dropdown-menu" id="dropdownMenu">
-        <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-        <a href="#" onclick="openLogoutModal()">Keluar</a>
-      </div>
-    </div>
-
-    </div>
+    
 
     <div class="tab-menu">
 
@@ -299,7 +283,7 @@ exit;
 
             <div class="baris-form" style="grid-template-columns:170px 500px 120px;">
                 <label>Jam Pelajaran (Jam)</label>
-                <input type="time" name="jp">
+                <input type="number" name="jp">
             </div>
 
 
@@ -333,7 +317,7 @@ exit;
                 <td>".$row['penyelenggara_diklat']."</td>
                 <td>".(!empty($row['tp_awal']) ? date('d-m-Y', strtotime($row['tp_awal'])) : '-')."</td>
                 <td>".(!empty($row['tp_akhir']) ? date('d-m-Y', strtotime($row['tp_akhir'])) : '-')."</td>
-                <td>".(!empty($row['jp']) ? date('H:i', strtotime($row['jp'])) : '-')."</td>
+                <td>".(($row['jp'] !== null && $row['jp'] !== '') ? $row['jp'] : '-')."</td>
                 </tr>";
               }
               ?>

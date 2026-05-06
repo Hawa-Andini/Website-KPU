@@ -183,7 +183,7 @@ if(isset($_POST['hapus'])){
     
             <!-- BARIS UNIT KERJA -->
             <div class="baris-form" style="grid-template-columns:120px 500px 120px;">
-                <label>Unit Kerja Awal</label>
+                <label>Riwayat Unit Kerja</label>
                 <input type="text" name="unit_kerja" placeholder="Masukan Unit Kerja Awal">
 
                 <div class="aksi-vertikal">
@@ -212,7 +212,7 @@ if(isset($_POST['hapus'])){
             <thead>
             <tr>
             <th>Nama Jabatan</th>
-            <th>Unit Kerja Awal</th>
+            <th>Riwayat Unit Kerja</th>
             <th>TMT Awal</th>
             </tr>
             </thead>
@@ -224,7 +224,7 @@ if(isset($_POST['hapus'])){
             FROM riwayat_jabatan rg
             JOIN master_jabatan mg ON rg.id_jabatan = mg.id_jabatan
             WHERE rg.nip='$nip'
-            ORDER BY rg.tmt_jabatan 
+            ORDER BY rg.tmt_jabatan DESC
             ");
 
             while($row = mysqli_fetch_assoc($data)){

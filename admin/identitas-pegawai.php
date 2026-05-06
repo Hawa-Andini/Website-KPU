@@ -78,8 +78,8 @@ if (isset($_POST['ubah'])) {
     $tipe_karyawan = $_POST['tipe_karyawan'] ?? '';
     $telp   = $_POST['no_telp'] ?? '';
     $alamat = $_POST['alamat'] ?? '';
-    $tmt_cpns = $_POST['tmt_cpns'] ?? '';
-    $tmt_pns  = $_POST['tmt_pns'] ?? '';
+    $tmt_cpns = !empty($_POST['tmt_cpns']) ? $_POST['tmt_cpns'] : null;
+    $tmt_pns  = !empty($_POST['tmt_pns']) ? $_POST['tmt_pns'] : null;
     $golongan = $_POST['id_gol'] ?? '';
     $kode_gol = $_POST['kode_gol'] ?? '';
     $tmt_gol  = $_POST['tmt_golongan'] ?? '';
@@ -406,21 +406,7 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
         <h2>Riwayat Diklat</h2>
 
         <!-- <button class="tombol-keluar">Log Out</button> -->
-        <div class="user-profile" id="userProfile">
-            <div class="user-info">
-                <div class="user-icon">👤</div>
-                <div class="user-text">
-                    <div class="user-name">
-                        <?= htmlspecialchars($admin['nama_pegawai']); ?>
-                    </div>
-                </div>
-            </div>
 
-            <div class="dropdown-menu" id="dropdownMenu">
-                <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-                <a href="#" onclick="openLogoutModal()">Keluar</a>
-            </div>
-        </div>
 
         <div class="tab-menu">
             <a href="identitas-pegawai.php?nip=<?= $nip ?>" class="tab aktif">Identitas</a>
@@ -510,14 +496,13 @@ $kabupaten = mysqli_query($conn, "SELECT * FROM master_kabupaten ORDER BY nama_k
 
                     <div class="baris-form">
                         <label>TMT CPNS</label>
-                        <input name="tmt_cpns" type="date" value="<?= $pegawai['tmt_cpns']; ?>">
+                        <input name="tmt_cpns" type="date" value="<?= $pegawai['tmt_cpns']; ?>" data-optional>
                     </div>
 
                     <div class="baris-form">
-                        <label>TMT PNS</label>
-                        <input name="tmt_pns" type="date" value="<?= $pegawai['tmt_pns']; ?>">
+                        <label>TMT PNS / PPPK</label>
+                        <input name="tmt_pns" type="date" value="<?= $pegawai['tmt_pns']; ?>" data-optional>
                     </div>
-
                     <div class="baris-form">
                         <label>Tempat & Tanggal Lahir</label>
 

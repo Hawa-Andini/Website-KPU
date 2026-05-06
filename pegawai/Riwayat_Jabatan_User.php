@@ -119,7 +119,7 @@ include 'Data_Pegawai.php';
           <thead>
           <tr>
             <th>Nama Jabatan</th>
-            <th>Unit Kerja Awal</th>
+            <th>Riwayat Unit Kerja</th>
             <th>TMT</th>
             
           </tr>
@@ -132,7 +132,7 @@ include 'Data_Pegawai.php';
           FROM riwayat_jabatan rg
           JOIN master_jabatan mg ON rg.id_jabatan = mg.id_jabatan
           WHERE rg.nip='$nip'
-          ORDER BY rg.tmt_jabatan 
+          ORDER BY rg.tmt_jabatan DESC
           ");
 
           while($row = mysqli_fetch_assoc($data)){

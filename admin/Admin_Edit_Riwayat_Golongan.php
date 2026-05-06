@@ -197,21 +197,7 @@ if (isset($_POST['hapus'])) {
   <main class="konten">
   <h2>Riwayat Golongan</h2>
     <!-- dropdown-->
-    <div class="user-profile" id="userProfile">
-      <div class="user-info">
-        <div class="user-icon">👤</div>
-        <div class="user-text">
-          <div class="user-name">
-            <?= htmlspecialchars($admin['nama_pegawai']); ?>
-          </div>
-        </div>
-      </div>
 
-      <div class="dropdown-menu" id="dropdownMenu">
-        <a href="Admin_Profil_Data_Pegawai.php">Beranda</a>
-        <a href="#" onclick="openLogoutModal()">Keluar</a>
-      </div>
-    </div>
     <div class="tab-menu">
       <a href="identitas-pegawai.php?nip=<?= $nip ?>" class="tab">Identitas</a> <a href="Admin_Edit_Riwayat_Golongan.php?nip=<?= $nip ?>" class="tab aktif">Riwayat Golongan</a>
       <a href="Admin_Edit_Riwayat_Jabatan.php?nip=<?= $nip ?>" class="tab">Riwayat Jabatan</a>
@@ -264,7 +250,7 @@ if (isset($_POST['hapus'])) {
             <label></label>
             <div></div>
 
-            <button type="submit" name="hapus" class="tombol-hapus btn-kecil">
+            <button type="button" onclick="klikHapus('id_riwayat_gol')"  class="tombol-hapus btn-kecil">
               HAPUS
             </button>
           </div>

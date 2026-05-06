@@ -208,12 +208,12 @@ $kabupaten = mysqli_query($conn,"SELECT * FROM master_kabupaten ORDER BY nama_ka
 
         <div class="baris-edit">
         <label>TMT CPNS</label>
-        <input type="date" name="tmt_cpns" value="<?= $data['tmt_cpns'] ?>">
+        <input type="date" name="tmt_cpns" value="<?= $data['tmt_cpns'] ?>" data-optional>
         </div>
 
         <div class="baris-edit">
-        <label>TMT PNS</label>
-        <input type="date" name="tmt_pns" value="<?= $data['tmt_pns'] ?>">
+        <label>TMT PNS / PPPK</label>
+        <input type="date" name="tmt_pns" value="<?= $data['tmt_pns'] ?>"data-optional>
         </div>
 
 
